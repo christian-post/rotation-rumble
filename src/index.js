@@ -30,7 +30,6 @@ const addUrls = function(card) {
   // TODO: Übergangslösung
   // TODO: diese beiden Daten als Felder mit in die Datenbank (sollten als weblinks auf keinen Fall im Code stehen)
   // sobald final klar ist, wo die Bilder liegen
-  // card.image_url = `http://127.0.0.1:8887/data/images/${card.id}.jpg`;
   card.image_url = process.env.IMAGEPATHURL + card.id + '.jpg';
   // TODO: geht diese URL auch relativ?
 }
