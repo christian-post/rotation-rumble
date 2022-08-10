@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head'); %>
+</head>
+<body class="container">
+
+<header>
+  <%- include('../partials/header'); %>
+</header>
+
+<main>
+  <div class="jumbotron">
+    <form action="/simple-search/" method="post">
+      <h3>Search for a card name:<h3>
+      <div class="input-group">
+          <input id="search" type="text" class="form-control" name="search_field" value="">
+          <input type="submit" value="🔍">
+      </div>
+    </form>
+  </div>
+</main>
+
+<footer>
+  <%- include('../partials/footer'); %>
+</footer>
+
+</body>
+</html>

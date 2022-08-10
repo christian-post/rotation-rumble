@@ -1,0 +1,69 @@
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-5">
+      <img src=<%= card.image_url %> class="img-fluid rounded-start mx-2 my-2" alt=<%= card.name %>>
+    </div>
+    <div class="col-md-7">
+      <div class="card-body">
+        <h5 class="card-title"><%= card.name %></h5>
+        <p class="card-text">
+
+          <p>
+            <br>
+            <%= card.cardtype %> &#8212; <%= card.color %>
+            <br>
+            <!-- Je nach Kartentyp werden unterschiedliche Felder angezeigt -->
+            <% if (card.cardtype === "Fighter") { %>
+              DMG: <%= card.dmg %>&emsp;DEF: <%= card.def %>
+              <br>
+              <%= card.type1 %>
+              <% if (card.type2) { %>
+                / <%= card.type2 %> 
+              <% } %>
+              <br>
+              Hire: <%= card.hire %>&emsp;Fire: <%= card.fire %>
+            <% } else if (card.cardtype === "Challenge") { %>
+              <%= card.type1 %>
+              <br>
+              Cast: <%= card.hire %>
+            <% } else { %>
+              <%= card.type1 %>
+              <br>
+              Buy: <%= card.hire %>
+              <% if (card.equip) { %>
+                &emsp;Equip:<%= card.equip %> 
+              <% } %>
+            <% } %>
+            <br>
+            Dice: <%= card.dice %>
+            <br><br>
+            <!-- Iteriert alle Effekte oder Steps -->
+            <% 
+              let effects = [card.effect1, card.effect2, card.effect3, card.effect4]; 
+              for (let i = 0; i < effects.length; i++) { 
+            %>
+                <% if (effects[i]) { %> 
+                  <p class="hangingindent">
+                    Effect <%= i + 1 %>:&emsp;<%= effects[i] %>
+                  </p>
+                <% } %>
+            <% } %>
+      
+            <% 
+              let steps = [card.step1, card.step2, card.step3, card.step4]; 
+              for (let i = 0; i < steps.length; i++) { 
+            %>
+                <% if (steps[i]) { %> 
+                  <p class="hangingindent">
+                    Step <%= i + 1 %>:&emsp;<%= steps[i] %>
+                  </p>
+                <% } %>
+            <% } %>
+          </p>
+
+        </p>
+        <p class="card-text"><small class="text-muted">Bottom Text</small></p>
+      </div>
+    </div>
+  </div>
+</div>
