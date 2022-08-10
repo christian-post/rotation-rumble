@@ -26,16 +26,6 @@ connectToDb(err => {
 });
 
 
-// const addUrls = function(card) {
-//   // TODO: Übergangslösung
-//   // TODO: dies mit in die Datenbank (sollten als weblinks auf keinen Fall im Code stehen)
-//   // sobald final klar ist, wo die Bilder liegen
-//   // card.image_url = process.env.IMAGEPATHURL + card.id + '.jpg';
-//   // TODO: geht diese URL auch relativ?
-  // card.server_url = `/card/${card.id}`;
-// }
-
-
 // -- routes --
 
 // GET requests
@@ -60,7 +50,6 @@ app.get('/gallery', (req, res) => {
     .find()
     .sort({ name: 1 })
     .forEach(card => {
-      // addUrls(card);
       cards.push(card);
     })
     .then(()=> {
@@ -93,8 +82,6 @@ app.get('/card/:cardname', (req, res) => {
       // TODO: was wenn mehrere Karten gefunden wurden?
       if (found.length > 0) {
         card = found[0];
-        // add card image to template
-        // addUrls(card);
       } else {
         card = null;
       }
@@ -116,7 +103,6 @@ app.get('/api/all-cards', (req, res) => {
     .find()
     .sort({ name: 1 })
     .forEach(card => {
-      // addUrls(card);
       cards.push(card);
     })
     .then(()=> {
@@ -147,7 +133,6 @@ app.post('/simple-search/', (req, res) => {
     db.collection('all-cards')
     .find({ "name": regex })
     .forEach(card => {
-      // addUrls(card);
       found.push(card);
     })
     .then(()=> {
@@ -237,7 +222,6 @@ app.post('/advanced-search/', (req, res) => {
     db.collection('all-cards')
     .find(search)
     .forEach(card => {
-      // addUrls(card);
       found.push(card);
     })
     .then(()=> {
