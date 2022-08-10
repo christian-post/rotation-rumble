@@ -13,7 +13,7 @@
   <div class="jumbotron">
     <h1><%= header %></h1>
     <% cards.forEach(function(card) { %>
-      <a href=<%= card.server_url %>>
+      <a href=<%= '/card/' + card.id %>>
         <img src=<%= card.image_url %> width="300px" style="margin: 6px"></img>
       </a>
     <% }); %>
