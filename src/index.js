@@ -1,12 +1,17 @@
 const express = require('express');
 const { connectToDb, getDb } = require('./db');
 const { body, validationResult } = require('express-validator');
+const path = require('path');
+require("dotenv").config();
 
-const app = express();
 
-app.set('view engine', 'ejs');
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const app = express()
+  .use(express.static('public'))
+  .set('views', path.join(__dirname, '../views'))
+  .set('view engine', 'ejs')
+  .use(express.urlencoded({ extended: true }))
+  .use(express.json());
+
 
 let db;
 
@@ -19,10 +24,13 @@ connectToDb(err => {
     return;
   }
 
-  app.listen(process.env.PORT || 3000, ()=> {
-    console.log('app listening on port 3000');
+  let port = process.env.PORT || 3000;
+
+  app.listen(port, ()=> {
+    console.log(`App listening on port ${port}`);
+
+    db = getDb();
   });
-  db = getDb();
 });
 
 
@@ -32,13 +40,13 @@ connectToDb(err => {
 
 // index Page (simple search)
 app.get('/', (req, res) => {
-  res.render(`v${VERSION}/pages/index`);
+  res.render(`pages/index`);
 });
 
 
 // Advanced Search
 app.get('/advanced', (req, res) => {
-  res.render(`v${VERSION}/pages/advanced`);
+  res.render(`pages/advanced`);
 });
 
 
@@ -53,7 +61,7 @@ app.get('/gallery', (req, res) => {
       cards.push(card);
     })
     .then(()=> {
-      res.render(`v${VERSION}/pages/gallery`, {
+      res.render(`pages/gallery`, {
         header: 'All Cards',
         cards: cards }
         );
@@ -63,7 +71,7 @@ app.get('/gallery', (req, res) => {
 
 // about page
 app.get('/about', (req, res) => {
-  res.render(`v${VERSION}/pages/about`);
+  res.render(`pages/about`);
 });
 
 
@@ -88,7 +96,7 @@ app.get('/card/:cardname', (req, res) => {
 
       // TODO Kartentext rechts neben dem Bild statt darunter
 
-      res.render(`v${VERSION}/pages/singlecard`, {
+      res.render(`pages/singlecard`, {
         card: card
       });
     });
@@ -136,13 +144,13 @@ app.post('/simple-search/', (req, res) => {
       found.push(card);
     })
     .then(()=> {
-      res.render(`v${VERSION}/pages/gallery`, {
+      res.render(`pages/gallery`, {
         header: `Search results for "${req.body.search_field}":`,
         cards: found 
       });
     });
   } else {
-    res.render(`v${VERSION}/pages/index`);
+    res.render(`pages/index`);
   }
 });
 
@@ -225,7 +233,7 @@ app.post('/advanced-search/', (req, res) => {
       found.push(card);
     })
     .then(()=> {
-      res.render(`v${VERSION}/pages/gallery`, {
+      res.render(`pages/gallery`, {
         header: `${(found.length ? `These ${found.length}` : "No")} cards matched your search.`,
         cards: found 
       });

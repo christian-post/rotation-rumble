@@ -3,18 +3,23 @@
 <head>
   <%- include('../partials/head'); %>
 </head>
-<body class="container">
+<body>
 
 <header>
   <%- include('../partials/header'); %>
 </header>
 
 <main>
-  <div class="jumbotron">
+  <div>
     <h1><%= header %></h1>
     <% cards.forEach(function(card) { %>
       <a href=<%= '/card/' + card.id %>>
-        <img src=<%= card.image_url %> width="300px" style="margin: 6px"></img>
+        <img 
+          src=<%= card.image_url %> 
+          width="300px"
+          style="margin: 6px" 
+          alt=<%= card.name %>
+          ></img>
       </a>
     <% }); %>
   </div>
