@@ -11,17 +11,28 @@
 
 <main>
   <div>
-    <h1><%= header %></h1>
-    <% cards.forEach(function(card) { %>
-      <a href=<%= '/card/' + card.id %>>
-        <img 
-          src=<%= card.image_url %> 
-          width="300px"
-          style="margin: 6px" 
-          alt=<%= card.name %>
-          ></img>
-      </a>
-    <% }); %>
+    <div class="gallery-header">
+      <h1><%= header %></h1>
+      <label for="display-as">display as </label>
+
+      <script>
+        function changeGalleryLayout(select) {
+          if (select.value.length > 0) {
+            // TODO: hack!
+            window.location.href = '/gallery?as=' + select.value;
+          }
+        }
+      </script>
+
+      <select name="display-as" id="display-as", onchange="changeGalleryLayout(this)">
+        <option value=""></option>
+        <option value="images" id="images">Images</option>
+        <option value="table" id="table">Table</option>
+        <option value="text" id="text">Text only</option>
+      </select>
+    </div>
+    <!-- format card gallery based on query parameter "as" -->
+    <%- include('../partials/card-gallery-' + query.as); %>
   </div>
 </main>
 

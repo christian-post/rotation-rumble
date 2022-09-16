@@ -52,7 +52,33 @@ app.get('/advanced', (req, res) => {
 
 // card gallery page
 app.get('/gallery', (req, res) => {
+  // get display method from url
+  let displayAs = req.query.as;
+
+  if (displayAs === undefined) {
+    // default is images
+    displayAs = 'images';
+  }
+
   let cards = [];
+
+  // table columns
+  let head = [
+    'Name', 'Card Type', 'Color', 'DMG', 'DEF','Type 1',
+    'Type 2', 'Hire', 'Fire'
+  ];
+
+  // arrows that indicate the sorting order (used in the HTML table)
+  arrow = {
+    true: '&#x25B2',
+    false: '&#x25BC'
+  };
+
+  // all start off as "reverse=false"
+  let orderSymbols = new Array(head.length).fill(arrow[false]);
+
+
+  // DB request
 
   db.collection('all-cards')
     .find()
@@ -61,10 +87,13 @@ app.get('/gallery', (req, res) => {
       cards.push(card);
     })
     .then(()=> {
-      res.render(`pages/gallery`, {
-        header: 'All Cards',
-        cards: cards }
-        );
+        res.render(`pages/gallery`, {
+          header: 'All Cards',
+          cards: cards,
+          query: req.query,
+          head: head,
+          orderSymbols: orderSymbols
+        });
     });
 });
 

@@ -1,0 +1,118 @@
+<script>
+  function getInnerText(node) {
+    let childNodes = node.childNodes;
+
+    let textContent = "";
+    for(var i = 0; i < childNodes.length; i++) {
+        if(childNodes[i].nodeType==3) {
+          textContent += childNodes[i].data;
+        } else if (childNodes[i].nodeType==1) {
+          textContent += getInnerText(childNodes[i]);
+        }
+    }
+    textContent = textContent.replace(/\r?\n|\r/g,"");
+    textContent = textContent.replace(" ", "");
+
+    return textContent;
+  }
+
+
+  /* 
+    ---------- DRAG AND DROP -------------
+  */
+
+  // https://www.w3schools.com/HTML/html5_draganddrop.asp
+
+  function allowDrop(ev) {
+    ev.preventDefault();
+  }
+  
+
+  function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+  }
+  
+
+  function drop(ev) {
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+    
+    if (ev.target.className === 'table-container') {
+      // if the data is dragged onto one of the div.table-container elements
+      // firstElementChild is the <table> element
+      ev.target.firstElementChild.getElementsByTagName('tbody')[0].appendChild(document.getElementById(data).cloneNode(true));
+    } else if (ev.target.tagName === 'TH') {
+      // data is dragged onto the table header
+      // and insterted as the 0th child of the tbody
+      let tableBody = ev.target.parentNode.parentNode.parentNode.children[1];
+      tableBody.insertBefore(document.getElementById(data).cloneNode(true), tableBody.children[0]);
+    } else if (ev.target.tagName === 'TD') {
+      // data is dragged onto one of the existing rows
+      // inserted above the targetted row
+      let tableBody = ev.target.parentNode.parentNode.parentNode.children[1];
+      let index = ev.target.parentNode.rowIndex - 1; // table head has row index 0
+      tableBody.insertBefore(document.getElementById(data).cloneNode(true), tableBody.children[index]);
+    }
+  }
+
+
+  /* 
+      ------- TABLE SORTING ---------
+  */
+  function sortTable(index, id) {
+    // https://www.w3schools.com/howto/howto_js_sort_table.asp
+    
+    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+    table = document.getElementById(id);
+    switching = true;
+    //Set the sorting direction to ascending:
+    dir = "asc"; 
+    /*Make a loop that will continue until
+    no switching has been done:*/
+    while (switching) {
+      //start by saying: no switching is done:
+      switching = false;
+      rows = table.rows;
+      /*Loop through all table rows (except the
+      first, which contains table headers):*/
+      for (i = 1; i < (rows.length - 1); i++) {
+        //start by saying there should be no switching:
+        shouldSwitch = false;
+        /*Get the two elements you want to compare,
+        one from current row and one from the next:*/
+        x = rows[i].getElementsByTagName("TD")[index];
+        y = rows[i + 1].getElementsByTagName("TD")[index];
+        /*check if the two rows should switch place,
+        based on the direction, asc or desc:*/
+        if (dir == "asc") {
+          if (getInnerText(x).toLowerCase() > getInnerText(y).toLowerCase()) {
+            //if so, mark as a switch and break the loop:
+            shouldSwitch= true;
+            break;
+          }
+        } else if (dir == "desc") {
+          if (getInnerText(x).toLowerCase() < getInnerText(y).toLowerCase()) {
+            //if so, mark as a switch and break the loop:
+            shouldSwitch = true;
+            break;
+          }
+        }
+      }
+      if (shouldSwitch) {
+        /*If a switch has been marked, make the switch
+        and mark that a switch has been done:*/
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+        //Each time a switch is done, increase this count by 1:
+        switchcount ++;      
+      } else {
+        /*If no switching has been done AND the direction is "asc",
+        set the direction to "desc" and run the while loop again.*/
+        if (switchcount == 0 && dir == "asc") {
+          dir = "desc";
+          switching = true;
+        }
+      }
+    }
+  }
+</script>

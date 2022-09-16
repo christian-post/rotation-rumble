@@ -1,0 +1,33 @@
+<%- include('../partials/scripts'); %>
+
+<div class="card-gallery">
+  <table class="card-gallery-table", id="card-gallery-table">
+    <tr>
+      <% for (let i = 0; i < head.length; i++) { %>
+        <th>
+          <%= head[i] %>
+          <span class="sortby" onclick="sortTable(<%= i %>, 'card-gallery-table')" id="<%= i %>">
+            <%- orderSymbols[i] %>
+          </span>
+        </th>
+      <% } %>
+    </tr>
+  <% cards.forEach(function(card) { %>
+    <tr>
+      <% 
+        let attributes = [
+          'name', 'cardtype', 'color', 'dmg', 'def', 'type1', 'type2', 'hire', 'fire'
+        ];
+
+        attributes.forEach(function(attribute) {
+      %>
+          <td>
+            <a href=<%= '/card/' + card.id %>>
+              <%= card[attribute] %>
+            </a>
+          </td>
+        <% }); %>
+    </tr>
+  <% }); %>
+  </table>
+</div>

@@ -1,7 +1,7 @@
 <div>
   <div>
     <div>
-      <img src=<%= card.image_url %> class="img-fluid rounded-start mx-2 my-2" alt=<%= card.name %>>
+      <img class="card-image-large" src=<%= card.image_url %> alt=<%= card.name %>>
     </div>
     <div>
       <div>
@@ -42,7 +42,7 @@
               for (let i = 0; i < effects.length; i++) { 
             %>
                 <% if (effects[i]) { %> 
-                  <p class="hangingindent">
+                  <p>
                     Effect <%= i + 1 %>:&emsp;<%= effects[i] %>
                   </p>
                 <% } %>
@@ -53,7 +53,7 @@
               for (let i = 0; i < steps.length; i++) { 
             %>
                 <% if (steps[i]) { %> 
-                  <p class="hangingindent">
+                  <p>
                     Step <%= i + 1 %>:&emsp;<%= steps[i] %>
                   </p>
                 <% } %>

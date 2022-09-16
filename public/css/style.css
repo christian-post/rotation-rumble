@@ -92,6 +92,10 @@ nav ul {
   padding: 0;
 }
 
+nav a {
+  text-decoration: none;
+}
+
 .container {
   display: flex;
   flex-direction: row;
@@ -107,4 +111,60 @@ nav ul {
 
 .footer p {
   text-align: center;
+}
+
+
+/* Page specific styling */
+
+.card-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 0.5rem;
+  justify-content: center;
+}
+
+.gallery-header {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
+  padding: 0.5rem;
+}
+
+.card-gallery-table {
+  border-collapse: collapse;
+  border: 1px solid red;
+}
+
+.card-gallery-table th, td {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border: 1px solid red;
+}
+
+.card-gallery-table th {
+  background-color: lightgray;
+}
+
+.card-gallery-table a {
+  text-decoration: none;
+}
+
+.sortby {
+  color: black;
+  cursor: pointer;
+}
+
+.card-image-small {
+  width: 120px;
+}
+
+.card-image-medium {
+  width: 250px;
+}
+
+.card-image-large {
+  width: 400px;
 }

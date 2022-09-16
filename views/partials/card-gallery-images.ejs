@@ -1,0 +1,11 @@
+<div class="card-gallery">
+  <% cards.forEach(function(card) { %>
+    <a href=<%= '/card/' + card.id %>>
+      <img 
+        src=<%= card.image_url %> 
+        class="card-image-medium" 
+        alt=<%= card.name %>
+        ></img>
+    </a>
+  <% }); %>
+</div>
