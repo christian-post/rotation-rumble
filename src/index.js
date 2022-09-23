@@ -21,7 +21,7 @@ let VERSION = '0.2'
 connectToDb(err => {
   if (err) {
     console.log(err);
-    return;
+    // return;
   }
 
   let port = process.env.PORT || 3000;
@@ -44,14 +44,29 @@ app.get('/', (req, res) => {
 });
 
 
+
 // Advanced Search
 app.get('/advanced', (req, res) => {
+  if (!db) {
+    // database connection not established
+    res.render('pages/error');
+  }
+
   res.render(`pages/advanced`);
 });
 
 
+
 // card gallery page
 app.get('/gallery', (req, res) => {
+  // Error handler
+
+  if (!db) {
+    // database connection not established
+    res.render('pages/error');
+  }
+
+
   // get display method from url
   let displayAs = req.query.as;
 
@@ -98,14 +113,64 @@ app.get('/gallery', (req, res) => {
 });
 
 
+
+// card gallery page
+app.get('/deckbuilder', (req, res) => {
+  if (!db) {
+    // database connection not established
+    res.render('pages/error');
+  }
+
+  let cards = [];
+
+  // table columns
+  let head = [
+    'Name', 'Card Type', 'Color', 'DMG', 'DEF','Type 1',
+    'Type 2', 'Hire', 'Fire'
+  ];
+
+  // arrows that indicate the sorting order (used in the HTML table)
+  arrow = {
+    true: '&#x25B2',
+    false: '&#x25BC'
+  };
+
+  // all start off as "reverse=false"
+  let orderSymbols = new Array(head.length).fill(arrow[false]);
+
+  // DB request
+
+  db.collection('all-cards')
+    .find()
+    .sort({ name: 1 })
+    .forEach(card => {
+      cards.push(card);
+    })
+    .then(()=> {
+        res.render(`pages/deck-builder`, {
+          header: 'All Cards',
+          cards: cards,
+          head: head,
+          orderSymbols: orderSymbols
+        });
+    });
+});
+
+
+
 // about page
 app.get('/about', (req, res) => {
   res.render(`pages/about`);
 });
 
 
+
 // display single card
 app.get('/card/:cardname', (req, res) => {
+  if (!db) {
+    // database connection not established
+    res.render('pages/error');
+  }
 
   let found = [];
 
@@ -173,13 +238,16 @@ app.post('/simple-search/', (req, res) => {
       found.push(card);
     })
     .then(()=> {
-      res.render(`pages/gallery`, {
+      res.render('pages/gallery', {
         header: `Search results for "${req.body.search_field}":`,
-        cards: found 
+        cards: found, 
+        query: {
+          as: 'images'
+        }
       });
     });
   } else {
-    res.render(`pages/index`);
+    res.render('pages/index');
   }
 });
 

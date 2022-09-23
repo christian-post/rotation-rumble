@@ -10,132 +10,134 @@
 </header>
 
 <main>
-  <div>
-    <form action="/advanced-search/" method="post">
-      <div>
-        <span>Card Name</span>
-        <input id="cardname" name="name" type="text" placeholder='Any words in the name, e.g., "Elf"'>
-      </div>
-
-      <div>
-        <label for="cardtype">Card Type</label>
-        <select id="cardtype" name="cardtype">
-          <option value="">Any</option>
-          <option value="Fighter">Fighter</option>
-          <option value="Challenge">Challenge</option>
-          <option value="Item">Item</option>
-          <option value="Landscape">Landscape</option>
-        </select>
-      </div>
-
-      <div>
-
-        <label for="inlineCheckbox1">Colors</label>
-
+  <div class="grid-container" style="grid-template-columns: 100%;">
+    <div class="grid-item">
+      <form action="/advanced-search/" method="post">
         <div>
-          <input type="checkbox" name="color" id="inlineCheckbox1" value="black">
-          <label for="inlineCheckbox1">Black</label>
+          <span>Card Name</span>
+          <input id="cardname" name="name" type="text" placeholder='Any words in the name, e.g., "Elf"'>
         </div>
-
+  
         <div>
-          <input type="checkbox" name="color" id="inlineCheckbox2" value="blue">
-          <label for="inlineCheckbox2">Blue</label>
+          <label for="cardtype">Card Type</label>
+          <select id="cardtype" name="cardtype">
+            <option value="">Any</option>
+            <option value="Fighter">Fighter</option>
+            <option value="Challenge">Challenge</option>
+            <option value="Item">Item</option>
+            <option value="Landscape">Landscape</option>
+          </select>
         </div>
-
+  
         <div>
-          <input type="checkbox" name="color" id="inlineCheckbox3" value="green">
-          <label for="inlineCheckbox2">Green</label>
+  
+          <label for="inlineCheckbox1">Colors</label>
+  
+          <div>
+            <input type="checkbox" name="color" id="inlineCheckbox1" value="black">
+            <label for="inlineCheckbox1">Black</label>
+          </div>
+  
+          <div>
+            <input type="checkbox" name="color" id="inlineCheckbox2" value="blue">
+            <label for="inlineCheckbox2">Blue</label>
+          </div>
+  
+          <div>
+            <input type="checkbox" name="color" id="inlineCheckbox3" value="green">
+            <label for="inlineCheckbox2">Green</label>
+          </div>
+  
+          <div>
+            <input type="checkbox" name="color" id="inlineCheckbox4" value="red">
+            <label for="inlineCheckbox2">Red</label>
+          </div>
+  
+          <select name="color_compare">
+            <option value="or">or</option>
+            <option value="and">and</option>
+          </select>
+  
         </div>
-
+  
         <div>
-          <input type="checkbox" name="color" id="inlineCheckbox4" value="red">
-          <label for="inlineCheckbox2">Red</label>
+          <span id="basic-addon6">Type</span>
+          <input id="type" name="type" type="text" placeholder='Type 1 or 2'>
         </div>
-
-        <select name="color_compare">
-          <option value="or">or</option>
-          <option value="and">and</option>
-        </select>
-
-      </div>
-
-      <div>
-        <span id="basic-addon6">Type</span>
-        <input id="type" name="type" type="text" placeholder='Type 1 or 2'>
-      </div>
-
-      <div>
-        <label for="dmg_compare_method">DMG</label>
-        <select id="dmg_compare_method" name="dmg_compare_method">
-          <option value="$eq">equal to</option>
-          <option value="$lt">less than</option>
-          <option value="$gt">greater than</option>
-          <option value="$lte">less than or equal to</option>
-          <option value="$gte">greater than or equal to</option>
-          <option value="$not">not equal to</option>
-        </select>
-        <select id="dmg_compare" name="dmg">
-          <option value="any" selected>any</option>
-          <option value=""></option>
-          <option value="0">0</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-        </select>
-      </div>
-
-      <div>
-        <label for="def_compare_method">DEF</label>
-        <select id="def_compare_method" name="def_compare_method">
-          <option value="$eq">equal to</option>
-          <option value="$lt">less than</option>
-          <option value="$gt">greater than</option>
-          <option value="$lte">less than or equal to</option>
-          <option value="$gte">greater than or equal to</option>
-          <option value="$not">not equal to</option>
-        </select>
-        <select id="def_compare" name="def">
-          <option value="any" selected>any</option>
-          <option value=""></option>
-          <option value="0">0</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-        </select>
-      </div>
-
-      <div>
-        <label for="DiceYes">Dice?</label>
-        <div id="DiceYes">
-          <input type="radio" name="dice" id="inlineRadio1" value="Yes">
-          <label for="inlineRadio1">Yes</label>
-        </div>
+  
         <div>
-          <input type="radio" name="dice" id="inlineRadio2" value="No">
-          <label for="inlineRadio2">No</label>
+          <label for="dmg_compare_method">DMG</label>
+          <select id="dmg_compare_method" name="dmg_compare_method">
+            <option value="$eq">equal to</option>
+            <option value="$lt">less than</option>
+            <option value="$gt">greater than</option>
+            <option value="$lte">less than or equal to</option>
+            <option value="$gte">greater than or equal to</option>
+            <option value="$not">not equal to</option>
+          </select>
+          <select id="dmg_compare" name="dmg">
+            <option value="any" selected>any</option>
+            <option value=""></option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
         </div>
-      </div>
-
-      <div>
-        <span id="basic-addon4">Effects or Steps</span>
-        <input id="effectOrStep" name="effectOrStep" type="text" placeholder='Any words in the text, e.g., "Destroy".'>
-      </div>
-
-      <input type="submit" value="Search with these values.">
-
-    </form>
+  
+        <div>
+          <label for="def_compare_method">DEF</label>
+          <select id="def_compare_method" name="def_compare_method">
+            <option value="$eq">equal to</option>
+            <option value="$lt">less than</option>
+            <option value="$gt">greater than</option>
+            <option value="$lte">less than or equal to</option>
+            <option value="$gte">greater than or equal to</option>
+            <option value="$not">not equal to</option>
+          </select>
+          <select id="def_compare" name="def">
+            <option value="any" selected>any</option>
+            <option value=""></option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+        </div>
+  
+        <div>
+          <label for="DiceYes">Dice?</label>
+          <div id="DiceYes">
+            <input type="radio" name="dice" id="inlineRadio1" value="Yes">
+            <label for="inlineRadio1">Yes</label>
+          </div>
+          <div>
+            <input type="radio" name="dice" id="inlineRadio2" value="No">
+            <label for="inlineRadio2">No</label>
+          </div>
+        </div>
+  
+        <div>
+          <span id="basic-addon4">Effects or Steps</span>
+          <input id="effectOrStep" name="effectOrStep" type="text" placeholder='Any words in the text, e.g., "Destroy".'>
+        </div>
+  
+        <input type="submit" value="Search with these values.">
+  
+      </form>
+    </div>
   </div>
 </main>
 

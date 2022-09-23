@@ -10,15 +10,26 @@
 </header>
 
 <main>
-  <div>
-    <div>
-      <form action="/simple-search/" method="post">
-        <h3>Search for a card name:<h3>
-        <div>
-            <input id="search" type="text" name="search_field" value="">
-            <input type="submit" value="🔍">
-        </div>
+  <div class="grid-container" style="grid-template-columns: 50% 50%;">
+    <div class="grid-item">
+      <h1>Search for a<br>Card Name</h1>
+    </div>
+
+    <div class="grid-item span-3-v">
+      <img src="/images/BaseBlue_2_-_Ol_Fyndor300.png" alt="Dieser Zaubertyp">
+    </div>
+
+    <div class="grid-item">
+      <form class="form-search" action="/simple-search/" method="post">
+        <input id="search" type="text" name="search_field" value="">
+        <input id="button-search" type="submit" value="🔍">
       </form>
+    </div>
+      
+    <div class="grid-item">
+      <p class="info-paragraph">
+        Here you can download the current Rulebook for Rotation Rumble. Lorem ipsum dolor sum este in deletur dum sic doste dududr. Here you can download the current Rulebook for Rotation Rumble. Lorem ipsum dolor sum este in deletur dum sic doste dududr.
+      </p>
     </div>
   </div>
 </main>
