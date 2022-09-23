@@ -14,11 +14,12 @@ module.exports = {
 
         listDatabases(client);
 
-        dbConnection = client.db('rotation-rumble');
+        dbConnection = client.db(process.env.DBNAME);
         return callback();
       })
       .catch(err => {
         console.log(err);
+        dbConnection = null;
         return callback(err);
       });
   },

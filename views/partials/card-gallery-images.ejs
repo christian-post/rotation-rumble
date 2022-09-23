@@ -1,0 +1,15 @@
+<%- include('../partials/scripts'); %>
+
+<div class="card-gallery">
+  <% cards.forEach(function(card) { %>
+    <a href=<%= '/card/' + card.id %>>
+      <img 
+        src=<%= card.image_url %> 
+        class="card-image-medium" 
+        alt=<%= card.name %>
+        onerror="imageErrorHandler(this)"
+        >
+      </img>
+    </a>
+  <% }); %>
+</div>
