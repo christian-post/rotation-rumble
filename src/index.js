@@ -332,7 +332,10 @@ app.post('/advanced-search/', (req, res) => {
     .then(()=> {
       res.render(`pages/gallery`, {
         header: `${(found.length ? `These ${found.length}` : "No")} cards matched your search.`,
-        cards: found 
+        cards: found,
+        query: {
+          as: 'images'
+        }
       });
     });
 }); 
