@@ -1,67 +1,58 @@
-<div>
-  <div>
-    <div>
-      <img class="card-image-large" src=<%= card.image_url %> alt=<%= card.name %>>
-    </div>
-    <div>
-      <div>
-        <h5 class="card-title"><%= card.name %></h5>
-        <p class="card-text">
-          <p>
-            <br>
-            <%= card.cardtype %> &#8212; <%= card.color %>
-            <br>
-            <!-- Je nach Kartentyp werden unterschiedliche Felder angezeigt -->
-            <% if (card.cardtype === "Fighter") { %>
-              DMG: <%= card.dmg %>&emsp;DEF: <%= card.def %>
-              <br>
-              <%= card.type1 %>
-              <% if (card.type2) { %>
-                / <%= card.type2 %> 
-              <% } %>
-              <br>
-              Hire: <%= card.hire %>&emsp;Fire: <%= card.fire %>
-            <% } else if (card.cardtype === "Challenge") { %>
-              <%= card.type1 %>
-              <br>
-              Cast: <%= card.hire %>
-            <% } else { %>
-              <%= card.type1 %>
-              <br>
-              Buy: <%= card.hire %>
-              <% if (card.equip) { %>
-                &emsp;Equip:<%= card.equip %> 
-              <% } %>
-            <% } %>
-            <br>
-            Dice: <%= card.dice %>
-            <br><br>
-            <!-- Iteriert alle Effekte oder Steps -->
-            <% 
-              let effects = [card.effect1, card.effect2, card.effect3, card.effect4]; 
-              for (let i = 0; i < effects.length; i++) { 
-            %>
-                <% if (effects[i]) { %> 
-                  <p>
-                    Effect <%= i + 1 %>:&emsp;<%= effects[i] %>
-                  </p>
-                <% } %>
-            <% } %>
-      
-            <% 
-              let steps = [card.step1, card.step2, card.step3, card.step4]; 
-              for (let i = 0; i < steps.length; i++) { 
-            %>
-                <% if (steps[i]) { %> 
-                  <p>
-                    Step <%= i + 1 %>:&emsp;<%= steps[i] %>
-                  </p>
-                <% } %>
-            <% } %>
-          </p>
-
+<div class="grid-item" style="justify-self: end;">
+  <img class="card-image-large" src=<%= card.image_url %> alt=<%= card.name %>>
+</div>
+<div  class="grid-item">
+  <h1 class="card-title"><%= card.name %></h2>
+  <p>
+    <br>
+    <%= card.cardtype %> &#8212; <%= card.color %>
+    <br>
+    <!-- Je nach Kartentyp werden unterschiedliche Felder angezeigt -->
+    <% if (card.cardtype === "Fighter") { %>
+      DMG: <%= card.dmg %>&emsp;DEF: <%= card.def %>
+      <br>
+      <%= card.type1 %>
+      <% if (card.type2) { %>
+        / <%= card.type2 %> 
+      <% } %>
+      <br>
+      Hire: <%= card.hire %>&emsp;Fire: <%= card.fire %>
+    <% } else if (card.cardtype === "Challenge") { %>
+      <%= card.type1 %>
+      <br>
+      Cast: <%= card.hire %>
+    <% } else { %>
+      <%= card.type1 %>
+      <br>
+      Buy: <%= card.hire %>
+      <% if (card.equip) { %>
+        &emsp;Equip:<%= card.equip %> 
+      <% } %>
+    <% } %>
+    <br>
+    Dice: <%= card.dice %>
+    <br><br>
+  </p>
+  <!-- Iteriert alle Effekte oder Steps -->
+  <% 
+    let effects = [card.effect1, card.effect2, card.effect3, card.effect4]; 
+    for (let i = 0; i < effects.length; i++) { 
+  %>
+      <% if (effects[i]) { %> 
+        <p>
+          Effect <%= i + 1 %>:&emsp;<%= effects[i] %>
         </p>
-      </div>
-    </div>
-  </div>
+      <% } %>
+  <% } %>
+
+  <% 
+    let steps = [card.step1, card.step2, card.step3, card.step4]; 
+    for (let i = 0; i < steps.length; i++) { 
+  %>
+      <% if (steps[i]) { %> 
+        <p>
+          Step <%= i + 1 %>:&emsp;<%= steps[i] %>
+        </p>
+      <% } %>
+  <% } %>
 </div>
