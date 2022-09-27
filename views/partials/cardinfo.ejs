@@ -19,6 +19,7 @@
       </span>
     </div>
     <div>
+      <!-- different stats tables depending on the card type -->
       <% if (card.cardtype === "Fighter") { %>
         <table class="card-stats-table">
           <tr>
@@ -33,7 +34,31 @@
           </tr>
         </table>
       <% } else if (card.cardtype === "Challenge") { %>
+        <table class="card-stats-table">
+          <tr>
+            <td>Cast <span style="font-weight: bold;"><%= card.hire %></span></td>
+            <td>Dice <span style="font-weight: bold;"><%= card.dice %></span></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>Set <span style="font-weight: bold;">?</span></td>
+          </tr>
+        </table>
       <% } else { %>
+        <table class="card-stats-table">
+          <tr>
+            <td>Buy <span style="font-weight: bold;"><%= card.hire %></span></td>
+            <td>Dice <span style="font-weight: bold;"><%= card.dice %></span></td>
+          </tr>
+          <tr>
+            <td>
+              <% if (card.equip) { %>
+                Equip <span style="font-weight: bold;"><%= card.equip %></span> 
+              <% } %>
+            </td>
+            <td>Set <span style="font-weight: bold;">?</span></td>
+          </tr>
+        </table>
       <% } %>
     </div>
     <!-- create a div for each Effect -->
@@ -41,36 +66,37 @@
       let effects = [card.effect1, card.effect2, card.effect3, card.effect4]; 
       for (let i = 0; i < effects.length; i++) { 
     %>
+      <% if (effects[i]) { %> 
+        <div class="card-stats-effects">
+            <p>
+              <span style="font-weight: bold;">
+                Effect <%= i + 1 %>
+              </span>
+            </p>
+            <p>
+              <%= effects[i] %>
+            </p>
+        </div>
+      <% } %>
+    <% } %>
+
+    <!-- create a div for each step -->
+    <% 
+      let steps = [card.step1, card.step2, card.step3, card.step4]; 
+      for (let i = 0; i < steps.length; i++) { 
+    %>
+      <% if (steps[i]) { %> 
       <div class="card-stats-effects">
-        <% if (effects[i]) { %> 
           <p>
             <span style="font-weight: bold;">
-              Effect <%= i + 1 %>
+              Step <%= i + 1 %>
             </span>
           </p>
           <p>
-            <%= effects[i] %>
+            <%= steps[i] %>
           </p>
-        <% } %>
-      </div>
-    <% } %>
-  </div>
-
-
-  
-  <p>
-    <% if (card.cardtype === "Fighter") { %>
-    <% } else if (card.cardtype === "Challenge") { %>
-      <%= card.type1 %>
-      <br>
-      Cast: <%= card.hire %>
-    <% } else { %>
-      <%= card.type1 %>
-      <br>
-      Buy: <%= card.hire %>
-      <% if (card.equip) { %>
-        &emsp;Equip:<%= card.equip %> 
+        </div>
       <% } %>
     <% } %>
-  </p>
+  </div>
 </div>
