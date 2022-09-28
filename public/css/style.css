@@ -123,6 +123,18 @@ header {
   text-decoration: none;
 }
 
+#rotation-rumble-logo {
+  position: absolute;
+  left: 82vw;
+  width: 200px;
+}
+
+#back-to-website {
+  position: absolute;
+  left: 5vw;
+  width: 100px;
+}
+
 main {
   display: flex;
   justify-content: center;
@@ -148,14 +160,23 @@ main {
   display: grid;
 }
 
-/* remove background when on mobile */
 @media screen and (max-width: 500px) {
+  /* remove background when on mobile */
   main {
     background: none;
   }
 
   .grid-container {
     width: 100%;
+  }
+
+  /* hide side images */
+  #rotation-rumble-logo {
+    visibility: hidden;
+  }
+
+  #back-to-website {
+    visibility: hidden;
   }
 }
 
@@ -231,12 +252,6 @@ footer {
   grid-template-columns: 50% 50%;
 }
 
-#rotation-rumble-logo {
-  position: absolute;
-  left: 82vw;
-  width: 200px;
-}
-
 #hero-image {
   grid-column: 2;
   grid-row: 1 / span 3;
@@ -274,6 +289,28 @@ footer {
 
   h1 {
     font-size: 36px;
+  }
+}
+
+.singlecard-grid {
+  grid-template-columns: 50% 50%;
+}
+
+#singlecard-image {
+  justify-self: end;
+}
+
+@media screen and (max-width: 500px) {
+  .singlecard-grid {
+    grid-template-columns: 100%;
+  }
+
+  .singlecard-grid #singlecard-image {
+    justify-self: center;
+  }
+
+  .card-text {
+    padding: 1rem;
   }
 }
 
