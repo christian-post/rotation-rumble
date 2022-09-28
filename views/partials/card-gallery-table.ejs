@@ -3,16 +3,16 @@
 <div class="card-gallery">
   <table class="card-gallery-table", id="card-gallery-table">
     <tr>
-      <% for (let i = 0; i < head.length; i++) { %>
+      <% for (let i = 0; i < locals.head.length; i++) { %>
         <th>
-          <%= head[i] %>
+          <%= locals.head[i] %>
           <span class="sortby" onclick="sortTable(<%= i %>, 'card-gallery-table')" id="<%= i %>">
-            <%- orderSymbols[i] %>
+            <%- locals.orderSymbols[i] %>
           </span>
         </th>
       <% } %>
     </tr>
-  <% cards.forEach(function(card) { %>
+  <% locals.cards.forEach(function(card) { %>
     <tr>
       <% 
         let attributes = [
@@ -22,7 +22,7 @@
         attributes.forEach(function(attribute) {
       %>
           <td>
-            <a href=<%= '/card/' + card.id %>>
+            <a href="<%= '/card/' + card.id %>">
               <%= card[attribute] %>
             </a>
           </td>

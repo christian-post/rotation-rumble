@@ -15,9 +15,6 @@ const app = express()
 
 let db;
 
-// version of templates being used
-let VERSION = '0.2'
-
 connectToDb(err => {
   if (err) {
     console.log(err);
@@ -35,6 +32,7 @@ connectToDb(err => {
 
 
 // -- routes --
+// TODO: create Router folder
 
 // GET requests
 

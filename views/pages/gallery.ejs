@@ -11,8 +11,8 @@
 
 <main>
   <div class="grid-container" style="grid-template-columns: 50% 50%;">
-    <div class="gallery-header grid-item" style="grid-column: 1 / span 2; max-height: 3rem;">
-      <h2><%= header %></h2>
+    <div class="gallery-header grid-item" id="display-as">
+      <h2><%= locals.header %></h2>
       <label for="display-as">display as </label>
 
       <script>
@@ -33,7 +33,7 @@
     </div>
   <div class="grid-item" style="grid-column: 1 / span 2">
     <!-- format card gallery based on query parameter "as" -->
-    <%- include('../partials/card-gallery-' + query.as); %>
+    <%- include('../partials/card-gallery-' + locals.query.as); %>
   </div>
   </div>
 </main>

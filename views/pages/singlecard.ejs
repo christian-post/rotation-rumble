@@ -11,7 +11,12 @@
 
 <main>
   <div class="grid-container singlecard-grid">
-    <% if (card) { %>
+    <% if (locals.card) { %>
+
+      <div class="grid-item" id="singlecard-image">
+        <img class="card-image-large" src=<%= locals.card.image_url %> alt=<%= locals.card.name %>>
+      </div>
+
       <%- include('../partials/cardinfo'); %>
     <% } else { %>
       <div class="grid-item">

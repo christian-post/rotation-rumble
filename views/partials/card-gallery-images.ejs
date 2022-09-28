@@ -1,7 +1,7 @@
 <%- include('../partials/scripts'); %>
 
 <div class="card-gallery">
-  <% cards.forEach(function(card) { %>
+  <% locals.cards.forEach(function(card) { %>
     <a href=<%= '/card/' + card.id %>>
       <img 
         src=<%= card.image_url %> 

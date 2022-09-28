@@ -1,75 +1,73 @@
 <%- include('../partials/scripts'); %>
 
-<div class="grid-item" id="singlecard-image">
-  <img class="card-image-large" src=<%= card.image_url %> alt=<%= card.name %>>
-</div>
 <div class="grid-item">
-
   <div class="card-text">
     <div>
-      <h1 class="card-title"><%= card.name %></h2>
+      <h1 class="card-title"><%= locals.card.name %></h2>
     </div>
     <div>
       <span class="card-type-text">
-        <%= card.cardtype %> &#8212; <%= card.color %> &#8212;
-        <%= card.type1 %>
-        <% if (card.type2) { %>
-          / <%= card.type2 %> 
+        <%= locals.card.cardtype %> &#8212; <%= locals.card.color %> &#8212;
+        <%= locals.card.type1 %>
+        <% if (locals.card.type2) { %>
+          / <%= locals.card.type2 %> 
         <% } %>
       </span>
     </div>
     <div>
       <!-- different stats tables depending on the card type -->
-      <% if (card.cardtype === "Fighter") { %>
+      <% if (locals.card.cardtype === "Fighter") { %>
         <table class="card-stats-table">
           <tr>
-            <td>DMG <span style="font-weight: bold;"><%= card.dmg %></span></td>
-            <td>Hire <span style="font-weight: bold;"><%= card.hire %></span></td>
-            <td>Dice <span style="font-weight: bold;"><%= card.dice %></span></td>
+            <td>DMG <span class="span-bold"><%= locals.card.dmg %></span></td>
+            <td>Hire <span class="span-bold"><%= locals.card.hire %></span></td>
+            <td>Dice <span class="span-bold"><%= locals.card.dice %></span></td>
           </tr>
           <tr>
-            <td>DEF <span style="font-weight: bold;"><%= card.def %></span></td>
-            <td>Fire <span style="font-weight: bold;"><%= card.fire %></span></td>
-            <td>Set <span style="font-weight: bold;">?</span></td>
+            <td>DEF <span class="span-bold"><%= locals.card.def %></span></td>
+            <td>Fire <span class="span-bold"><%= locals.card.fire %></span></td>
+            <td>Set <span class="span-bold"><%= locals.card.set %></span></td>
           </tr>
         </table>
-      <% } else if (card.cardtype === "Challenge") { %>
+      <% } else if (locals.card.cardtype === "Challenge") { %>
         <table class="card-stats-table">
           <tr>
-            <td>Cast <span style="font-weight: bold;"><%= card.hire %></span></td>
-            <td>Dice <span style="font-weight: bold;"><%= card.dice %></span></td>
+            <td>Cast <span class="span-bold"><%= locals.card.hire %></span></td>
+            <td>Dice <span class="span-bold"><%= locals.card.dice %></span></td>
           </tr>
           <tr>
             <td></td>
-            <td>Set <span style="font-weight: bold;">?</span></td>
+            <td>Set <span class="span-bold"><%= locals.card.set %></span></td>
           </tr>
         </table>
       <% } else { %>
         <table class="card-stats-table">
           <tr>
-            <td>Buy <span style="font-weight: bold;"><%= card.hire %></span></td>
-            <td>Dice <span style="font-weight: bold;"><%= card.dice %></span></td>
+            <td>Buy <span class="span-bold"><%= locals.card.hire %></span></td>
+            <td>Dice <span class="span-bold"><%= locals.card.dice %></span></td>
           </tr>
           <tr>
             <td>
-              <% if (card.equip) { %>
-                Equip <span style="font-weight: bold;"><%= card.equip %></span> 
+              <% if (locals.card.equip) { %>
+                Equip <span class="span-bold"><%= locals.card.equip %></span> 
               <% } %>
             </td>
-            <td>Set <span style="font-weight: bold;">?</span></td>
+            <td>Set <span class="span-bold"><%= locals.card.set %></span></td>
           </tr>
         </table>
       <% } %>
     </div>
     <!-- create a div for each Effect -->
     <% 
-      let effects = [card.effect1, card.effect2, card.effect3, card.effect4]; 
+      let effects = [
+        locals.card.effect1, locals.card.effect2, locals.card.effect3, locals.card.effect4
+      ]; 
       for (let i = 0; i < effects.length; i++) { 
     %>
       <% if (effects[i]) { %> 
         <div class="card-stats-effects">
             <p>
-              <span style="font-weight: bold;">
+              <span class="span-bold">
                 Effect <%= i + 1 %>
               </span>
             </p>
@@ -82,13 +80,15 @@
 
     <!-- create a div for each step -->
     <% 
-      let steps = [card.step1, card.step2, card.step3, card.step4]; 
+      let steps = [
+        locals.card.step1, locals.card.step2, locals.card.step3, locals.card.step4
+      ]; 
       for (let i = 0; i < steps.length; i++) { 
     %>
       <% if (steps[i]) { %> 
       <div class="card-stats-effects">
           <p>
-            <span style="font-weight: bold;">
+            <span class="span-bold">
               Step <%= i + 1 %>
             </span>
           </p>
