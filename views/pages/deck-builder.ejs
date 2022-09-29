@@ -10,9 +10,55 @@
 </header>
 
 <main>
-  <div class="grid-container" style="grid-template-columns: 70% 30%;">
+  <div class="grid-container" style="grid-template-columns: 50% 50%;">
     <div class="grid-item">
-     <h1>Coming Soon</h1>
+      <h2 style="text-align: center;">All Cards</h2>
+      <!-- format card gallery based on query parameter "as" -->
+      <%- include('../partials/card-gallery-' + locals.query.as); %>
+    </div>
+
+    <div class="grid-item">
+      <h2 style="text-align: center;">My Deck</h2>
+
+      <h2 style="text-align: left;">Leader</h2>
+
+      <div class="leader-container" id="leader-container" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <table class="card-gallery-table", id="leader-container-table">
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <h2 style="text-align: left;">Deck</h2>
+
+      <div class="deck-container" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <table class="card-gallery-table", id="my-deck-table">
+          <thead>
+            <tr>
+              <% for (let i = 0; i < locals.head.length; i++) { %>
+                <th>
+                  <%= locals.head[i] %>
+                  <span class="sortby" onclick="sortTable(<%= i %>, 'card-gallery-table')" id="<%= i %>">
+                    <%- locals.orderSymbols[i] %>
+                  </span>
+                </th>
+              <% } %>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- empty -->
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <label for="num-money">Add Money:</label>
+        <input type="number" id="num-money" name="num-money" min="0" max="45" value="15">
+        <button id="deck-export-button">Export Your Deck</button>
+
+        <script type="module">
+          import { exportTxt } from '/js/exportCSV.js';
+          document.getElementById("deck-export-button").addEventListener("click", ()=> exportTxt('my-deck-table'));
+        </script>
+      </div>
     </div>
   </div>
 </main>

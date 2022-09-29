@@ -11,30 +11,12 @@
 
 <main>
   <div class="grid-container" style="grid-template-columns: 50% 50%;">
-    <div class="gallery-header grid-item" style="grid-column: 1 / span 2; max-height: 3rem;">
-      <h2><%= header %></h2>
-      <label for="display-as">display as </label>
+    <%- include('../partials/card-gallery-table-filter'); %>
 
-      <script>
-        function changeGalleryLayout(select) {
-          if (select.value.length > 0) {
-            // TODO: hack!
-            window.location.href = '/gallery?as=' + select.value;
-          }
-        }
-      </script>
-
-      <select name="display-as" id="display-as", onchange="changeGalleryLayout(this)">
-        <option value=""></option>
-        <option value="images" id="images">Images</option>
-        <option value="table" id="table">Table</option>
-        <option value="text" id="text">Text only</option>
-      </select>
+    <div class="grid-item" style="grid-column: 1 / span 2">
+      <!-- format card gallery based on query parameter "as" -->
+      <%- include('../partials/card-gallery-' + locals.query.as); %>
     </div>
-  <div class="grid-item" style="grid-column: 1 / span 2">
-    <!-- format card gallery based on query parameter "as" -->
-    <%- include('../partials/card-gallery-' + query.as); %>
-  </div>
   </div>
 </main>
 

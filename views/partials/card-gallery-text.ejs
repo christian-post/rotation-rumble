@@ -1,0 +1,7 @@
+<div class="card-gallery-text-only">
+  <% locals.cards.forEach(function(card) { %>
+    <a href=<%= '/card/' + card.id %> class="cardinfo-small">
+      <%- include('../partials/cardinfo-small', { card: card }); %>
+    </a>
+  <% }); %>
+</div>
