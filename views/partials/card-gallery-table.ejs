@@ -12,22 +12,19 @@
         </th>
       <% } %>
     </tr>
-  <% locals.cards.forEach(function(card) { %>
-    <tr>
+  <% for (let i = 0; i < locals.cards.length; i++) { %>
+    <!-- add drag functionality for deck builder -->
+    <tr id=<%=`drag${i}` %> draggable="true" ondragstart="drag(event)">
       <% 
-        let attributes = [
-          'name', 'cardtype', 'color', 'dmg', 'def', 'type1', 'type2', 'hire', 'fire'
-        ];
-
-        attributes.forEach(function(attribute) {
+        locals.fields.forEach(function(field) {
       %>
           <td>
-            <a href="<%= '/card/' + card.id %>">
-              <%= card[attribute] %>
+            <a href="<%= '/card/' + locals.cards[i].id %>" draggable="true" ondragstart="drag(event)">
+              <%= locals.cards[i][field] %>
             </a>
           </td>
         <% }); %>
     </tr>
-  <% }); %>
+  <% } %>
   </table>
 </div>

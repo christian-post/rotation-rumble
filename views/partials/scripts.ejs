@@ -1,6 +1,7 @@
 <script>
   function getInnerText(node) {
     // helper function for the table sorting algorithm
+    // TODO: import from exportCSV.js?
     let childNodes = node.childNodes;
 
     let textContent = '';
@@ -12,7 +13,7 @@
         }
     }
     textContent = textContent.replace(/\r?\n|\r/g,"");
-    textContent = textContent.replace(" ", "");
+    textContent = textContent.replace(/\s/g, "");  // whitespace
 
     return textContent;
   }
@@ -23,6 +24,7 @@
   */
 
   // https://www.w3schools.com/HTML/html5_draganddrop.asp
+  // https://stackoverflow.com/questions/13007582/html5-drag-and-copy
 
   function allowDrop(ev) {
     ev.preventDefault();
@@ -30,32 +32,83 @@
   
 
   function drag(ev) {
-    ev.dataTransfer.setData("text", ev.target.id);
+    if (ev.target.localName === 'tr') {
+      // User drags the row
+      ev.dataTransfer.setData("text", ev.target.id);
+    } else if (ev.target.localName === 'a') {
+      // user drags one of the hyperlink elements in the table
+      ev.dataTransfer.setData("text", ev.target.parentNode.parentNode.id);
+    }
+  }
+
+
+  function checkInTable(data, tBody) {
+    // checks if an element is already in the table
+
+    let index = 0;
+
+    for (const row of tBody.children) {
+      // compare first row (unique identifier)
+      if (row.children.item(0).textContent === data.children.item(0).textContent) {
+        break;
+      }
+      index++;
+    }
+
+    if (index === tBody.children.length) index = -1;
+
+    return index;
   }
   
 
   function drop(ev) {
+    // TODO: Too much duplicate code!
+
     ev.preventDefault();
+
     var data = ev.dataTransfer.getData("text");
-    
-    if (ev.target.className === 'table-container') {
+
+    if (ev.target.className === 'deck-container') {
       // if the data is dragged onto one of the div.table-container elements
       // firstElementChild is the <table> element
-      ev.target.firstElementChild.getElementsByTagName('tbody')[0].appendChild(document.getElementById(data).cloneNode(true));
+
+      let tBody = ev.target.firstElementChild.getElementsByTagName('tbody')[0];
+
+      // check if element is in table and at which index
+      let index = checkInTable(document.getElementById(data), tBody)
+
+      if (index === -1) {
+        // put row in table
+        tBody.appendChild(document.getElementById(data));
+      }
     } else if (ev.target.tagName === 'TH') {
       // data is dragged onto the table header
       // and insterted as the 0th child of the tbody
-      let tableBody = ev.target.parentNode.parentNode.parentNode.children[1];
-      tableBody.insertBefore(document.getElementById(data).cloneNode(true), tableBody.children[0]);
+
+      let tBody = ev.target.parentNode.parentNode.parentNode.children[1];
+
+      let index = checkInTable(document.getElementById(data), tBody)
+
+      if (index === -1) {
+        tBody.insertBefore(document.getElementById(data), tBody.children[0]);
+      }
     } else if (ev.target.tagName === 'TD') {
       // data is dragged onto one of the existing rows
       // inserted above the targetted row
-      let tableBody = ev.target.parentNode.parentNode.parentNode.children[1];
-      let index = ev.target.parentNode.rowIndex - 1; // table head has row index 0
-      tableBody.insertBefore(document.getElementById(data).cloneNode(true), tableBody.children[index]);
+      
+      let tBody = ev.target.parentNode.parentNode.parentNode.children[1];
+
+      let index = checkInTable(document.getElementById(data), tBody);
+
+      if (index === -1) {
+        let newIndex = ev.target.parentNode.rowIndex - 1; // table head has row index 0
+        tBody.insertBefore(document.getElementById(data), tBody.children[newIndex]);
+      }
+    } else if (ev.target.className === 'leader-container') {
+      let tBody = ev.target.firstElementChild.getElementsByTagName('tbody')[0];
+      tBody.appendChild(document.getElementById(data));
     }
   }
-
 
   /* 
       ------- TABLE SORTING ---------

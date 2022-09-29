@@ -12,6 +12,11 @@ const app = express()
   .use(express.urlencoded({ extended: true }))
   .use(express.json());
 
+// access to file-saver module
+app.use("/FileSaver.js", (req, res) => {
+  res.sendFile(process.cwd() + "/node_modules/file-saver/src/FileSaver.js");
+});
+
 
 let db;
 
@@ -75,7 +80,13 @@ app.get('/gallery', (req, res) => {
 
   let cards = [];
 
-  // table columns
+  // data fields
+  let fields = [
+    'name', 'cardtype', 'color', 'dmg', 'def', 'type1', 
+    'type2', 'hire', 'fire'
+  ];
+
+  // table column names
   let head = [
     'Name', 'Card Type', 'Color', 'DMG', 'DEF','Type 1',
     'Type 2', 'Hire', 'Fire'
@@ -88,7 +99,7 @@ app.get('/gallery', (req, res) => {
   };
 
   // all start off as "reverse=false"
-  let orderSymbols = new Array(head.length).fill(arrow[false]);
+  let orderSymbols = new Array(fields.length).fill(arrow[false]);
 
 
   // DB request
@@ -105,6 +116,7 @@ app.get('/gallery', (req, res) => {
           cards: cards,
           query: req.query,
           head: head,
+          fields: fields,
           orderSymbols: orderSymbols
         });
     });
@@ -121,11 +133,12 @@ app.get('/deckbuilder', (req, res) => {
 
   let cards = [];
 
-  // table columns
-  let head = [
-    'Name', 'Card Type', 'Color', 'DMG', 'DEF','Type 1',
-    'Type 2', 'Hire', 'Fire'
-  ];
+  // data fields
+  // rudimentary so it fits the screen
+  let fields = ['name', 'cardtype', 'info'];
+
+  // table column names
+  let head = ['Name', 'Card Type', 'Info'];
 
   // arrows that indicate the sorting order (used in the HTML table)
   arrow = {
@@ -134,10 +147,9 @@ app.get('/deckbuilder', (req, res) => {
   };
 
   // all start off as "reverse=false"
-  let orderSymbols = new Array(head.length).fill(arrow[false]);
+  let orderSymbols = new Array(fields.length).fill(arrow[false]);
 
   // DB request
-
   db.collection('all-cards')
     .find()
     .sort({ name: 1 })
@@ -147,8 +159,10 @@ app.get('/deckbuilder', (req, res) => {
     .then(()=> {
         res.render(`pages/deck-builder`, {
           header: 'All Cards',
+          query: { as: 'table' },
           cards: cards,
           head: head,
+          fields: fields,
           orderSymbols: orderSymbols
         });
     });
