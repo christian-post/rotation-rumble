@@ -263,9 +263,8 @@ app.post('/simple-search/', (req, res) => {
   }
 });
 
-app.post('/advanced-search/', (req, res) => {
-  // TODO: provisorisch...
 
+app.post('/advanced-search/', (req, res) => {
   // color ist entweder ein String oder ein Array
   let colors = "";
   if (req.body.color) {
@@ -276,7 +275,7 @@ app.post('/advanced-search/', (req, res) => {
         colors = RegExp(req.body.color.join("|"), "i");
       } else {
         // AND
-        searchStr = '';
+        let searchStr = '';
         req.body.color.forEach(color => searchStr += `(?=.*${color})`);
         colors = RegExp(searchStr, 'i');
       }
@@ -284,7 +283,7 @@ app.post('/advanced-search/', (req, res) => {
   }
 
   // dmg und def any value
-  // TODO: geht das nicht eleganzer?
+  // TODO: geht das nicht eleganter?
   if (req.body.dmg === 'any') {
     req.body.dmg = /(?:)/i;
     req.body.dmg_compare_method = '$regex';
@@ -299,6 +298,11 @@ app.post('/advanced-search/', (req, res) => {
   }
   if (req.body.def_compare_method === '$not') {
     req.body.def = RegExp(req.body.def, 'i');
+  }
+
+  // Dice
+  if (req.body.dice === 'Irrelevant') {
+    req.body.dice = /(?:)/i;
   }
 
   const search = {

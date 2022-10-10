@@ -2,29 +2,35 @@
 
 <div class="card-gallery">
   <table class="card-gallery-table", id="card-gallery-table">
-    <tr>
-      <% for (let i = 0; i < locals.head.length; i++) { %>
-        <th>
-          <%= locals.head[i] %>
-          <span class="sortby" onclick="sortTable(<%= i %>, 'card-gallery-table')" id="<%= i %>">
-            <%- locals.orderSymbols[i] %>
-          </span>
-        </th>
+    <thead>
+      <tr>
+        <% for (let i = 0; i < locals.head.length; i++) { %>
+          <th>
+            <%= locals.head[i] %>
+            <span class="sortby" onclick="sortTable(<%= i %>, 'card-gallery-table')" id="<%= i %>">
+              <%- locals.orderSymbols[i] %>
+            </span>
+          </th>
+        <% } %>
+      </tr>
+    </thead>
+    <tbody>
+      <% for (let i = 0; i < locals.cards.length; i++) { %>
+        <!-- add drag functionality for deck builder -->
+        <tr id=<%=`drag${i}` %> draggable="true" ondragstart="drag(event)" class="card-gallery-row">
+          <% 
+            locals.fields.forEach(function(field) {
+          %>
+            <td>
+              <div class="card-info-tooltip">
+                <a href="<%= '/card/' + locals.cards[i].id %>" draggable="true" ondragstart="drag(event)" class="card-gallery-link">
+                  <%= locals.cards[i][field] %>
+                </a>
+              </div>
+            </td>
+          <% }); %>
+        </tr>
       <% } %>
-    </tr>
-  <% for (let i = 0; i < locals.cards.length; i++) { %>
-    <!-- add drag functionality for deck builder -->
-    <tr id=<%=`drag${i}` %> draggable="true" ondragstart="drag(event)">
-      <% 
-        locals.fields.forEach(function(field) {
-      %>
-          <td>
-            <a href="<%= '/card/' + locals.cards[i].id %>" draggable="true" ondragstart="drag(event)">
-              <%= locals.cards[i][field] %>
-            </a>
-          </td>
-        <% }); %>
-    </tr>
-  <% } %>
+    </tbody>
   </table>
 </div>
