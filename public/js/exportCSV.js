@@ -50,14 +50,13 @@ export const exportTxt = function(id) {
   // get leader
   const leader = getInnerText(document.getElementById('leader-container-table').getElementsByTagName('td')[0]);
 
-  txt += `//Commander\n${leader}\n\n//Deck\n`;
+  txt += `//Leader\n${leader}\n\n//Deck\n`;
 
   const table = document.getElementById(id);
 
   const rows = table.querySelectorAll("tr"); 
   for (let i = 1; i < rows.length; i++) {
       const cardName = getInnerText(rows[i].children.item(0));
-      console.log(rows[i].children.item(0))
       txt += `1 ${cardName}\n`;
   }
 

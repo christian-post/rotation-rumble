@@ -12,14 +12,14 @@
 <main>
   <div class="grid-container" style="grid-template-columns: 100%;">
     <div class="grid-item">
-      <form action="/advanced-search/" method="post">
-        <div>
-          <span>Card Name</span>
+      <form action="/advanced-search/" class="advanced-search" method="post">
+        <div class="advanced-search-item">
+          <label for="cardname" class="span-bold">Card Name</label>
           <input id="cardname" name="name" type="text" placeholder='Any words in the name, e.g., "Elf"'>
         </div>
   
-        <div>
-          <label for="cardtype">Card Type</label>
+        <div class="advanced-search-item">
+          <label for="cardtype" class="span-bold">Card Type</label>
           <select id="cardtype" name="cardtype">
             <option value="">Any</option>
             <option value="Fighter">Fighter</option>
@@ -29,27 +29,27 @@
           </select>
         </div>
   
-        <div>
+        <div class="advanced-search-item | color-select">
   
-          <label for="inlineCheckbox1">Colors</label>
+          <label for="inlineCheckbox1" class="span-bold">Colors</label>
   
           <div>
-            <input type="checkbox" name="color" id="inlineCheckbox1" value="black">
+            <input type="checkbox" class="checkbox" name="color" id="inlineCheckbox1" value="black">
             <label for="inlineCheckbox1">Black</label>
           </div>
   
           <div>
-            <input type="checkbox" name="color" id="inlineCheckbox2" value="blue">
+            <input type="checkbox" class="checkbox" name="color" id="inlineCheckbox2" value="blue">
             <label for="inlineCheckbox2">Blue</label>
           </div>
   
           <div>
-            <input type="checkbox" name="color" id="inlineCheckbox3" value="green">
+            <input type="checkbox" class="checkbox" name="color" id="inlineCheckbox3" value="green">
             <label for="inlineCheckbox2">Green</label>
           </div>
   
           <div>
-            <input type="checkbox" name="color" id="inlineCheckbox4" value="red">
+            <input type="checkbox" class="checkbox" name="color" id="inlineCheckbox4" value="red">
             <label for="inlineCheckbox2">Red</label>
           </div>
   
@@ -60,13 +60,13 @@
   
         </div>
   
-        <div>
-          <span id="basic-addon6">Type</span>
-          <input id="type" name="type" type="text" placeholder='Type 1 or 2'>
+        <div class="advanced-search-item">
+          <label for="type" class="span-bold">Type</label>
+          <input id="type" name="type" type="text" placeholder='Type 1 or 2, e.g., "Beast"'>
         </div>
   
-        <div>
-          <label for="dmg_compare_method">DMG</label>
+        <div class="advanced-search-item">
+          <label for="dmg_compare_method" class="span-bold">DMG</label>
           <select id="dmg_compare_method" name="dmg_compare_method">
             <option value="$eq">equal to</option>
             <option value="$lt">less than</option>
@@ -91,8 +91,8 @@
           </select>
         </div>
   
-        <div>
-          <label for="def_compare_method">DEF</label>
+        <div class="advanced-search-item">
+          <label for="def_compare_method" class="span-bold">DEF</label>
           <select id="def_compare_method" name="def_compare_method">
             <option value="$eq">equal to</option>
             <option value="$lt">less than</option>
@@ -117,8 +117,8 @@
           </select>
         </div>
   
-        <div>
-          <label for="DiceYes">Dice?</label>
+        <div class="advanced-search-item | dice-select">
+          <label for="DiceYes" class="span-bold">Dice?</label>
           <div id="DiceYes">
             <input type="radio" name="dice" id="inlineRadio1" value="Yes">
             <label for="inlineRadio1">Yes</label>
@@ -127,10 +127,14 @@
             <input type="radio" name="dice" id="inlineRadio2" value="No">
             <label for="inlineRadio2">No</label>
           </div>
+          <div>
+            <input type="radio" name="dice" id="inlineRadio3" value="Irrelevant">
+            <label for="inlineRadio3">Irrelevant</label>
+          </div>
         </div>
   
-        <div>
-          <span id="basic-addon4">Effects or Steps</span>
+        <div class="advanced-search-item">
+          <label for="effectOrStep" class="span-bold">Effects or Steps</label>
           <input id="effectOrStep" name="effectOrStep" type="text" placeholder='Any words in the text, e.g., "Destroy".'>
         </div>
   

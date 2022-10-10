@@ -75,7 +75,7 @@ select {
 }
 
 
-/* MY STUFF */
+/* ----------------------- MY STUFF -------------------------------------- */
 
 :root {
   --bg-color-dark: black;
@@ -317,6 +317,40 @@ footer {
     padding: 1rem;
   }
 }
+
+/* ADVANCED SEARCH */
+
+.advanced-search {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.advanced-search-item {
+  border-bottom: 1px solid var(--color-orange);
+  padding-bottom: 1rem;
+}
+
+.advanced-search-item label {
+  margin-right: 1rem;
+}
+
+.color-select, .dice-select {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+#cardname, 
+#effectOrStep,
+#type {
+  min-width: 300px;
+}
+
+
+/* CARD GALLERY */
 
 .card-gallery {
   display: flex;
