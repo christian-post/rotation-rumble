@@ -32,10 +32,10 @@
   
 
   function drag(ev) {
-    if (ev.target.localName === 'tr') {
+    if (ev.target.tagName === 'TR') {
       // User drags the row
       ev.dataTransfer.setData("text", ev.target.id);
-    } else if (ev.target.localName === 'a') {
+    } else if (ev.target.tagName === 'A') {
       // user drags one of the hyperlink elements in the table
       ev.dataTransfer.setData("text", ev.target.parentNode.parentNode.parentNode.id);
     }
@@ -62,71 +62,70 @@
   
 
   function drop(ev) {
-    // TODO: Too much duplicate code?
-
     ev.preventDefault();
 
     let data = ev.dataTransfer.getData("text");
     let newRow = document.getElementById(data);
 
-    // TODO: check TH and TD drag also for the leader-container
-    // check for the className of the table first and then which element it was dragged onto
+    let dropped = false;
 
-    if (ev.target.className === 'deck-container') {
-      // if the data is dragged onto one of the deck-container elements
-      // firstElementChild is the <table> element
+    // check which zone the element is dragged onto
+    if (ev.target.className === 'drag-zone') {
+      // check for the parent div
+      let tBody = ev.target.parentNode.getElementsByTagName('tbody')[0];
 
-      let tBody = ev.target.firstElementChild.getElementsByTagName('tbody')[0];
+      if (ev.target.parentNode.className === 'leader-container') {
+        // element gets dragged into the container for the deck's leader
 
-      // check if element is in table and at which index
-      let index = checkInTable(document.getElementById(data), tBody);
+        // check if the dragged card is a Fighter
+        if (newRow.children.item(1).innerText !== 'Fighter') {
+          alert('Your Leader has to be a Fighter!');
+          return;
+        }
 
-      if (index === -1) {
-        // put row in table
+        // check if something is already in there
+        if (tBody.children.length === 1) {
+          // put the current Leader back into the card collection
+
+          // remove the X column
+          tBody.childNodes[0].removeChild(tBody.childNodes[0].lastElementChild);
+
+          document.getElementById('card-gallery-table')
+            .getElementsByTagName('tbody')[0]
+            .replaceChild(tBody.childNodes[0], newRow);
+        }
         tBody.appendChild(newRow);
+        dropped = true;
+
+      } else if (ev.target.parentNode.className === 'deck-container') {
+        // check if element is in table and at which index
+        let index = checkInTable(document.getElementById(data), tBody);
+
+        if (index === -1) {
+          // put row in table
+          tBody.appendChild(newRow);
+          dropped = true;
+        }
       }
-    } else if (ev.target.tagName === 'TH') {
-      // data is dragged onto a table header
-      // and insterted as the 0th child of the tbody
+    }
 
-      let tBody = ev.target.parentNode.parentNode.parentNode.children[1];
+    // column with an X lets you remove the element
+    if (dropped && newRow.children.length === 3) {
+      let xCol = document.createElement('td');
+      xCol.textContent = String.fromCodePoint(10060);
 
-      let index = checkInTable(newRow, tBody)
+      xCol.onclick = () => {
+        // remove the X column
+        newRow.removeChild(newRow.lastElementChild);
 
-      if (index === -1) {
-        tBody.insertBefore(newRow, tBody.children[0]);
+        // move back to all cards list
+        let galleryTBody = document.getElementById('card-gallery-table')
+            .getElementsByTagName('tbody')[0]
+        
+        galleryTBody.insertBefore(newRow, galleryTBody.firstChild);
       }
-    } else if (ev.target.tagName === 'TD') {
-      // data is dragged onto one of a table's existing rows
-      // inserted above the targetted row
-      
-      let tBody = ev.target.parentNode.parentNode.parentNode.children[1];
 
-      let index = checkInTable(newRow, tBody);
-
-      if (index === -1) {
-        let newIndex = ev.target.parentNode.rowIndex - 1; // the table head has row index 0
-        tBody.insertBefore(newRow, tBody.children[newIndex]);
-      }
-    } else if (ev.target.className === 'leader-container') {
-      // element gets dragged into the container for the deck's leader
-      let tBody = ev.target.firstElementChild.getElementsByTagName('tbody')[0];
-
-      // TODO check if the dragged card is a Fighter
-      if (newRow.children.item(1).innerText !== 'Fighter') {
-        alert('Your Leader has to be a Fighter!')
-        return;
-      }
-      
-
-      // check if something is already in there
-      if (tBody.children.length === 1) {
-        // put the current Leader back into the card collection
-        document.getElementById('card-gallery-table')
-          .getElementsByTagName('tbody')[0]
-          .replaceChild(tBody.childNodes[0], newRow);
-      }
-      tBody.appendChild(newRow);
+      newRow.appendChild(xCol);
     }
   }
 
