@@ -27,6 +27,13 @@ export const exportCSV = function(id) {
 
 function getInnerText(node) {
   // helper function for the table sorting algorithm
+
+  // TODO has this to be in 2 different places?
+
+  if (node === undefined) {
+    return null;
+  }
+
   let childNodes = node.childNodes;
 
   let textContent = '';
@@ -37,18 +44,22 @@ function getInnerText(node) {
         textContent += getInnerText(childNodes[i]);
       }
   }
-  textContent = textContent.replace(/\r?\n|\r/g,"");
-  textContent = textContent.replace(/\s/g, "");  // whitespace
-  // TODO: Don't remove whitespace in Names
+  // replace line breaks, single tabs, and whitespace > length 2
+  textContent = textContent.replace(/\r?\n|\r|\t|\s{2,}/g,"");
   return textContent;
 }
 
 
-export const exportTxt = function(id) {
+export const exportDeckTxt = function(id) {
   let txt = '';
 
-  // get leader
+  // get leader name
   const leader = getInnerText(document.getElementById('leader-container-table').getElementsByTagName('td')[0]);
+
+  if (leader === null) {
+    alert('Your deck has to have a Leader!');
+    return;
+  }
 
   txt += `//Leader\n${leader}\n\n//Deck\n`;
 
@@ -63,6 +74,13 @@ export const exportTxt = function(id) {
   // add money from number input
   const money = document.getElementById('num-money').value;
   txt += `${money} Money`;
+
+  // deck legality check (rows.length starting at one and the leader cancel out)
+  let numCards = rows.length + parseInt(money);
+  if (numCards < 45) {
+    alert(`Your deck doesn\'t have enough cards (${numCards}/45)`);
+    return;
+  }
 
   const txtFile = new Blob([txt], {type: "text/csv;charset=utf-8;"});
   saveAs(txtFile, "my-deck.txt");
