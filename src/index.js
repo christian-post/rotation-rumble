@@ -154,6 +154,9 @@ app.get('/deckbuilder', (req, res) => {
     .find()
     .sort({ name: 1 })
     .forEach(card => {
+      // Construct the "Info" cell
+      card.info = '💬';
+
       cards.push(card);
     })
     .then(()=> {

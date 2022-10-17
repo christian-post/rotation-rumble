@@ -542,3 +542,20 @@ footer {
   align-items: center;
   margin-bottom: 10px;
 }
+.remove-x,
+.card-info {
+  cursor: pointer;
+}
+
+.card-tooltip {
+  display: none;
+}
+
+.card-info:hover + .card-tooltip {
+  display: block;
+  position: absolute;
+}
+
+.card-image-tooltip {
+  width: 250px;
+}

@@ -112,6 +112,7 @@
     // column with an X lets you remove the element
     if (dropped && newRow.children.length === 3) {
       let xCol = document.createElement('td');
+      xCol.className = 'remove-x';
       xCol.textContent = String.fromCodePoint(10060);
 
       xCol.onclick = () => {
