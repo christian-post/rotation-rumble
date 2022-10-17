@@ -15,8 +15,64 @@
       <div class="all-cards-title">
         <h2 style="text-align: center;">All Cards</h2>
       </div>
-      <!-- format card gallery based on query parameter "as" -->
-      <%- include('../partials/card-gallery-' + locals.query.as); %>
+      
+      <table class="card-gallery-table" id="card-gallery-table">
+        <thead>
+          <tr>
+            <th>
+              Name
+              <span class="sortby" onclick="sortTable(0, 'card-gallery-table')" id="0">
+                &#x25BC;
+              </span>
+            </th>
+            <th>
+              Card Type
+              <span class="sortby" onclick="sortTable(1, 'card-gallery-table')" id="1">
+                &#x25BC;
+              </span>
+            </th>
+            <th>
+              Info
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (let i = 0; i < locals.cards.length; i++) { %>
+            <!-- add drag functionality for deck builder -->
+            <tr id=<%=`drag${i}` %> draggable="true" ondragstart="drag(event)" class="card-gallery-row">
+              <td>
+                <div>
+                  <a href="<%= '/card/' + locals.cards[i].id %>" draggable="true" ondragstart="drag(event)" class="card-gallery-link">
+                    <%= locals.cards[i].name %>
+                  </a>
+                </div>
+              </td>
+              <td>
+                <div>
+                  <a href="<%= '/card/' + locals.cards[i].id %>" draggable="true" ondragstart="drag(event)" class="card-gallery-link">
+                    <%= locals.cards[i].cardtype %>
+                  </a>
+                </div>
+              </td>
+              <td>
+                <div class="<%= 'card-info | for-' + locals.cards[i].name %>">
+                  💬
+                </div>
+                <div class="<%= 'card-tooltip | for-' + locals.cards[i].name %>">
+                  <img 
+                    src=<%= locals.cards[i].image_url %> 
+                    class="card-image-tooltip" 
+                    alt=<%= locals.cards[i].name %>
+                    onerror="imageErrorHandler(this)"
+                    >
+                  </img>
+                </div>
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+
     </div>
 
     <div class="grid-item">
