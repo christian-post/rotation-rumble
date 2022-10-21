@@ -108,26 +108,56 @@
         }
       }
     }
-
     // column with an X lets you remove the element
-    if (dropped && newRow.children.length === 3) {
-      let xCol = document.createElement('td');
-      xCol.className = 'remove-x';
-      xCol.textContent = String.fromCodePoint(10060);
-
-      xCol.onclick = () => {
-        // remove the X column
-        newRow.removeChild(newRow.lastElementChild);
-
-        // move back to all cards list
-        let galleryTBody = document.getElementById('card-gallery-table')
-            .getElementsByTagName('tbody')[0]
-        
-        galleryTBody.insertBefore(newRow, galleryTBody.firstChild);
-      }
-
-      newRow.appendChild(xCol);
+    if (dropped) {
+      addColumnsToCard(newRow);
     }
+  }
+
+
+  function addToDeck(event) {
+    // adds the row of data to the Deck table
+    let newRow = event.target.parentNode;
+
+    let tBody = document.getElementById('my-deck-table').getElementsByTagName('tbody')[0];
+
+    addColumnsToCard(newRow);
+
+    tBody.appendChild(newRow);
+  }
+
+
+  function addColumnsToCard(row) {
+    // when a card is added to the Deck table
+
+    // remove the "add to deck" column
+    row.removeChild(row.lastElementChild);
+
+    let xCol = document.createElement('td');
+    xCol.className = 'remove-x';
+    xCol.textContent = String.fromCodePoint(10060);
+
+    xCol.onclick = () => {
+      // when the card is added back to the All Cards table
+
+      // remove the X column
+      row.removeChild(row.lastElementChild);
+
+      // add the "add to deck" column
+      let addCol = document.createElement('td');
+      addCol.className = 'add-deck';
+      addCol.textContent = String.fromCodePoint(10133);
+      addCol.setAttribute('onclick', 'addToDeck(event)');
+      row.appendChild(addCol);
+
+      // move back to all cards list
+      let galleryTBody = document.getElementById('card-gallery-table')
+          .getElementsByTagName('tbody')[0];
+      
+      galleryTBody.insertBefore(row, galleryTBody.firstChild);
+    }
+
+    row.appendChild(xCol);
   }
 
 
