@@ -549,12 +549,15 @@ footer {
 }
 
 .card-tooltip {
-  display: none;
+  display: block;
+  position: absolute;
+
+  transform: scale(0);
+  transition: transform ease-out 150ms;
 }
 
 .card-info:hover + .card-tooltip {
-  display: block;
-  position: absolute;
+  transform: scale(1);
 }
 
 .card-image-tooltip {
