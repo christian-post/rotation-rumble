@@ -34,11 +34,13 @@
             <th>
               Info
             </th>
+            <th>
+              Add to Deck
+            </th>
           </tr>
         </thead>
         <tbody>
           <% for (let i = 0; i < locals.cards.length; i++) { %>
-            <!-- add drag functionality for deck builder -->
             <tr id=<%=`drag${i}` %> draggable="true" ondragstart="drag(event)" class="card-gallery-row">
               <td>
                 <div>
@@ -67,6 +69,9 @@
                     >
                   </img>
                 </div>
+              </td>
+              <td class="add-deck" onclick="addToDeck(event)">
+                  ➕
               </td>
             </tr>
           <% } %>

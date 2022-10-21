@@ -543,7 +543,8 @@ footer {
   margin-bottom: 10px;
 }
 .remove-x,
-.card-info {
+.card-info,
+.add-deck {
   cursor: pointer;
 }
 
