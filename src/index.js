@@ -253,7 +253,7 @@ app.post('/simple-search/', (req, res) => {
       found.push(card);
     })
     .then(()=> {
-      res.render('pages/gallery', {
+      res.render('pages/search-results', {
         header: `Search results for "${req.body.search_field}":`,
         cards: found, 
         query: {
@@ -267,19 +267,56 @@ app.post('/simple-search/', (req, res) => {
 });
 
 
+function allCombinations (items) {
+  // https://code-boxx.com/javascript-permutations-combinations/
+   
+  let results = [];
+  for (let slots = items.length; slots > 0; slots--) {
+    for (let loop = 0; loop < items.length - slots + 1; loop++) {
+      let key = results.length;
+      results[key] = [];
+      for (let i = loop; i < loop + slots; i++) {
+        results[key].push(items[i]);
+      }
+    }
+  }
+  return results;
+}
+  
+  
+
 app.post('/advanced-search/', (req, res) => {
-  // color ist entweder ein String oder ein Array
+  
   let colors = "";
   if (req.body.color) {
+    // color ist entweder ein String oder ein Array
     if (typeof req.body.color === 'string') {
-      colors = RegExp(escapeRegex(req.body.color), 'i');
+      if (req.body.color_compare === 'exact' || req.body.color_compare === 'most') {
+        colors = RegExp(`^${req.body.color}$`, 'i');
+      } else if (req.body.color_compare === 'least-one' || req.body.color_compare === 'include-all') {
+        colors = RegExp(escapeRegex(req.body.color), 'i');
+      }
     } else {
-      if (req.body.color_compare === 'or') {
-        colors = RegExp(req.body.color.join("|"), "i");
-      } else {
-        // AND
+      if (req.body.color_compare === 'exact') {
+        colors = RegExp(`^${req.body.color.join('/')}$`, 'i');
+      } else if (req.body.color_compare === 'least-one') {
+        // logical OR
+        colors = RegExp(req.body.color.join('|'), 'i');
+      } else if (req.body.color_compare === 'include-all') {
+        // logical AND
         let searchStr = '';
         req.body.color.forEach(color => searchStr += `(?=.*${color})`);
+        colors = RegExp(searchStr, 'i');
+      } else {
+        // "most"
+        let searchStr = '^(';
+
+        let combo = allCombinations(req.body.color);
+        combo.forEach(comb => {
+          searchStr += comb.join('\/') + '|';
+        });
+
+        searchStr += ')$';
         colors = RegExp(searchStr, 'i');
       }
     }
@@ -349,7 +386,7 @@ app.post('/advanced-search/', (req, res) => {
       found.push(card);
     })
     .then(()=> {
-      res.render(`pages/gallery`, {
+      res.render(`pages/search-results`, {
         header: `${(found.length ? `These ${found.length}` : "No")} cards matched your search.`,
         cards: found,
         query: {

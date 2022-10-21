@@ -32,30 +32,34 @@
         <div class="advanced-search-item | color-select">
   
           <label for="inlineCheckbox1" class="span-bold">Colors</label>
-  
+
+          <div>
+            <input type="checkbox" class="checkbox" name="color" id="inlineCheckbox4" value="red">
+            <label for="inlineCheckbox2">Red</label>
+          </div>
+
+          <div>
+            <input type="checkbox" class="checkbox" name="color" id="inlineCheckbox3" value="green">
+            <label for="inlineCheckbox2">Green</label>
+          </div>
+
+          <div>
+            <input type="checkbox" class="checkbox" name="color" id="inlineCheckbox2" value="blue">
+            <label for="inlineCheckbox2">Blue</label>
+          </div>
+
           <div>
             <input type="checkbox" class="checkbox" name="color" id="inlineCheckbox1" value="black">
             <label for="inlineCheckbox1">Black</label>
           </div>
   
-          <div>
-            <input type="checkbox" class="checkbox" name="color" id="inlineCheckbox2" value="blue">
-            <label for="inlineCheckbox2">Blue</label>
-          </div>
-  
-          <div>
-            <input type="checkbox" class="checkbox" name="color" id="inlineCheckbox3" value="green">
-            <label for="inlineCheckbox2">Green</label>
-          </div>
-  
-          <div>
-            <input type="checkbox" class="checkbox" name="color" id="inlineCheckbox4" value="red">
-            <label for="inlineCheckbox2">Red</label>
-          </div>
-  
           <select name="color_compare">
-            <option value="or">or</option>
-            <option value="and">and</option>
+            <!-- <option value="or">or</option>
+            <option value="and">and</option> -->
+            <option value="exact">Exactly these colors</option>
+            <option value="least-one">At least one of these colors</option>
+            <option value="include-all">Including all of these colors</option>
+            <option value="most">At most these colors</option>
           </select>
   
         </div>
