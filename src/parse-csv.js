@@ -8,6 +8,14 @@ const Papa = require('papaparse');
 const FPATH = './data/csv/Rotation_Rumble_All_Cards_Fighter.csv';
 let cardDataString = fs.readFileSync(FPATH, { encoding: 'utf8', flag: 'r' });
 
-const cardData = Papa.parse(cardDataString, { header: true, delimiter: ',' });
+// replace End of text, multiple whitespaces
+let cleanedDataString = cardDataString.replace(//gmi, " ")
+  .replace(/[ ]{2,}/gmi, " ");
+
+// console.log(cleanedDataString)
+
+const cardData = Papa.parse(cleanedDataString, { header: true, delimiter: ',' });
+
+fs.writeFileSync('./data/csv/test.csv', cleanedDataString);
 
 fs.writeFileSync('./data/json/all_cards_fighter.json', JSON.stringify(cardData.data));
