@@ -14,7 +14,7 @@
     <% if (locals.card) { %>
 
       <div class="grid-item" id="singlecard-image">
-        <img class="card-image-large" src=<%= locals.card.image_url %> alt=<%= locals.card.name %>>
+        <img class="card-image-large" src=<%= locals.card.image_url %> alt=<%= locals.card.name %> onerror="imageErrorHandler(this)">
       </div>
 
       <%- include('../partials/cardinfo'); %>
