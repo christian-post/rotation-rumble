@@ -6,15 +6,33 @@
     <div class="flavor-text-container">
       <span class="flavor-text"><%= locals.card.flavour %></span>
     </div>
+
     <div>
       <span class="card-type-text">
-        <%= locals.card.cardtype %> &#8212; <%= locals.card.color %> &#8212;
-        <%= locals.card.type1 %>
+        <%= locals.card.cardtype %>
+
+        <% if (locals.card.color) { %>
+          &#8212; <span id="card-color"><%= locals.card.color %></span>
+        <% } %>
+
+        <% if (locals.card.type1) { %>
+          &#8212; <%= locals.card.type1 %> 
+        <% } %>
+
         <% if (locals.card.type2) { %>
           / <%= locals.card.type2 %> 
         <% } %>
       </span>
     </div>
+
+    <script>
+      // Setzt die ersten Buchstaben der Farbe als Großbuchstaben
+      let colors = document.getElementById('card-color')?.textContent.split('/');
+      if (colors) {
+        document.getElementById('card-color').textContent = colors.map(capitalize).join(' / ');
+      }
+    </script>
+
     <div>
       <!-- different stats tables depending on the card type -->
       <table class="card-stats-table">
@@ -70,7 +88,7 @@
         <div class="card-stats-effects">
             <p>
               <span class="span-bold">
-                <%= locals.card?.[`effect${i + 1}_name`] || `Effect ${i + 1}` %>
+                <span class="effect-name"><%= locals.card?.[`effect${i + 1}_name`] || `Effect ${i + 1}` %></span>
                 &#8212;
                 <%= locals.card?.[`effect${i + 1}_costs`] %>
               </span>
