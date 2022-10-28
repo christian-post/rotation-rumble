@@ -281,12 +281,18 @@ footer {
   font-size: 20px;
 }
 
+.form-search {
+  display: flex;
+  gap: 2px;
+}
+
 #search {
   /* search bar */
   min-width: 80%;
   min-height: 2.5rem;
   background: var(--color-highlight);
   border-width: 0em;
+  padding: 0;
 }
 
 #button-search {
@@ -294,6 +300,7 @@ footer {
   border-width: 0em;
   height: 2.5rem;
   width: 2.5rem;
+  padding: 4px;
 }
 
 .landing-page-grid {
@@ -446,7 +453,11 @@ footer {
   padding-bottom: 1.5rem;
 }
 
-/* ------------------------ CARD GALLERY MOBILE VIEW ------------------------ */
+.effect-name {
+  font-style: italic;
+}
+
+/* ------------------------ SINGLE CARD MOBILE VIEW ------------------------- */
 
 @media screen and (max-width: 500px) {
   .singlecard-grid {
@@ -455,6 +466,10 @@ footer {
 
   .singlecard-grid #singlecard-image {
     justify-self: center;
+  }
+
+  .card-title {
+    font-size: 64px;
   }
 
   .card-text {
