@@ -17,7 +17,9 @@
         <img class="card-image-large" src=<%= locals.card.image_url %> alt=<%= locals.card.name %> onerror="imageErrorHandler(this)">
       </div>
 
-      <%- include('../partials/cardinfo'); %>
+      <div class="grid-item">
+        <%- include('../partials/cardinfo'); %>
+      </div>
     <% } else { %>
       <div class="grid-item">
         <h1>Oops, this card does not exist 😅</h1>

@@ -91,7 +91,7 @@ body {
 }
 
 .card-image-large {
-  width: 400px;
+  width: 500px;
 }
 
 /* ---------------------------- HEADER -------------------------------------- */
@@ -393,8 +393,12 @@ footer {
 
 #singlecard-image {
   justify-self: end;
+  display: flex;
+  align-items: center;
 }
 
+
+/* ----------- cardinfo.ejs --------------------------------------------------*/
 .card-title {
   font-size: 80px;
 }
@@ -421,17 +425,14 @@ footer {
   border-collapse: collapse;
   font-size: 24px;
   margin-bottom: 1rem;
+  position: relative;
+  left: -0.5rem;
 }
 
 .card-stats-table td {
   border: 2px solid var(--color-accent-blue);
   padding-left: 0.5rem;
   padding-right: 2rem;
-}
-
-.card-stats-table {
-  position: relative;
-  left: -0.5rem;
 }
 
 /* remove unwanted table borders */
@@ -515,7 +516,7 @@ footer {
   border-collapse: collapse;
 }
 
-.card-gallery-table tr:nth-child(even) {
+.card-gallery-table > tbody > tr:nth-child(even) {
   background-color: var(--color-highlight);
 }
 
@@ -559,7 +560,8 @@ footer {
   color: black;
 }
 
-.cardinfo-small {
+/* Kartentext-items in der Gallery*/
+.cardinfo-small-gallery {
   flex-grow: 1;
   flex-basis: 30%;
   display: flex;
@@ -606,13 +608,15 @@ footer {
   padding: 10px;
   min-height: 70vh;
   border: 1px solid black;
+  border-radius: 10px;
 }
 
 .leader-container {
   margin: 10px;
   padding: 10px;
-  min-height: 2.5rem;
+  min-height: 420px;
   border: 1px solid black;
+  border-radius: 10px;
 }
 
 .drag-zone {
@@ -643,7 +647,7 @@ footer {
   transform: scale(0);
   transition: transform ease-out 150ms;
 
-  max-width: 30%;
+  max-width: 40vw;
   padding: 1rem;
 }
 
@@ -654,4 +658,53 @@ footer {
 .card-image-tooltip {
   width: 250px;
   height: 250px;
+}
+
+/* -------------- cardinfo in Tooltip ----------------------------------------*/
+
+.cardinfo-small .inline-image {
+  max-width: 14px;
+}
+
+.cardinfo-small .card-title {
+  font-size: 36px;
+}
+
+.cardinfo-small .card-title-container {
+  margin-bottom: -0.75rem;
+}
+
+.cardinfo-small .flavor-text {
+  font-style: italic;
+  font-size: 18px;
+}
+
+.cardinfo-small .flavor-text-container {
+  margin-bottom: 0;
+}
+
+.cardinfo-small .card-type-text {
+  font-size: 18px;
+  color: rgb(92,97,178);
+}
+
+.cardinfo-small .card-stats-table {
+  border-collapse: collapse;
+  font-size: 18px;
+  margin-bottom: 0.5rem;
+  left: 0;
+}
+
+.cardinfo-small .card-stats-table td {
+  padding-left: 0.25rem;
+  padding-right: 0.5rem;
+}
+
+.cardinfo-small .card-stats-effects {
+  font-size: 16px;
+  padding-bottom: 0.25rem;
+}
+
+.cardinfo-small .card-effect {
+  font-size: 18px;
 }
