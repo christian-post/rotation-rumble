@@ -203,8 +203,6 @@ app.get('/card/:cardname', (req, res) => {
         card = null;
       }
 
-      // TODO Kartentext rechts neben dem Bild statt darunter
-
       res.render(`pages/singlecard`, {
         card: card
       });

@@ -137,7 +137,8 @@ header {
 #back-to-website {
   position: absolute;
   left: 5vw;
-  width: 100px;
+  top: -12px;
+  width: 120px;
 }
 
 
@@ -453,8 +454,17 @@ footer {
   padding-bottom: 1.5rem;
 }
 
+.card-effect {
+  font-size: 24px;
+}
+
 .effect-name {
   font-style: italic;
+}
+
+.inline-image {
+  display: inline-block;
+  max-width: 18px;
 }
 
 /* ------------------------ SINGLE CARD MOBILE VIEW ------------------------- */
@@ -560,7 +570,6 @@ footer {
 
 .card-name-small {
   font-weight: bold;
-  padding-right: 1rem;
   font-size: 20px;
 }
 
@@ -625,11 +634,17 @@ footer {
 
 /* Tooltips */
 .card-tooltip {
-  display: block;
+  display: flex;
   position: absolute;
+
+  background-color: var(--bg-color-bright);
+  border: 1px solid var(--color-accent-blue);
 
   transform: scale(0);
   transition: transform ease-out 150ms;
+
+  max-width: 30%;
+  padding: 1rem;
 }
 
 .card-info:hover + .card-tooltip {
@@ -638,4 +653,5 @@ footer {
 
 .card-image-tooltip {
   width: 250px;
+  height: 250px;
 }

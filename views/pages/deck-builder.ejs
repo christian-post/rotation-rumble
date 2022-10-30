@@ -68,6 +68,7 @@
                     onerror="imageErrorHandler(this)"
                     >
                   </img>
+                  <%- include('../partials/cardinfo-small', { card: locals.cards[i] }); %>
                 </div>
               </td>
               <td class="add-deck" onclick="addToDeck(event)">
