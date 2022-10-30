@@ -1,4 +1,7 @@
 <script>
+
+  var colors;  // needed later
+
   function getInnerText(node) {
     // helper function for the table sorting algorithm
     // TODO: import from exportCSV.js?
@@ -59,7 +62,7 @@
 
     return index;
   }
-  
+
 
   function drop(ev) {
     ev.preventDefault();
@@ -68,6 +71,8 @@
     let newRow = document.getElementById(data);
 
     let dropped = false;
+
+   
 
     // check which zone the element is dragged onto
     if (ev.target.className === 'drag-zone') {
@@ -85,15 +90,23 @@
 
         // check if something is already in there
         if (tBody.children.length === 1) {
-          // put the current Leader back into the card collection
-
-          // remove the X column
-          tBody.childNodes[0].removeChild(tBody.childNodes[0].lastElementChild);
-
-          document.getElementById('card-gallery-table')
-            .getElementsByTagName('tbody')[0]
-            .replaceChild(tBody.childNodes[0], newRow);
+          alert('You already selected a Leader!');
+          return;
         }
+
+        // leader image
+
+        // check if there is already an image
+        if (document.getElementById('leader-image')) {
+          document.getElementById('leader-image').remove();
+        }
+
+        let leaderImg = document.createElement('img');
+        leaderImg.id = 'leader-image';
+        leaderImg.src = 'images/notfound.png';  // TODO: get image URL from tooltip!
+        leaderImg.width = '300';
+        ev.target.parentNode.appendChild(leaderImg);
+
         tBody.appendChild(newRow);
         dropped = true;
 
@@ -118,11 +131,8 @@
   function addToDeck(event) {
     // adds the row of data to the Deck table
     let newRow = event.target.parentNode;
-
     let tBody = document.getElementById('my-deck-table').getElementsByTagName('tbody')[0];
-
     addColumnsToCard(newRow);
-
     tBody.appendChild(newRow);
   }
 
@@ -139,6 +149,12 @@
 
     xCol.onclick = () => {
       // when the card is added back to the All Cards table
+
+      // if it was a leader and there is an image
+
+      if (row.parentNode.parentNode.id === 'leader-container-table') {
+          document.getElementById('leader-image').remove();
+        }
 
       // remove the X column
       row.removeChild(row.lastElementChild);

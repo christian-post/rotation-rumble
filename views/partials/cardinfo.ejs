@@ -1,130 +1,128 @@
-<div class="grid-item">
-  <div class="card-text">
-    <div class="card-title-container">
-      <span class="card-title"><%= locals.card.name %></span>
-    </div>
-    <div class="flavor-text-container">
-      <span class="flavor-text"><%= locals.card.flavour %></span>
-    </div>
-
-    <div>
-      <span class="card-type-text">
-        <%= locals.card.cardtype %>
-
-        <% if (locals.card.color) { %>
-          &#8212; <span id="card-color"><%= locals.card.color %></span>
-        <% } %>
-
-        <% if (locals.card.type1) { %>
-          &#8212; <%= locals.card.type1 %> 
-        <% } %>
-
-        <% if (locals.card.type2) { %>
-          / <%= locals.card.type2 %> 
-        <% } %>
-      </span>
-    </div>
-
-    <script>
-      // Setzt die ersten Buchstaben der Farbe als Großbuchstaben
-      let colors = document.getElementById('card-color')?.textContent.split('/');
-      if (colors) {
-        document.getElementById('card-color').textContent = colors.map(capitalize).join(' / ');
-      }
-    </script>
-
-    <div>
-      <!-- different stats tables depending on the card type -->
-      <table class="card-stats-table">
-        <% if (locals.card.cardtype === "Fighter") { %>
-          <tr>
-            <td>DMG <span class="span-bold"><%= locals.card.dmg %></span></td>
-            <td>
-              Hire <span class="span-bold"><%= locals.card.hire %></span>
-              <img class="inline-image" src="/images/money.png" alt="M"></img>
-            </td>
-            <td>Dice <span class="span-bold"><%= locals.card.dice %></span></td>
-          </tr>
-          <tr>
-            <td>DEF <span class="span-bold"><%= locals.card.def %></span></td>
-            <td>
-              Fire <span class="span-bold"><%= locals.card.fire %></span>
-              <img class="inline-image" src="/images/money.png" alt="M"></img>
-            </td>
-            <td>Set <span class="span-bold"><%= locals.card.set %></span></td>
-          </tr>
-        <% } else if (locals.card.cardtype === "Challenge") { %>
-          <tr>
-            <td>
-              Cast <span class="span-bold"><%= locals.card.hire %></span>
-              <img class="inline-image" src="/images/money.png" alt="M"></img>
-            </td>
-            <td>Dice <span class="span-bold"><%= locals.card.dice %></span></td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>Set <span class="span-bold"><%= locals.card.set %></span></td>
-          </tr>
-        <% } else { %>
-          <tr>
-            <td>
-              Buy <span class="span-bold"><%= locals.card.hire %></span>
-              <img class="inline-image" src="/images/money.png" alt="M"></img>
-            </td>
-            <td>Dice <span class="span-bold"><%= locals.card.dice %></span></td>
-          </tr>
-          <tr>
-            <td>
-              <% if (locals.card.equip) { %>
-                Equip <span class="span-bold"><%= locals.card.equip %></span>
-                <img class="inline-image" src="/images/money.png" alt="M"></img>
-              <% } %>
-            </td>
-            <td>Set <span class="span-bold"><%= locals.card.set %></span></td>
-          </tr>
-        <% } %>
-      </table>
-    </div>
-    <!-- create a div for each Effect -->
-    <% 
-      let effects = [
-        locals.card.effect1, locals.card.effect2, 
-        locals.card.effect3, locals.card.effect4
-      ]; 
-      let effectCosts = [
-        locals.card.effect1_costs, locals.card.effect2_costs,
-        locals.card.effect3_costs, locals.card.effect4_costs,
-      ];
-      for (let i = 0; i < effects.length; i++) { 
-    %>
-      <% if (effects[i]) { %> 
-        <div class="card-stats-effects">
-            <p>
-              <span class="span-bold | card-effect">
-                <span class="effect-name">
-                  <%= locals.card?.[`effect${i + 1}_name`] || `Effect ${i + 1}` %>
-                </span>
-                  &#8212;
-                  <%= locals.card?.[`effect${i + 1}_costs`] %>
-                  <img class="inline-image" src="/images/money.png" alt="M"></img>
-              </span>
-            </p>
-            <p>
-              <% 
-                  let effect = effects[i]; 
-                  // sonderzeichen ersetzen
-                  if (effect.includes('\u2605')) {
-                    effect = effect.replaceAll('\u2605',``);
-                %>
-                
-                <img class="inline-image" src="/images/star.png" alt="&#9733;"></img>
-                  
-                <% } %>
-
-              <%= effect %>
-            </p>
-        </div>
-      <% } %>
-    <% } %>
+<div class="card-text">
+  <div class="card-title-container">
+    <span class="card-title"><%= locals.card.name %></span>
   </div>
+  <div class="flavor-text-container">
+    <span class="flavor-text"><%= locals.card.flavour %></span>
+  </div>
+
+  <div>
+    <span class="card-type-text">
+      <%= locals.card.cardtype %>
+
+      <% if (locals.card.color) { %>
+        &#8212; <span id="card-color"><%= locals.card.color %></span>
+      <% } %>
+
+      <% if (locals.card.type1) { %>
+        &#8212; <%= locals.card.type1 %> 
+      <% } %>
+
+      <% if (locals.card.type2) { %>
+        / <%= locals.card.type2 %> 
+      <% } %>
+    </span>
+  </div>
+
+  <script>
+    // Setzt die ersten Buchstaben der Farbe als Großbuchstaben
+    colors = document.getElementById('card-color')?.textContent.split('/');
+    if (colors) {
+      document.getElementById('card-color').textContent = colors.map(capitalize).join(' / ');
+    }
+  </script>
+
+  <div>
+    <!-- different stats tables depending on the card type -->
+    <table class="card-stats-table">
+      <% if (locals.card.cardtype === "Fighter") { %>
+        <tr>
+          <td>DMG <span class="span-bold"><%= locals.card.dmg %></span></td>
+          <td>
+            Hire <span class="span-bold"><%= locals.card.hire %></span>
+            <img class="inline-image" src="/images/money.png" alt="M"></img>
+          </td>
+          <td>Dice <span class="span-bold"><%= locals.card.dice %></span></td>
+        </tr>
+        <tr>
+          <td>DEF <span class="span-bold"><%= locals.card.def %></span></td>
+          <td>
+            Fire <span class="span-bold"><%= locals.card.fire %></span>
+            <img class="inline-image" src="/images/money.png" alt="M"></img>
+          </td>
+          <td>Set <span class="span-bold"><%= locals.card.set %></span></td>
+        </tr>
+      <% } else if (locals.card.cardtype === "Challenge") { %>
+        <tr>
+          <td>
+            Cast <span class="span-bold"><%= locals.card.hire %></span>
+            <img class="inline-image" src="/images/money.png" alt="M"></img>
+          </td>
+          <td>Dice <span class="span-bold"><%= locals.card.dice %></span></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>Set <span class="span-bold"><%= locals.card.set %></span></td>
+        </tr>
+      <% } else { %>
+        <tr>
+          <td>
+            Buy <span class="span-bold"><%= locals.card.hire %></span>
+            <img class="inline-image" src="/images/money.png" alt="M"></img>
+          </td>
+          <td>Dice <span class="span-bold"><%= locals.card.dice %></span></td>
+        </tr>
+        <tr>
+          <td>
+            <% if (locals.card.equip) { %>
+              Equip <span class="span-bold"><%= locals.card.equip %></span>
+              <img class="inline-image" src="/images/money.png" alt="M"></img>
+            <% } %>
+          </td>
+          <td>Set <span class="span-bold"><%= locals.card.set %></span></td>
+        </tr>
+      <% } %>
+    </table>
+  </div>
+  <!-- create a div for each Effect -->
+  <% 
+    let effects = [
+      locals.card.effect1, locals.card.effect2, 
+      locals.card.effect3, locals.card.effect4
+    ]; 
+    let effectCosts = [
+      locals.card.effect1_costs, locals.card.effect2_costs,
+      locals.card.effect3_costs, locals.card.effect4_costs,
+    ];
+    for (let i = 0; i < effects.length; i++) { 
+  %>
+    <% if (effects[i]) { %> 
+      <div class="card-stats-effects">
+          <p>
+            <span class="span-bold | card-effect">
+              <span class="effect-name">
+                <%= locals.card?.[`effect${i + 1}_name`] || `Effect ${i + 1}` %>
+              </span>
+                &#8212;
+                <%= locals.card?.[`effect${i + 1}_costs`] %>
+                <img class="inline-image" src="/images/money.png" alt="M"></img>
+            </span>
+          </p>
+          <p>
+            <% 
+                let effect = effects[i]; 
+                // sonderzeichen ersetzen
+                if (effect.includes('\u2605')) {
+                  effect = effect.replaceAll('\u2605',``);
+              %>
+              
+              <img class="inline-image" src="/images/star.png" alt="&#9733;"></img>
+                
+              <% } %>
+
+            <%= effect %>
+          </p>
+      </div>
+    <% } %>
+  <% } %>
 </div>
