@@ -21,7 +21,10 @@
           %>
             <td>
               <div>
-                <a href="<%= '/card/' + locals.cards[i].id %>" draggable="true" ondragstart="drag(event)" class="card-gallery-link">
+                <a href="<%= '/card/' + locals.cards[i].id %>" 
+                  draggable="true" 
+                  ondragstart="drag(event)" 
+                  class="card-gallery-link">
                   <%= locals.cards[i][field] %>
                 </a>
               </div>
