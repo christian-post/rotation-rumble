@@ -101,9 +101,12 @@
           document.getElementById('leader-image').remove();
         }
 
+        // read image url from img tag
+        let imageSrc = newRow.querySelector('.card-image-tooltip')?.src;
+
         let leaderImg = document.createElement('img');
         leaderImg.id = 'leader-image';
-        leaderImg.src = 'images/notfound.png';  // TODO: get image URL from tooltip!
+        leaderImg.src = imageSrc || 'images/notfound.png';
         leaderImg.width = '300';
         ev.target.parentNode.appendChild(leaderImg);
 
