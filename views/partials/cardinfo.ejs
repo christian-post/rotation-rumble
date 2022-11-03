@@ -108,21 +108,40 @@
                 <img class="inline-image" src="/images/money.png" alt="M"></img>
             </span>
           </p>
-          <p>
-            <% 
-                let effect = effects[i]; 
-                // sonderzeichen ersetzen
-                if (effect.includes('\u2605')) {
-                  effect = effect.replaceAll('\u2605',``);
-              %>
-              
-              <img class="inline-image" src="/images/star.png" alt="&#9733;"></img>
-                
-              <% } %>
-
-            <%= effect %>
+          <p class="single-card-effect">
+            <%= effects[i] %>
           </p>
       </div>
     <% } %>
   <% } %>
+
+  <script>
+    // replace placeholders with inline symbols
+    // TODO: replace in whole page HTML at once?
+    // TODO: put this as a function in scripts.ejs maybe
+    let replacements = {
+      bb: 'bomb',
+      bn: 'bones',
+      by: 'bury',
+      c: 'coil',
+      d: 'dice',
+      e: 'energy',
+      hs: 'haste',
+      ht: 'heart',
+      m: 'money',
+      s: 'star',
+      t: 'treefolk',
+      u: 'unblockable'
+    };
+
+    let paragraphs = document.getElementsByClassName('card-stats-effects');
+    for (const p of paragraphs) {
+      Object.entries(replacements).forEach(([key, value]) => {
+        p.innerHTML = p.innerHTML.replace(
+          `{${key}}`, 
+          `<abbr class="inline-symbol | ${value}" title="${capitalize(value)}">{${value}}</abbr>`
+        );
+      });
+    }
+  </script>
 </div>
