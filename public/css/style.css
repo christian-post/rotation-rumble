@@ -94,6 +94,72 @@ body {
   width: 500px;
 }
 
+/* --------------------- Inline Symbols apperearing in text ------------------*/
+
+.inline-symbol {
+  display: inline-block;
+  margin: 1px 1px -1px 1px;
+  overflow: hidden;
+  text-indent: -9999px;
+
+  background-size: 100%;
+  width: 18px;
+  height: 18px;
+}
+
+.bomb {
+  background-image: url("/images/bomb.png");
+}
+
+.bones {
+  background-image: url("/images/bones.png");
+}
+
+.bury {
+  background-image: url("/images/bury.png");
+}
+
+.coil {
+  background-image: url("/images/coil.png");
+}
+
+.dice {
+  width: 26px;
+  height: 26px;
+  background-image: url("/images/dice.png");
+}
+
+.energy {
+  background-image: url("/images/energy.png");
+}
+
+.haste {
+  width: 26px;
+  height: 26px;
+  background-image: url("/images/haste.png");
+}
+
+.heart {
+  background-image: url("/images/heart.png");
+}
+
+.money {
+  background-image: url("/images/money.png");
+}
+
+.star {
+  background-image: url("/images/star.png");
+}
+
+.treefolk {
+  background-image: url("/images/treefolk.png");
+}
+
+.unblockable {
+  background-image: url("/images/unblockable.png");
+}
+
+
 /* ---------------------------- HEADER -------------------------------------- */
 
 header {
