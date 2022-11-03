@@ -1,0 +1,25 @@
+<script>
+  // Replace {tags} with inline symbols 
+  let replacements = {
+      bb: 'bomb',
+      bn: 'bones',
+      by: 'bury',
+      c: 'coil',
+      d: 'dice',
+      e: 'energy',
+      hs: 'haste',
+      ht: 'heart',
+      m: 'money',
+      s: 'star',
+      t: 'treefolk',
+      u: 'unblockable'
+    };
+
+    Object.entries(replacements).forEach(([key, value]) => {
+      let body = document.querySelector('body');
+      body.innerHTML = body.innerHTML.replaceAll(
+        `{${key}}`, 
+        `<abbr class="inline-symbol | ${value}" title="${capitalize(value)}">{${value}}</abbr>`
+      );
+    });
+</script>
