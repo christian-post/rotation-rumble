@@ -669,6 +669,14 @@ footer {
 /* ---------------------------------------------- DECK BUILDER -------------------------------------------------------*/
 /* ------------------------------------------------------------------------------------------------------------------ */
 
+#deck-builder {
+  grid-template-columns: 50% 50%;
+}
+
+#deck-builder-hidden {
+  display: none;
+}
+
 .deck-container {
   margin: 10px;
   padding: 10px;
@@ -773,4 +781,22 @@ footer {
 
 .cardinfo-small .card-effect {
   font-size: 18px;
+}
+
+/* ------------------------ DECK BUILDER MOBILE VIEW ------------------------ */
+
+@media screen and (max-width: 500px) {
+  #deck-builder {
+    display: none;
+  }
+
+  #deck-builder-hidden {
+    display: flex;
+  }
+
+  #deck-builder-hidden p {
+    font-size: 28px;
+    font-weight: bold;
+    padding: 1rem;
+  }
 }
