@@ -65,7 +65,7 @@ export const exportDeckTxt = function(id) {
 
   const table = document.getElementById(id);
 
-  const rows = table.querySelectorAll("tr"); 
+  const rows = table.querySelectorAll(".card-gallery-row"); 
   for (let i = 1; i < rows.length; i++) {
       const cardName = getInnerText(rows[i].children.item(0));
       txt += `1 ${cardName}\n`;
