@@ -137,6 +137,10 @@
     let tBody = document.getElementById('my-deck-table').getElementsByTagName('tbody')[0];
     addColumnsToCard(newRow);
     tBody.appendChild(newRow);
+
+    // add to local storage
+    
+    addCardFromDeckbuilder(newRow);
   }
 
 
@@ -253,8 +257,92 @@
     img.src = '/images/notfound.png';
   }
 
+
   function capitalize(str) {
     // capitalize the first char of a string
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
+
+  
+  function idFromCardname(name) {
+    // converts a card name to its id
+    return name.replace(new RegExp('[\\s-]', 'gi'), '_').toLowerCase();
+  }
+
+
+  function getDeck() {
+    if (!localStorage.getItem('currentDeck')) {
+      // if there is no currentDeck, set it as an empty array
+      localStorage.setItem('currentDeck', JSON.stringify({}));
+    }
+    // parse string from storage
+    return JSON.parse(localStorage.getItem('currentDeck'));
+  }
+
+  
+  function addCardtoDeck(cardData) {
+    // adds the currently displayed card on singlecard.ejs to local storage
+    let deck = getDeck();
+
+    // check if this card is in the deck
+    let key = idFromCardname(cardData.name);
+    if (key in deck) {
+      alert("This card is already in your deck!");
+      return;
+    }
+    deck[key] = cardData;
+
+    // put deck array back into storage
+    localStorage.setItem('currentDeck', JSON.stringify(deck));
+    // alert(`You added ${cardData.name}.\nGo to the Deck Builder page to see the whole deck!`);
+
+    console.log(deck)
+  }
+
+
+  function addCardfromSinglecard() {
+    // get name of Card from singlecard.ejs
+    let card = {
+      name: document.querySelector('.card-title')?.innerHTML,
+      cardtype: document.querySelector('.card-type-text')?.getAttribute('data-cardtype'),
+      info: '💬'
+    };
+    addCardtoDeck(card);
+    // hide the div that holds the "add to deck" function
+    document.getElementById('add-to-deck-container').style.display = "none";
+  }
+
+
+  function addCardFromDeckbuilder(row) {
+    // add the card from the deck builder
+
+    let name = getInnerText(row.firstElementChild);
+    
+    let card = {
+      name: getInnerText(row.querySelector('.table-cell-cardname')),
+      cardtype: getInnerText(row.querySelector('.table-cell-cardtype')),
+      info: '💬'
+    };
+    addCardtoDeck(card);
+  }
+
+
+  function createDeckFromStorage() {
+    // loads the deck from localstorage into the deck builder
+    let deck = getDeck();
+
+    console.log(deck)
+
+    let galleryTBody = document.getElementById('card-gallery-table')
+          .getElementsByTagName('tbody')[0];
+    let deckTBody = document.getElementById('my-deck-table').getElementsByTagName('tbody')[0];
+
+    Object.entries(deck).forEach(([key, card]) => {
+      let row = document.querySelector(`.card-gallery-row-${key}`);
+      addColumnsToCard(row);
+      console.log(row)
+      deckTBody.appendChild(row);
+    });
+  }
+
 </script>

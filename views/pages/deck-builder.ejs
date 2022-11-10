@@ -41,22 +41,37 @@
         </thead>
         <tbody>
           <% for (let i = 0; i < locals.cards.length; i++) { %>
-            <tr id=<%=`drag${i}` %> draggable="true" ondragstart="drag(event)" class="card-gallery-row">
-              <td>
+            <tr 
+              id=<%- `drag${i}` %> 
+              draggable="true" 
+              ondragstart="drag(event)" 
+              class=<%= `card-gallery-row-${locals.cards[i].id}` %>
+            >
+              <td class="table-cell-cardname">
                 <div>
-                  <a href="<%= '/card/' + locals.cards[i].id %>" draggable="true" ondragstart="drag(event)" class="card-gallery-link">
+                  <a 
+                    href="<%= '/card/' + locals.cards[i].id %>" 
+                    draggable="true" 
+                    ondragstart="drag(event)" 
+                    class="card-gallery-link"
+                  >
                     <%= locals.cards[i].name %>
                   </a>
                 </div>
               </td>
-              <td>
+              <td class="table-cell-cardtype">
                 <div>
-                  <a href="<%= '/card/' + locals.cards[i].id %>" draggable="true" ondragstart="drag(event)" class="card-gallery-link">
+                  <a 
+                    href="<%= '/card/' + locals.cards[i].id %>" 
+                    draggable="true" 
+                    ondragstart="drag(event)" 
+                    class="card-gallery-link"
+                  >
                     <%= locals.cards[i].cardtype %>
                   </a>
                 </div>
               </td>
-              <td>
+              <td  class="table-cell-cardinfo">
                 <div class="<%= 'card-info | for-' + locals.cards[i].name %>">
                   💬
                 </div>
@@ -87,8 +102,12 @@
       <h2 style="text-align: center;">My Deck</h2>
 
       <h2 style="text-align: left;">Leader</h2>
-
-      <div class="leader-container" id="leader-container" ondrop="drop(event)" ondragover="allowDrop(event)">
+      <div 
+        class="leader-container" 
+        id="leader-container" 
+        ondrop="drop(event)" 
+        ondragover="allowDrop(event)"
+      >
         <div class="drag-zone">
           &#10133
         </div>
@@ -98,7 +117,6 @@
       </div>
 
       <h2 style="text-align: left;">Deck</h2>
-
       <div class="deck-container" ondrop="drop(event)" ondragover="allowDrop(event)">
         <div class="drag-zone">
           &#10133
@@ -146,5 +164,11 @@
 </footer>
 
 </body>
+
+<!-- script that synchronizes the deck with deck from local storage -->
+<script>
+  createDeckFromStorage();
+</script>
+
 <%- include('../partials/postprocessing'); %>
 </html>
