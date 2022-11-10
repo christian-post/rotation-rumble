@@ -123,8 +123,7 @@ app.get('/gallery', (req, res) => {
 });
 
 
-
-// card gallery page
+// deck builder
 app.get('/deckbuilder', (req, res) => {
   if (!db) {
     // database connection not established

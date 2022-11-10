@@ -14,11 +14,27 @@
     <% if (locals.card) { %>
 
       <div class="grid-item" id="singlecard-image">
-        <img class="card-image-large" src=<%= locals.card.image_url %> alt=<%= locals.card.name %> onerror="imageErrorHandler(this)">
+        <img 
+          class="card-image-large" 
+          src=<%= locals.card.image_url %> 
+          alt=<%= locals.card.name %> 
+          onerror="imageErrorHandler(this)"
+        >
       </div>
 
       <div class="grid-item">
         <%- include('../partials/cardinfo'); %>
+      </div>
+
+      <div class="grid-item">
+        <div class="add-to-deck-container" id="add-to-deck-container">
+          <input 
+            type="button" 
+            class="add-to-deck-button" 
+            value="Add to deck"
+            onclick="addCardfromSinglecard()"
+          >
+        </div>
       </div>
     <% } else { %>
       <div class="grid-item">

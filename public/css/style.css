@@ -72,6 +72,7 @@ select {
   --text-color-bright: white;
   --color-highlight: rgb(247,247,247);
   --color-orange: rgb(241,90,37);
+  --color-orange-semitrans: rgba(241, 91, 37, 0.5);
   --color-accent-blue: rgb(92,97,178);
 }
 
@@ -453,6 +454,7 @@ footer {
 /* ------------------------------------------------------------------------------------------------------------------ */
 /* ---------------------------------------------- SINGLE CARD PAGE ---------------------------------------------------*/
 /* ------------------------------------------------------------------------------------------------------------------ */
+
 .singlecard-grid {
   grid-template-columns: 50% 50%;
 }
@@ -461,6 +463,19 @@ footer {
   justify-self: end;
   display: flex;
   align-items: center;
+}
+
+.add-to-deck-container {
+  border-radius: 10px;
+  background-color: var(--color-orange-semitrans);
+  padding: 1rem;
+  position: fixed;
+  min-width: 200px;
+  top: 85vh;
+  left: 70vw;
+
+  display: flex;
+  justify-content: center;
 }
 
 
@@ -533,6 +548,7 @@ footer {
   display: inline-block;
   max-width: 18px;
 }
+/* ---------------------------------------------------------------------------*/
 
 /* ------------------------ SINGLE CARD MOBILE VIEW ------------------------- */
 
