@@ -65,6 +65,13 @@ select {
 /* -------------------------------------- GENERAL STYLING ----------------------------------------------------------- */
 /* ------------------------------------------------------------------------------------------------------------------ */
 
+
+@font-face
+{
+    font-family: 'Roboto';
+    src: url('/fonts/roboto/Roboto-Regular.ttf');
+}
+
 :root {
   --bg-color-dark: black;
   --bg-color-bright: white;
@@ -164,36 +171,68 @@ body {
 /* ---------------------------- HEADER -------------------------------------- */
 
 header {
-  display: flex;
-  justify-content: center;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.header-nav {
   background-color: var(--bg-color-bright);
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  width: 80%;
-  display: flex;
-  justify-content: center;
+  text-align: center;
+  width: 100%;
+  z-index: 999;
+  /* display navbar as columns */
+  display: grid;
+  grid-template-columns: 25% 60% 15%;
+  padding: 1rem;
 }
 
-.header-nav ul {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2rem;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+.header-logo {
   font-size: 20px;
+  grid-column: 1;
+  margin-left: 3rem;
+  display: flex;
+  justify-content: flex-end;
 }
 
+.header-logo a,
 .header-nav a {
   color: var(--text-color-dark);
   text-decoration: none;
 }
+
+.nav-toggle {
+  display: none;
+}
+
+.nav-toggle-label {
+  /* turn off hamburger */
+  display: none;
+}
+
+.header-nav {
+  grid-column: 2;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 3rem;
+}
+
+.header-nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: 3rem;
+  font-size: 20px;
+}
+
+.header-nav li {
+  /* margin-left: 2em; */
+  margin-top: 0;
+}
+
+.header-nav a {
+  opacity: 1;
+  position: relative;
+}
+
+
+/*  floating logos */
 
 #rotation-rumble-logo {
   position: absolute;
@@ -206,6 +245,106 @@ header {
   left: 5vw;
   top: -12px;
   width: 120px;
+}
+
+/* hamburger menu stuff */
+
+
+@media screen and (max-width: 500px) {
+  header {
+    grid-template-columns: 20% 60% 20%;
+    background-color: var(--color-orange);
+    position: fixed;
+  }
+
+  .header-logo {
+    grid-column: 2;
+  }
+
+  .nav-toggle-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-left: 1em;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav-toggle-label span,
+  .nav-toggle-label span::before,
+  .nav-toggle-label span::after {
+    /*  hamburger nav bar icon */
+    display: block;
+    background-color: var(--text-color-dark);
+    height: 3px;
+    width: 2em;
+    border-radius: 2px;
+    position: relative;
+  }
+  
+  .nav-toggle-label span::before,
+  .nav-toggle-label span::after {
+    content: '';
+    position: absolute;
+  }
+  
+  .nav-toggle-label span::before {
+    bottom: 8px;
+  }
+  
+  .nav-toggle-label span::after {
+    top: 8px;
+  }
+  
+  .header-nav {
+    all: unset;
+    background-color: var(--color-orange);
+    position: absolute;
+    text-align: left;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    /* nav bar is squished completely on the y axis by default */
+    transform: scale(1, 0);
+    transform-origin: top;
+    transition: transform 400ms ease-in-out;
+  }
+  
+  .header-nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .header-nav li {
+    margin-bottom: 1em;
+    margin-left: 1em;
+  }
+
+  .header-nav a {
+    opacity: 0;
+    /* fade-out animation when hamburger is clicked while the navbar is out */
+    transition: opacity 150ms ease-in-out;
+  }
+
+  /* .header-nav a:hover {
+    color: var(--text-white-hover);
+  } */
+  
+  .nav-toggle:checked ~ nav {
+    display: block;
+    /* return nav bar to its original Y scale */
+    transform: scale(1, 1);
+  }
+  
+  .nav-toggle:checked ~ nav a {
+    opacity: 1;
+    /* fade-in animation when hamburger is clicked */
+    transition: opacity 250ms ease-in-out 250ms;
+  }
 }
 
 
@@ -221,6 +360,9 @@ main {
   justify-content: center;
   flex-grow: 1;
   flex-shrink: 0;
+
+  /* position: absolute;
+  top: 62px; */
 }
 
 .container {
@@ -283,6 +425,10 @@ footer {
   /* remove background when on mobile */
   main {
     background: none;
+    position: absolute;
+    /* TODO: lazy fix; 
+    when the header is fixed, the main content should start at its bottom */
+    top: 62px;
   }
 
   .grid-container {
@@ -299,26 +445,26 @@ footer {
 
   /* hide side images */
   #rotation-rumble-logo {
-    visibility: hidden;
+    display: none;
   }
 
   #back-to-website {
-    visibility: hidden;
+    display: none;
   }
 
   /* change format of header and footer */
-  header {
+  /* header {
     border-bottom: 2px solid var(--color-orange);
     width: 100%;
     top: 0;
-  }
+  } */
 
   footer {
     width: 100%;
     bottom: 0;
   }
 
-  .header-nav ul {
+  /* .header-nav ul {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -327,7 +473,7 @@ footer {
     margin: 0;
     padding: 0;
     font-size: 22px;
-  }
+  } */
 
   .footer-nav ul {
     gap: 0.5rem;
