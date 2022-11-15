@@ -1,10 +1,9 @@
 <script>
-
   var colors;  // needed later
 
-  function getInnerText(node) {
+  const getInnerText = function(node) {
     // helper function for the table sorting algorithm
-    // TODO: import from exportCSV.js?
+    // TODO: import from exportCSV.js instead?
     let childNodes = node.childNodes;
 
     let textContent = '';
@@ -29,12 +28,12 @@
   // https://www.w3schools.com/HTML/html5_draganddrop.asp
   // https://stackoverflow.com/questions/13007582/html5-drag-and-copy
 
-  function allowDrop(ev) {
+  const allowDrop = function(ev) {
     ev.preventDefault();
   }
   
 
-  function drag(ev) {
+  const drag = function(ev) {
     if (ev.target.tagName === 'TR') {
       // User drags the row
       ev.dataTransfer.setData("text", ev.target.id);
@@ -45,7 +44,7 @@
   }
 
 
-  function checkInTable(data, tBody) {
+  const checkInTable = function(data, tBody) {
     // checks if an element is already in the table
 
     let index = 0;
@@ -64,7 +63,7 @@
   }
 
 
-  function drop(ev) {
+  const drop = function(ev) {
     ev.preventDefault();
 
     let data = ev.dataTransfer.getData("text");
@@ -72,7 +71,6 @@
 
     let dropped = false;
 
-   
 
     // check which zone the element is dragged onto
     if (ev.target.className === 'drag-zone') {
@@ -94,7 +92,7 @@
           return;
         }
 
-        // leader image
+        // show the leader image
 
         // check if there is already an image
         if (document.getElementById('leader-image')) {
@@ -112,6 +110,8 @@
 
         tBody.appendChild(newRow);
         dropped = true;
+
+        addCardAsLeader(newRow);
 
       } else if (ev.target.parentNode.className === 'deck-container') {
         // check if element is in table and at which index
@@ -131,56 +131,65 @@
   }
 
 
-  function addToDeck(event) {
-    // adds the row of data to the Deck table
+  const addToDeckTable = function(event) {
+    // adds the row of card data to the Deck table
+    // the row is retrieved from the drag event's parent
     let newRow = event.target.parentNode;
     let tBody = document.getElementById('my-deck-table').getElementsByTagName('tbody')[0];
     addColumnsToCard(newRow);
     tBody.appendChild(newRow);
 
-    // add to local storage
-    
+    // add the card also to local storage
     addCardFromDeckbuilder(newRow);
   }
 
 
-  function addColumnsToCard(row) {
-    // when a card is added to the Deck table
+  var removeFromDeckTable = function(event) {
+    // add this row of card data back to the "All cards" table
+    let row = event.target.parentNode;
+
+    // if it was a leader and there is an image
+    if (row.parentNode.parentNode.id === 'leader-container-table') {
+        document.getElementById('leader-image').remove();
+      }
+
+    // remove the X column
+    row.removeChild(row.lastElementChild);
+
+    // add the "add to deck" column
+    let addCell = document.createElement('td');
+    addCell.className = 'add-deck';
+    addCell.textContent = String.fromCodePoint(10133);
+    addCell.setAttribute('onclick', 'addToDeckTable(event)');
+    row.appendChild(addCell);
+
+    // move back to all cards list
+    let galleryTBody = document.getElementById('card-gallery-table')
+        .getElementsByTagName('tbody')[0];
+    
+    galleryTBody.insertBefore(row, galleryTBody.firstChild);
+
+    // remove from deck in local storage
+    let id = idFromCardname(getInnerText(row.firstElementChild));
+    removeCardFromDeck(id);
+    console.log('removed', id)
+  }
+
+
+  const addColumnsToCard = function(row) {
+    // this has to be called when a card is added to the Deck table
 
     // remove the "add to deck" column
     row.removeChild(row.lastElementChild);
 
-    let xCol = document.createElement('td');
-    xCol.className = 'remove-x';
-    xCol.textContent = String.fromCodePoint(10060);
+    // add the "X" column that will remove this row from the deck
+    let xCell = document.createElement('td');
+    xCell.className = 'remove-x';
+    xCell.textContent = String.fromCodePoint(10060);
 
-    xCol.onclick = () => {
-      // when the card is added back to the All Cards table
+    xCell.setAttribute('onclick', 'removeFromDeckTable(event)');
 
-      // if it was a leader and there is an image
-
-      if (row.parentNode.parentNode.id === 'leader-container-table') {
-          document.getElementById('leader-image').remove();
-        }
-
-      // remove the X column
-      row.removeChild(row.lastElementChild);
-
-      // add the "add to deck" column
-      let addCol = document.createElement('td');
-      addCol.className = 'add-deck';
-      addCol.textContent = String.fromCodePoint(10133);
-      addCol.setAttribute('onclick', 'addToDeck(event)');
-      row.appendChild(addCol);
-
-      // move back to all cards list
-      let galleryTBody = document.getElementById('card-gallery-table')
-          .getElementsByTagName('tbody')[0];
-      
-      galleryTBody.insertBefore(row, galleryTBody.firstChild);
-    }
-
-    row.appendChild(xCol);
+    row.appendChild(xCell);
   }
 
 
@@ -188,7 +197,7 @@
   /* 
       ------- TABLE SORTING ---------
   */
-  function sortTable(index, id) {
+  const sortTable = function(index, id) {
     // https://www.w3schools.com/howto/howto_js_sort_table.asp
 
     let table = document.getElementById(id);
@@ -252,36 +261,46 @@
 
   // --- MISC -----
 
-  function imageErrorHandler(img) {
-    // load a local default image
+  const imageErrorHandler = function(img) {
+    // load a local default image on Error
     img.src = '/images/notfound.png';
   }
 
 
-  function capitalize(str) {
+  const capitalize = function(str) {
     // capitalize the first char of a string
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
   
-  function idFromCardname(name) {
+  const idFromCardname = function(name) {
     // converts a card name to its id
+    // e.g. "Bugs Bunny" => "bugs_bunny"
     return name.replace(new RegExp('[\\s-]', 'gi'), '_').toLowerCase();
   }
 
 
-  function getDeck() {
+  const getDeck = function() {
+    // retrieves the current user created deck from local storage
     if (!localStorage.getItem('currentDeck')) {
       // if there is no currentDeck, set it as an empty array
       localStorage.setItem('currentDeck', JSON.stringify({}));
     }
-    // parse string from storage
+    // parse string from storage and return an object
     return JSON.parse(localStorage.getItem('currentDeck'));
   }
 
+
+  const saveDeck = function(deck) {
+    // puts the deck object back into local storage
+    localStorage.setItem('currentDeck', JSON.stringify(deck));
+  }
+
   
-  function addCardtoDeck(cardData) {
-    // adds the currently displayed card on singlecard.ejs to local storage
+  const addCardtoDeck = function(cardData) {
+    // adds a new card to the deck in local storage
+
+    // retrieve the deck object
     let deck = getDeck();
 
     // check if this card is in the deck
@@ -293,19 +312,36 @@
     deck[key] = cardData;
 
     // put deck array back into storage
-    localStorage.setItem('currentDeck', JSON.stringify(deck));
-    // alert(`You added ${cardData.name}.\nGo to the Deck Builder page to see the whole deck!`);
-
-    console.log(deck)
+    saveDeck(deck);
   }
 
 
-  function addCardfromSinglecard() {
+  const removeCardFromDeck = function(id) {
+    // removes a card from the deck in local storage
+
+    // retrieve the deck object
+    let deck = getDeck();
+
+    // check if this card is in the deck
+    if (!(id in deck)) {
+      return;
+    }
+    delete deck[id];
+
+    // put deck array back into storage
+    saveDeck(deck);
+  }
+
+
+  const addCardfromSinglecard = function() {
+    // Wrapper for addCardToDeck(), to be called from singlecard.ejs
+
     // get name of Card from singlecard.ejs
     let card = {
       name: document.querySelector('.card-title')?.innerHTML,
       cardtype: document.querySelector('.card-type-text')?.getAttribute('data-cardtype'),
-      info: '💬'
+      info: '💬',
+      leader: false
     };
     addCardtoDeck(card);
     // hide the div that holds the "add to deck" function
@@ -313,35 +349,69 @@
   }
 
 
-  function addCardFromDeckbuilder(row) {
-    // add the card from the deck builder
+  const addCardFromDeckbuilder = function(row) {
+    // Wrapper for addCardToDeck(), to be called from deck-builder.ejs
 
+    // add the card from the deck builder
     let name = getInnerText(row.firstElementChild);
     
     let card = {
       name: getInnerText(row.querySelector('.table-cell-cardname')),
       cardtype: getInnerText(row.querySelector('.table-cell-cardtype')),
-      info: '💬'
+      info: '💬',
+      leader: false
     };
     addCardtoDeck(card);
   }
 
 
-  function createDeckFromStorage() {
+  const addCardAsLeader = function(row) {
+    // Wrapper for addCardToDeck(), to be called from deck-builder.ejs
+
+    // add the card from the deck builder
+    let name = getInnerText(row.firstElementChild);
+    
+    let card = {
+      name: getInnerText(row.querySelector('.table-cell-cardname')),
+      cardtype: getInnerText(row.querySelector('.table-cell-cardtype')),
+      info: '💬',
+      leader: true
+    };
+    addCardtoDeck(card);
+  }
+
+
+  const createDeckFromStorage = function() {
     // loads the deck from localstorage into the deck builder
     let deck = getDeck();
-
-    console.log(deck)
 
     let galleryTBody = document.getElementById('card-gallery-table')
           .getElementsByTagName('tbody')[0];
     let deckTBody = document.getElementById('my-deck-table').getElementsByTagName('tbody')[0];
+    let leaderTBody = document.getElementById('leader-container-table')
+          .getElementsByTagName('tbody')[0];
 
     Object.entries(deck).forEach(([key, card]) => {
       let row = document.querySelector(`.card-gallery-row-${key}`);
-      addColumnsToCard(row);
-      console.log(row)
-      deckTBody.appendChild(row);
+      if (!card.leader) {
+        deckTBody.appendChild(row);
+        addColumnsToCard(row);
+      } else {
+        // TODO: duplicate code, make function!
+        // read image url from img tag
+        let imageSrc = row.querySelector('.card-image-tooltip')?.src;
+
+        let leaderImg = document.createElement('img');
+        leaderImg.id = 'leader-image';
+        leaderImg.src = imageSrc || 'images/notfound.png';
+        leaderImg.width = '300';
+
+        let dropZone = document.getElementById('leader-container');
+        dropZone.appendChild(leaderImg);
+
+        leaderTBody.appendChild(row);
+        addColumnsToCard(row);
+      }
     });
   }
 

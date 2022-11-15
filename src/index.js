@@ -231,6 +231,11 @@ app.get('/api/all-cards', (req, res) => {
 
 // POST requests
 
+const sanitize = function(text) {
+  // Do I need this?
+  return text.replace(/'[.\\+*?\\[^\]$(){}=!<>|:\\#'"]/g, '\\$0');
+}
+
 
 const escapeRegex = function(text) {
   // helper function
