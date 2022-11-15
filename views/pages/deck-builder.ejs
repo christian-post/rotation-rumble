@@ -88,7 +88,7 @@
                   </div>
                 </div>
               </td>
-              <td class="add-deck" onclick="addToDeck(event)">
+              <td class="add-deck" onclick="addToDeckTable(event)">
                   ➕
               </td>
             </tr>
@@ -168,6 +168,17 @@
 <!-- script that synchronizes the deck with deck from local storage -->
 <script>
   createDeckFromStorage();
+
+  // TODO: test
+
+  
+  // var myfunc = ()=> console.log('hello');
+
+  // let nodes = document.querySelectorAll('.remove-x')
+  // for (let node of nodes) {
+  //   node.setAttribute('onclick', 'myfunc()');
+  //   // node.onclick = myfunc;
+  // }
 </script>
 
 <%- include('../partials/postprocessing'); %>
