@@ -3,6 +3,7 @@ import '/FileSaver.js';
 // https://muhimasri.com/blogs/how-to-export-html-table-to-a-csv-file/
 
 export const exportCSV = function(id) {
+  //TODO outdated
   let csv = [];
   
   const separator = ';';

@@ -26,16 +26,15 @@
         <%- include('../partials/cardinfo'); %>
       </div>
 
-      <div class="grid-item">
-        <div class="add-to-deck-container" id="add-to-deck-container">
-          <input 
-            type="button" 
-            class="add-to-deck-button" 
-            value="Add to deck"
-            onclick="addCardfromSinglecard()"
-          >
-        </div>
+      <div class="add-to-deck-container" id="add-to-deck-container">
+        <input 
+          type="button" 
+          class="add-to-deck-button" 
+          value="Add to deck"
+          onclick="addCardfromSinglecard()"
+        >
       </div>
+      
     <% } else { %>
       <div class="grid-item">
         <h1>Oops, this card does not exist 😅</h1>
@@ -49,5 +48,13 @@
 </footer>
 
 </body>
+
+<script>
+  //  remove the "add to deck" dialog if this card is in the deck
+  if (isInDeck("<%= locals.card.id %>")) {
+    document.getElementById('add-to-deck-container').style.display = "none";
+  }
+</script>
+
 <%- include('../partials/postprocessing'); %>
 </html>
