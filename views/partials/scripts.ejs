@@ -4,6 +4,9 @@
   const getInnerText = function(node) {
     // helper function for the table sorting algorithm
     // TODO: import from exportCSV.js instead?
+
+    if (node === undefined) return;
+
     let childNodes = node.childNodes;
 
     let textContent = '';
@@ -15,6 +18,7 @@
         }
     }
     // replace line breaks, single tabs, and whitespace > length 2
+    // TODO is this caused by EJS?
     textContent = textContent.replace(/\r?\n|\r|\t|\s{2,}/g,"");
 
     return textContent;
@@ -141,6 +145,8 @@
 
     // add the card also to local storage
     addCardFromDeckbuilder(newRow);
+
+    updateStats();
   }
 
 
@@ -172,7 +178,9 @@
     // remove from deck in local storage
     let id = idFromCardname(getInnerText(row.firstElementChild));
     removeCardFromDeck(id);
-    console.log('removed', id)
+    console.log('removed', id);
+
+    updateStats();
   }
 
 
@@ -193,6 +201,23 @@
   }
 
 
+  const deleteDeckFromDeckbuilder = function() {
+    if (!confirm('Do you want to delete this deck?')) return;
+
+    // delete leader
+    const leader = Array.from(document.getElementById('leader-container-table').rows)[0];
+    leader?.querySelector('.remove-x')?.click();
+    document.getElementById('leader-image')?.remove();
+
+    // delete deck list
+    const rows = Array.from(document.getElementById('my-deck-table').rows);
+    // trigger onclick event of remove button
+    rows.forEach(row => row.querySelector('.remove-x')?.click());
+    // remove the deck from local storage
+    deleteDeck();
+  }
+
+  
 
   /* 
       ------- TABLE SORTING ---------
@@ -291,9 +316,20 @@
   }
 
 
+  const isInDeck = function(id) {
+    return (id in getDeck());
+  }
+
+
   const saveDeck = function(deck) {
     // puts the deck object back into local storage
     localStorage.setItem('currentDeck', JSON.stringify(deck));
+  }
+
+
+  const deleteDeck = function() {
+    // clears the decklist from local storage
+    localStorage.removeItem('currentDeck');
   }
 
   
@@ -306,7 +342,7 @@
     // check if this card is in the deck
     let key = idFromCardname(cardData.name);
     if (key in deck) {
-      alert("This card is already in your deck!");
+      // alert("This card is already in your deck!");
       return;
     }
     deck[key] = cardData;
@@ -345,6 +381,7 @@
     };
     addCardtoDeck(card);
     // hide the div that holds the "add to deck" function
+    // TODO: animate instead
     document.getElementById('add-to-deck-container').style.display = "none";
   }
 
@@ -414,5 +451,74 @@
       }
     });
   }
+
+
+  const getAllCards = async function() {
+    // get all cards
+    let response = await fetch("/api/all-cards");
+    let data = await response.json();
+
+    cards = {};
+    // reformat with id as keys
+    // TODO faster method?
+    data.forEach(card => {
+      cards[card.id] = card;
+    });
+
+    return cards;
+  }
+
+
+  const download = function(content, fileName, contentType) {
+    // generic client-side download
+    let a = document.createElement("a");
+    let file = new Blob([content], {type: contentType});
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
+  }
+
+
+  const exportDeckTxtNew = function() {
+    const deck = getDeck();
+    let txt = '';
+    let valid = true;  // if the deck is valid for export
+    let errorMsg = [];
+
+    // get leader name
+    const leader = getInnerText(document.getElementById('leader-container-table').getElementsByTagName('td')[0]);
+    if (!leader) {
+      valid = false;
+      errorMsg.push('- Your deck has to have a Leader!');
+    }
+    txt += `//Leader\n${leader}\n\n//Deck\n`;
+
+    Object.entries(deck).forEach(([key, card]) => {
+      console.log(card.name === leader);
+      if(card.name !== leader) {
+        txt += `1 ${card.name}\n`;
+      }
+      
+    });
+
+    // add money from number input
+    const money = document.getElementById('num-money').value;
+    txt += `${money} Money`;
+
+    // deck legality check (rows.length starting at one and the leader cancel out)
+    let decklen = Object.entries(deck).length + parseInt(money);
+    if (decklen < 45) {
+      valid = false;
+      errorMsg.push(`- Your deck doesn\'t have enough cards (${decklen}/45)`);
+    }
+
+    if (!valid) {
+      alert('Your deck is invalid for these reasons:\n' + errorMsg.join('\n'));
+      return;
+    }
+
+    download(txt, 'my-deck.txt', 'text/csv;charset=utf-8;');
+  }
+
 
 </script>

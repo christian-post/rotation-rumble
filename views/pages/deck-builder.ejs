@@ -2,6 +2,74 @@
 <html lang="en">
 <head>
   <%- include('../partials/head'); %>
+
+  <script>
+    var cardData;
+
+    const updateStats = async function() {
+      //     <p>Average Hire: 0</p>
+      //     <p>Total Fire: 0</p>
+
+      if (cardData === undefined) {
+        // fetch the card data once
+        // TODO combine card data when saving to local storage
+        cardData = await getAllCards();
+      }
+
+      const money = parseInt(document.getElementById('num-money').value);
+
+      let deck = getDeck();
+      const cardsTotal = Object.keys(deck).length + money;
+
+      let typeCount = {
+        Fighter: 0,
+        Item: 0,
+        Landscape: 0,
+        Challenge: 0
+      };
+
+      let totalHire = 0;
+      let totalFire = 0;
+
+      Object.entries(deck).forEach(([key, card]) => {
+        typeCount[card.cardtype]++;
+
+        let hire = parseInt(cardData[key].hire);
+        let fire = parseInt(cardData[key].fire);
+        totalHire += Number.isFinite(hire) ? hire : 0;
+        totalFire += Number.isFinite(fire) ? fire : 0;
+      });
+
+      let avgHire;
+      if (cardsTotal === 0) {
+        avgHire = "0"
+      } else {
+        avgHire = (totalHire / cardsTotal).toFixed(1);
+      }
+
+      let statsTxts = [
+        `Cards total: ${cardsTotal}`,
+        `Fighters: ${typeCount.Fighter}`,
+        `Items: ${typeCount.Item}`,
+        `Landscapes: ${typeCount.Landscape}`,
+        `Challenges: ${typeCount.Challenge}`,
+        `Money: ${money}`,
+        `Average Hire costs: ${avgHire}`,
+        `Total Fire costs: ${totalFire}`
+      ];
+
+      document.getElementById('deck-stats').innerHTML = '';
+
+      for (text of statsTxts) {
+        let p = document.createElement('p');
+        p.textContent = text;
+        document.getElementById('deck-stats').appendChild(p);
+      }
+    }
+
+    // update when visiting the page
+    updateStats();
+  </script>
 </head>
 <body>
 
@@ -46,6 +114,7 @@
               draggable="true" 
               ondragstart="drag(event)" 
               class=<%= `card-gallery-row-${locals.cards[i].id}` %>
+              data-cardid=<%= locals.cards[i].id %>
             >
               <td class="table-cell-cardname">
                 <div>
@@ -71,7 +140,7 @@
                   </a>
                 </div>
               </td>
-              <td  class="table-cell-cardinfo">
+              <td class="table-cell-cardinfo">
                 <div class="<%= 'card-info | for-' + locals.cards[i].name %>">
                   💬
                 </div>
@@ -100,6 +169,17 @@
 
     <div class="grid-item">
       <h2 style="text-align: center;">My Deck</h2>
+
+      <div class="toggle-header">
+        <h2 style="text-align: left;">Deck stats</h2>
+        <label class="toggle-button" for="toggle1">Expand</label>
+      </div>
+      <div>
+        <input type="checkbox" class="toggle-control" id="toggle1" />
+        <div class="expanding-element" id="deck-stats">
+          <!-- filled by the updateStats function -->
+        </div>
+      </div>
 
       <h2 style="text-align: left;">Leader</h2>
       <div 
@@ -140,15 +220,13 @@
           </tbody>
         </table>
       </div>
-      <div>
-        <label for="num-money">Add Money:</label>
-        <input type="number" id="num-money" name="num-money" min="0" max="45" value="15">
-        <button id="deck-export-button">Export Your Deck</button>
-
-        <script type="module">
-          import { exportDeckTxt } from '/js/exportCSV.js';
-          document.getElementById("deck-export-button").addEventListener("click", ()=> exportDeckTxt('my-deck-table'));
-        </script>
+      <div class="deck-container-footer">
+        <div>
+          <label for="num-money">Add Money:</label>
+          <input type="number" id="num-money" name="num-money" min="0" max="45" value="15">
+        </div>
+        <button id="deck-export-button" onclick="exportDeckTxtNew()">Export Your Deck</button>
+        <button id="deck-delete-button" onclick="deleteDeckFromDeckbuilder()">Delete Deck</button>
       </div>
     </div>
   </div>
@@ -168,17 +246,6 @@
 <!-- script that synchronizes the deck with deck from local storage -->
 <script>
   createDeckFromStorage();
-
-  // TODO: test
-
-  
-  // var myfunc = ()=> console.log('hello');
-
-  // let nodes = document.querySelectorAll('.remove-x')
-  // for (let node of nodes) {
-  //   node.setAttribute('onclick', 'myfunc()');
-  //   // node.onclick = myfunc;
-  // }
 </script>
 
 <%- include('../partials/postprocessing'); %>
