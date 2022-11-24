@@ -2,74 +2,6 @@
 <html lang="en">
 <head>
   <%- include('../partials/head'); %>
-
-  <script>
-    var cardData;
-
-    const updateStats = async function() {
-      //     <p>Average Hire: 0</p>
-      //     <p>Total Fire: 0</p>
-
-      if (cardData === undefined) {
-        // fetch the card data once
-        // TODO combine card data when saving to local storage
-        cardData = await getAllCards();
-      }
-
-      const money = parseInt(document.getElementById('num-money').value);
-
-      let deck = getDeck();
-      const cardsTotal = Object.keys(deck).length + money;
-
-      let typeCount = {
-        Fighter: 0,
-        Item: 0,
-        Landscape: 0,
-        Challenge: 0
-      };
-
-      let totalHire = 0;
-      let totalFire = 0;
-
-      Object.entries(deck).forEach(([key, card]) => {
-        typeCount[card.cardtype]++;
-
-        let hire = parseInt(cardData[key].hire);
-        let fire = parseInt(cardData[key].fire);
-        totalHire += Number.isFinite(hire) ? hire : 0;
-        totalFire += Number.isFinite(fire) ? fire : 0;
-      });
-
-      let avgHire;
-      if (cardsTotal === 0) {
-        avgHire = "0"
-      } else {
-        avgHire = (totalHire / cardsTotal).toFixed(1);
-      }
-
-      let statsTxts = [
-        `Cards total: ${cardsTotal}`,
-        `Fighters: ${typeCount.Fighter}`,
-        `Items: ${typeCount.Item}`,
-        `Landscapes: ${typeCount.Landscape}`,
-        `Challenges: ${typeCount.Challenge}`,
-        `Money: ${money}`,
-        `Average Hire costs: ${avgHire}`,
-        `Total Fire costs: ${totalFire}`
-      ];
-
-      document.getElementById('deck-stats').innerHTML = '';
-
-      for (text of statsTxts) {
-        let p = document.createElement('p');
-        p.textContent = text;
-        document.getElementById('deck-stats').appendChild(p);
-      }
-    }
-
-    // update when visiting the page
-    updateStats();
-  </script>
 </head>
 <body>
 
@@ -243,9 +175,9 @@
 
 </body>
 
-<!-- script that synchronizes the deck with deck from local storage -->
 <script>
   createDeckFromStorage();
+  updateStats();
 </script>
 
 <%- include('../partials/postprocessing'); %>
