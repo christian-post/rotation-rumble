@@ -12,11 +12,6 @@ const app = express()
   .use(express.urlencoded({ extended: true }))
   .use(express.json());
 
-// access to file-saver module
-app.use("/FileSaver.js", (req, res) => {
-  res.sendFile(process.cwd() + "/node_modules/file-saver/src/FileSaver.js");
-});
-
 
 let db;
 
@@ -170,6 +165,11 @@ app.get('/deckbuilder', (req, res) => {
     });
 });
 
+
+// visualized deck stats
+app.get('/visual-deckstats', (req, res) => {
+  res.render(`pages/visual-deckstats`);
+});
 
 
 // about page
