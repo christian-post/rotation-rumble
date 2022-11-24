@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head'); %>
+</head>
+<body>
+
+<header>
+  <%- include('../partials/header'); %>
+</header>
+
+<main>
+  <div class="grid-container" id="visual-deckstats-grid">
+    <div class="grid-item">
+      <div>Casting Costs - X.X avg.</div>
+      <div>
+        <canvas id="casting-costs"></canvas>
+      </div>
+    </div>
+    <div class="grid-item">
+      <div>Card Types</div>
+      <div>
+        <canvas id="card-types"></canvas>
+      </div>
+    </div>
+    <div class="grid-item">
+      <div>Colors</div>
+      <div>
+        <canvas id="colors"></canvas>
+      </div>
+    </div>
+    <div class="grid-item">
+      <div>
+        <p>
+          powered by <a href="https://github.com/chartjs/Chart.js" target="blank">Chart.js</a>
+        </p>
+      </div>
+    </div>
+  </div>
+  
+</main>
+
+<footer>
+  <%- include('../partials/footer'); %>
+</footer>
+
+</body>
+
+<script src="/js/chart.min.js"></script>
+<script>
+  // dummy data
+  const manaCosts = [
+    { cost: '0', amount: 2 },
+    { cost: '1', amount: 4 },
+    { cost: '2', amount: 5 },
+    { cost: '3', amount: 7 },
+    { cost: '4', amount: 9 },
+    { cost: '5', amount: 4 },
+    { cost: '6+', amount: 2 },
+  ];
+
+  const cardtypes = [
+    { type: 'Fighter', amount: 22 },
+    { type: 'Item', amount: 5 },
+    { type: 'Landscape', amount: 2 },
+    { type: 'Challenge', amount: 1 },
+    { type: 'Money', amount: 15 },
+  ];
+
+  const colorStats = [
+    { color: 'red', amount: 13 },
+    { color: 'green', amount: 8 },
+    { color: 'blue', amount: 7 },
+    { color: 'black', amount: 2 },
+  ];
+
+  const colormap = [
+    'rgb(165, 0, 38)',
+    'rgb(188, 22, 38)',
+    'rgb(214, 47, 38)',
+    'rgb(229, 77, 52)',
+    'rgb(244, 109, 67)',
+    'rgb(248, 142, 82)',
+    'rgb(252, 172, 96)',
+    'rgb(253, 198, 120)',
+    'rgb(254, 224, 144)',
+    'rgb(254, 239, 167)',
+    'rgb(254, 254, 192)',
+    'rgb(239, 249, 218)',
+    'rgb(224, 243, 247)',
+    'rgb(196, 229, 240)',
+    'rgb(169, 216, 232)',
+    'rgb(141, 193, 220)',
+    'rgb(116, 173, 209)',
+    'rgb(92, 144, 194)',
+    'rgb(68, 115, 179)',
+    'rgb(58, 83, 163)',
+  ];
+
+  const colorCode = {
+    red: 'rgb(212, 50, 39)',
+    blue: 'rgb(72, 164, 215)',
+    black: 'rgb(160, 160, 160)',
+    green: 'rgb(76, 147, 89)'
+  };
+
+  // ----- Charts  ---------
+
+  new Chart(
+    document.getElementById('casting-costs'),
+    {
+      type: 'bar',
+      options: {
+        plugins: {
+          legend: { display: false }
+        }
+      },
+      data: {
+        labels: manaCosts.map(row => row.cost),
+        datasets: [{
+            label: 'Hire Cost',
+            data: manaCosts.map(row => row.amount),
+            borderColor: '#36A2EB',
+            backgroundColor: '#9BD0F5'
+          }]
+      }
+    }
+  );
+
+
+  new Chart(
+    document.getElementById('card-types'),
+    {
+      type: 'pie',
+      options: {
+        plugins: {
+          legend: { 
+            display: true,
+            position: 'right'
+          }
+        }
+      },
+      data: {
+        labels: cardtypes.map(row => row.type),
+        datasets: [{
+            label: 'Card Types',
+            data: cardtypes.map(row => row.amount),
+            backgroundColor: [
+              colormap[0],
+              colormap[5],
+              colormap[10],
+              colormap[15],
+              colormap[19],
+            ]
+          }]
+      }
+    }
+  );
+
+
+  new Chart(
+    document.getElementById('colors'),
+    {
+      type: 'pie',
+      options: {
+        plugins: {
+          legend: { 
+            display: false
+          }
+        }
+      },
+      data: {
+        labels: colorStats.map(row => row.color),
+        datasets: [{
+            label: 'Card Types',
+            data: colorStats.map(row => row.amount),
+            backgroundColor: [
+              colorCode.red,
+              colorCode.green,
+              colorCode.blue,
+              colorCode.black,
+            ]
+          }]
+      }
+    }
+  );
+</script>
+
+</html>
