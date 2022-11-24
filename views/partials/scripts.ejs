@@ -1,5 +1,7 @@
 <script>
+  var cardData;
   var colors;  // needed later
+
 
   const getInnerText = function(node) {
     // helper function for the table sorting algorithm
@@ -333,19 +335,29 @@
   }
 
   
-  const addCardtoDeck = function(cardData) {
+  const addCardtoDeck = async function(card) {
     // adds a new card to the deck in local storage
+
+    if (cardData === undefined) {
+      // fetch the card data once (into RAM)
+      // TODO combine card data when saving to local storage?
+      cardData = await getAllCards();
+    }
 
     // retrieve the deck object
     let deck = getDeck();
 
     // check if this card is in the deck
-    let key = idFromCardname(cardData.name);
-    if (key in deck) {
+    let id = idFromCardname(card.name);
+    if (id in deck) {
       // alert("This card is already in your deck!");
       return;
     }
-    deck[key] = cardData;
+
+    // combine with card data from database
+    card.data = cardData[id];
+
+    deck[id] = card;
 
     // put deck array back into storage
     saveDeck(deck);
@@ -518,6 +530,60 @@
     }
 
     download(txt, 'my-deck.txt', 'text/csv;charset=utf-8;');
+  }
+
+
+  const updateStats = function() {
+    // Update visualized deck statistics in the deck builder
+    const money = parseInt(document.getElementById('num-money').value);
+
+    let deck = getDeck();
+    const cardsTotal = Object.keys(deck).length + money;
+
+    let typeCount = {
+      Fighter: 0,
+      Item: 0,
+      Landscape: 0,
+      Challenge: 0
+    };
+
+    let totalHire = 0;
+    let totalFire = 0;
+
+    Object.entries(deck).forEach(([key, card]) => {
+      typeCount[card.cardtype]++;
+
+      let hire = parseInt(card.data.hire);
+      let fire = parseInt(card.data.fire);
+      totalHire += Number.isFinite(hire) ? hire : 0;
+      totalFire += Number.isFinite(fire) ? fire : 0;
+    });
+
+    let avgHire;
+    if (cardsTotal === 0) {
+      avgHire = "0"
+    } else {
+      avgHire = (totalHire / cardsTotal).toFixed(1);
+    }
+
+    let statsTxts = [
+      `Cards total: ${cardsTotal}`,
+      `Fighters: ${typeCount.Fighter}`,
+      `Items: ${typeCount.Item}`,
+      `Landscapes: ${typeCount.Landscape}`,
+      `Challenges: ${typeCount.Challenge}`,
+      `Money: ${money}`,
+      `Average Hire costs: ${avgHire}`,
+      `Total Fire costs: ${totalFire}`
+    ];
+
+    document.getElementById('deck-stats').innerHTML = '';
+
+    for (text of statsTxts) {
+      let p = document.createElement('p');
+      p.textContent = text;
+      document.getElementById('deck-stats').appendChild(p);
+    }
   }
 
 

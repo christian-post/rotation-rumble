@@ -81,6 +81,9 @@ select {
   --color-orange: rgb(241,90,37);
   --color-orange-semitrans: rgba(241, 91, 37, 0.5);
   --color-accent-blue: rgb(92,97,178);
+
+  --font-size-default: 16px;
+  --font-size-medium: 20px; 
 }
 
 body {
@@ -452,28 +455,10 @@ footer {
     display: none;
   }
 
-  /* change format of header and footer */
-  /* header {
-    border-bottom: 2px solid var(--color-orange);
-    width: 100%;
-    top: 0;
-  } */
-
   footer {
     width: 100%;
     bottom: 0;
   }
-
-  /* .header-nav ul {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    font-size: 22px;
-  } */
 
   .footer-nav ul {
     gap: 0.5rem;
@@ -898,7 +883,6 @@ footer {
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
 }
 
-
 @keyframes expand-div {
   from {
     height: 0;
@@ -921,6 +905,25 @@ footer {
   }
 }
 
+@keyframes expand-text {
+  from {
+    font-size: 0px;
+  }
+  to {
+    font-size: var(--font-size-default);
+  }
+}
+
+@keyframes shrink-text {
+  from {
+    font-size: var(--font-size-default);
+  }
+  to {
+    font-size: 0px;
+  }
+}
+
+
 .expanding-element {
   max-width: 45vw;
   margin: 10px;
@@ -938,6 +941,22 @@ footer {
 .toggle-control:checked + .expanding-element {
   /* expand the div */
   animation-name: expand-div;
+  animation-duration: 400ms;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+.expanding-element p {
+  /* retract the text */
+  animation-name: shrink-text;
+  animation-duration: 400ms;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+.toggle-control:checked + .expanding-element > p {
+  /* expand the text */
+  animation-name: expand-text;
   animation-duration: 400ms;
   animation-timing-function: ease-in-out;
   animation-fill-mode: forwards;
