@@ -3,10 +3,19 @@
   <label for="display-as">display as </label>
 
   <script>
-    function changeGalleryLayout(select) {
+    const changeGalleryLayout = function(select) {
       if (select.value.length > 0) {
+        // reload the page with different URL argument
         // TODO: hack!
-        window.location.href = '/gallery?as=' + select.value;
+        window.location.href = `/gallery?as=${select.value}&group=none`;
+      }
+    }
+
+    const galleryGroupBy = function(select) {
+      if (select.value.length > 0) {
+        // reload the page with different URL argument
+        // TODO: hack!
+        window.location.href = `/gallery?as=images&group=${select.value}`;
       }
     }
   </script>
@@ -16,5 +25,12 @@
     <option value="images" id="images">Images</option>
     <option value="table" id="table">Table</option>
     <option value="text" id="text">Text only</option>
+  </select>
+
+  <label for="group-by">group by </label>
+  <select name="group-by" id="group-by", onchange="galleryGroupBy(this)">
+    <option value=""></option>
+    <option value="none">None</option>
+    <option value="set">Set</option>
   </select>
 </div>

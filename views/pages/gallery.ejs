@@ -12,11 +12,16 @@
 <main>
   <div class="grid-container" style="grid-template-columns: 50% 50%;">
     <%- include('../partials/card-gallery-table-filter'); %>
-
-    <div class="grid-item" style="grid-column: 1 / span 2">
-      <!-- format card gallery based on query parameter "as" -->
-      <%- include('../partials/card-gallery-' + locals.query.as); %>
-    </div>
+      <% if (locals.aggregated === undefined) { %>
+        <div class="grid-item" style="grid-column: 1 / span 2">
+          <!-- format card gallery based on query parameter "as" -->
+          <%- include('../partials/card-gallery-' + locals.query.as); %>
+        </div>
+      <% } else { %>
+        <div class="grid-item" style="grid-column: 1 / span 2">
+          <%- include('../partials/card-gallery-images-sorted'); %>
+        </div>
+      <% } %>
   </div>
 </main>
 
