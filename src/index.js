@@ -67,23 +67,30 @@ app.get('/gallery', (req, res) => {
 
   // get display method from url
   let displayAs = req.query.as;
+  let groupBy = req.query.group;
 
   if (displayAs === undefined) {
     // default is images
     displayAs = 'images';
   }
 
+  if (groupBy === undefined) {
+    // default is None
+    groupBy = 'none';
+  }
+
+
   let cards = [];
 
   // data fields
   let fields = [
-    'name', 'cardtype', 'color', 'dmg', 'def', 'type1', 
+    'name', 'cardtype', 'set', 'color', 'dmg', 'def', 'type1', 
     'type2', 'hire', 'fire'
   ];
 
   // table column names
   let head = [
-    'Name', 'Card Type', 'Color', 'DMG', 'DEF','Type 1',
+    'Name', 'Card Type', 'Set', 'Color', 'DMG', 'DEF','Type 1',
     'Type 2', 'Hire', 'Fire'
   ];
 
@@ -99,9 +106,45 @@ app.get('/gallery', (req, res) => {
 
   // DB request
 
-  db.collection('all-cards')
+  // aggregate based on the groupby argument
+  // TODO too much duplicate code
+
+  if (groupBy !== 'none') {
+    const pipeline = [
+      { $group: { _id: `\$${groupBy}`, count: { $sum: 1 }}},
+      {$sort: { _id: 1 }} 
+    ];
+
+    const aggCursor = db.collection('all-cards').aggregate(pipeline);
+    aggCursor.toArray().then((aggResults) => {
+      let sort = {};
+      sort[groupBy] = 1;
+      sort['name'] = 1;
+
+      db.collection('all-cards')
+        .find()
+        .sort(sort)
+        .forEach(card => {
+          cards.push(card);
+        })
+        .then(()=> {
+            res.render(`pages/gallery`, {
+              header: 'All Cards',
+              cards: cards,
+              query: req.query,
+              head: head,
+              fields: fields,
+              orderSymbols: orderSymbols,
+              groupBy: groupBy,
+              aggregated: aggResults
+            });
+        });
+    });
+  } else {
+    // no sorting
+    db.collection('all-cards')
     .find()
-    .sort({ name: 1 })
+    .sort({ 'name': 1 })
     .forEach(card => {
       cards.push(card);
     })
@@ -112,9 +155,12 @@ app.get('/gallery', (req, res) => {
           query: req.query,
           head: head,
           fields: fields,
-          orderSymbols: orderSymbols
+          orderSymbols: orderSymbols,
+          groupBy: groupBy,
+          aggregated: undefined
         });
     });
+  } 
 });
 
 
@@ -232,7 +278,7 @@ app.get('/api/all-cards', (req, res) => {
 // POST requests
 
 const sanitize = function(text) {
-  // Do I need this?
+  // TOTO Do I need this?
   return text.replace(/'[.\\+*?\\[^\]$(){}=!<>|:\\#'"]/g, '\\$0');
 }
 
@@ -382,18 +428,18 @@ app.post('/advanced-search/', (req, res) => {
   console.log(search)
 
   found = [];
-    db.collection('all-cards')
-    .find(search)
-    .forEach(card => {
-      found.push(card);
-    })
-    .then(()=> {
-      res.render(`pages/search-results`, {
-        header: `${(found.length ? `These ${found.length}` : "No")} cards matched your search.`,
-        cards: found,
-        query: {
-          as: 'images'
-        }
-      });
+  db.collection('all-cards')
+  .find(search)
+  .forEach(card => {
+    found.push(card);
+  })
+  .then(()=> {
+    res.render(`pages/search-results`, {
+      header: `${(found.length ? `These ${found.length}` : "No")} cards matched your search.`,
+      cards: found,
+      query: {
+        as: 'images'
+      }
     });
+  });
 }); 

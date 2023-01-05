@@ -12,7 +12,7 @@
 <main>
   <div class="grid-container" id="visual-deckstats-grid">
     <div class="grid-item">
-      <div>Casting Costs - X.X avg.</div>
+      <div>Hire Costs - X.X avg.</div>
       <div>
         <canvas id="casting-costs"></canvas>
       </div>
@@ -46,33 +46,45 @@
 
 </body>
 
-<script src="/js/chart.min.js"></script>
+<script src='/js/chart.min.js'></script>
 <script>
   // dummy data
   const manaCosts = [
-    { cost: '0', amount: 2 },
-    { cost: '1', amount: 4 },
-    { cost: '2', amount: 5 },
-    { cost: '3', amount: 7 },
-    { cost: '4', amount: 9 },
-    { cost: '5', amount: 4 },
-    { cost: '6+', amount: 2 },
+    { cost: '0', amount: 0 },
+    { cost: '1', amount: 0 },
+    { cost: '2', amount: 0 },
+    { cost: '3', amount: 0 },
+    { cost: '4', amount: 0 },
+    { cost: '5', amount: 0 },
+    { cost: '6+', amount: 0 },
   ];
 
-  const cardtypes = [
-    { type: 'Fighter', amount: 22 },
-    { type: 'Item', amount: 5 },
-    { type: 'Landscape', amount: 2 },
-    { type: 'Challenge', amount: 1 },
-    { type: 'Money', amount: 15 },
-  ];
+  const cardtypes = {
+    Fighter: 0,
+    Item: 0,
+    Landscape: 0,
+    Challenge: 0,
+    Money: 0,
+  };
 
-  const colorStats = [
-    { color: 'red', amount: 13 },
-    { color: 'green', amount: 8 },
-    { color: 'blue', amount: 7 },
-    { color: 'black', amount: 2 },
-  ];
+  const colorStats = {
+    red: 0,
+    green: 0,
+    blue: 0,
+    black: 0,
+  };
+
+  // get data from deck in local storage
+  const deck = getDeck();
+
+  Object.entries(deck).forEach(([key, card]) => {
+    let cost = parseInt(card.data.hire);
+    manaCosts[Math.min(cost, 6)].amount += 1;
+
+    cardtypes[card.data.cardtype] += 1
+    colorStats[card.data.color] += 1
+  });
+  
 
   const colormap = [
     'rgb(165, 0, 38)',
@@ -141,10 +153,10 @@
         }
       },
       data: {
-        labels: cardtypes.map(row => row.type),
+        labels: Object.keys(cardtypes),
         datasets: [{
             label: 'Card Types',
-            data: cardtypes.map(row => row.amount),
+            data: Object.values(cardtypes),
             backgroundColor: [
               colormap[0],
               colormap[5],
@@ -170,10 +182,10 @@
         }
       },
       data: {
-        labels: colorStats.map(row => row.color),
+        labels: Object.keys(colorStats),
         datasets: [{
             label: 'Card Types',
-            data: colorStats.map(row => row.amount),
+            data: Object.values(colorStats),
             backgroundColor: [
               colorCode.red,
               colorCode.green,
