@@ -11,30 +11,44 @@
 
 <main>
   <div class="grid-container" id="visual-deckstats-grid">
+
+    <div class="deckstats-header">
+        <a href="/deckbuilder">
+          <button class="standard-button">Back</button>
+        </a>
+    </div>
+
     <div class="grid-item">
       <div>Hire Costs - X.X avg.</div>
       <div>
         <canvas id="casting-costs"></canvas>
       </div>
     </div>
+
     <div class="grid-item">
       <div>Card Types</div>
       <div>
         <canvas id="card-types"></canvas>
       </div>
     </div>
+
     <div class="grid-item">
       <div>Colors</div>
       <div>
         <canvas id="colors"></canvas>
       </div>
     </div>
+
     <div class="grid-item">
-      <div>
-        <p>
-          powered by <a href="https://github.com/chartjs/Chart.js" target="blank">Chart.js</a>
-        </p>
-      </div>
+        <div>Deck List</div>
+        <div id="decklist-body">
+        </div>
+    </div>
+
+    <div class="deckstats-footer">
+      <p>
+        powered by <a href="https://github.com/chartjs/Chart.js" target="blank">Chart.js</a>
+      </p>
     </div>
   </div>
   
@@ -175,6 +189,7 @@
     {
       type: 'pie',
       options: {
+        maintainAspectRatio: false,  // fixed height based on available space
         plugins: {
           legend: { 
             display: false
@@ -196,6 +211,36 @@
       }
     }
   );
+
+  // Deck list table
+  dbody = document.getElementById('decklist-body');
+
+  Object.entries(deck).forEach(([key, card]) => {
+    // check if there is a div for this type
+    let div = document.getElementById(`decklist-type-${card.cardtype}`);
+
+    if (div === null) {
+        // container
+        div = document.createElement('div');
+        div.id = `decklist-type-${card.cardtype}`;
+        div.className = 'decklist-type-container';
+        dbody.append(div);
+
+        // headline
+        let head = document.createElement('p');
+        head.className = 'decklist-type-header';
+        head.innerHTML = `== ${card.cardtype} ==`;
+        div.appendChild(head);
+
+        let p = document.createElement('p');
+        p.id = `decklist-cards-${card.cardtype}`;
+        div.appendChild(p);
+    }
+
+    let cardP = document.getElementById(`decklist-cards-${card.cardtype}`);
+    cardP.innerText += card.name;
+    cardP.appendChild(document.createElement('br'));
+  });
 </script>
 
 </html>

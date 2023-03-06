@@ -944,6 +944,15 @@ footer {
   }
 }
 
+#deck-stats {
+  margin: 10px;
+  padding: 1rem;
+  border: 1px solid var(--color-orange);
+  border-radius: 10px;
+  display: flex;
+  gap: 4rem;
+}
+
 
 .expanding-element {
   max-width: 45vw;
@@ -1082,6 +1091,39 @@ footer {
 /* ---------------------------------------------- VISUAL DECKSTATS ----------------------------------------------------*/
 /* ------------------------------------------------------------------------------------------------------------------ */
 
+.deckstats-header {
+  grid-column: 1 / span 3;
+  padding-left: 4rem;  /* TODO: temporary fix  */
+}
+
+.deckstats-footer {
+  grid-column: 1 / span 3;
+  padding: 1rem;
+}
+
+.deckstats-footer p {
+  text-align: right;
+}
+
 #visual-deckstats-grid {
   grid-template-columns: 33% 33% 33%;
+}
+
+#decklist-body {
+  display: flex;
+}
+
+.decklist-type-container {
+  margin: 0.5rem;
+  border: 1px solid red;
+}
+
+.decklist-type-container p {
+  padding: 0.25rem 1rem 0.25rem 1rem;
+}
+
+.decklist-type-header {
+  font-size: 20px;
+  font-weight: bold;
+  white-space: nowrap;
 }

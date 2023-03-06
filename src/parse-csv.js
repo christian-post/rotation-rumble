@@ -14,8 +14,11 @@ let cleanedDataString = cardDataString.replace(//gmi, " ")
 
 // console.log(cleanedDataString)
 
-const cardData = Papa.parse(cleanedDataString, { header: true, delimiter: ',' });
+const cardData = Papa.parse(
+  cleanedDataString, 
+  { header: true, delimiter: ',', skipEmptyLines: 'greedy' }
+);
 
-fs.writeFileSync('./data/csv/test.csv', cleanedDataString);
+// fs.writeFileSync('./data/csv/test.csv', cleanedDataString);
 
 fs.writeFileSync('./data/json/all_cards_fighter.json', JSON.stringify(cardData.data));

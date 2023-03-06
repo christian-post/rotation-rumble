@@ -566,24 +566,48 @@
       avgHire = (totalHire / cardsTotal).toFixed(1);
     }
 
-    let statsTxts = [
-      `Cards total: ${cardsTotal}`,
-      `Fighters: ${typeCount.Fighter}`,
-      `Items: ${typeCount.Item}`,
-      `Landscapes: ${typeCount.Landscape}`,
-      `Challenges: ${typeCount.Challenge}`,
-      `Money: ${money}`,
-      `Average Hire costs: ${avgHire}`,
-      `Total Fire costs: ${totalFire}`
-    ];
+    let statsTxt1 = `Cards total: ${cardsTotal}<br>
+    Fighters: ${typeCount.Fighter}<br>
+    Items: ${typeCount.Item}<br>
+    Landscapes: ${typeCount.Landscape}`;
+
+    let statsTxt2 = `Challenges: ${typeCount.Challenge}<br>
+    Money: ${money}<br>
+    Average Hire costs: ${avgHire}<br>
+    Total Fire costs: ${totalFire}`;
 
     document.getElementById('deck-stats').innerHTML = '';
 
-    for (text of statsTxts) {
-      let p = document.createElement('p');
-      p.textContent = text;
-      document.getElementById('deck-stats').appendChild(p);
-    }
+    let p1 = document.createElement('p');
+    let p2 = document.createElement('p');
+
+    p1.innerHTML = statsTxt1;
+    p2.innerHTML = statsTxt2;
+
+    document.getElementById('deck-stats').appendChild(p1);
+    document.getElementById('deck-stats').appendChild(p2);
+
+
+    // let statsTxts = [
+    //   `Cards total: ${cardsTotal}`,
+    //   `Fighters: ${typeCount.Fighter}`,
+    //   `Items: ${typeCount.Item}`,
+    //   `Landscapes: ${typeCount.Landscape}`,
+    //   `Challenges: ${typeCount.Challenge}`,
+    //   `Money: ${money}`,
+    //   `Average Hire costs: ${avgHire}`,
+    //   `Total Fire costs: ${totalFire}`
+    // ];
+
+    
+
+    // for (text of statsTxts) {
+    //   let p = document.createElement('p');
+    //   p.textContent = text;
+    //   document.getElementById('deck-stats').appendChild(p);
+    // }
+
+
   }
 
 
