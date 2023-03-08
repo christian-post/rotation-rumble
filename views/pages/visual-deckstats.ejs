@@ -39,10 +39,9 @@
       </div>
     </div>
 
-    <div class="grid-item">
+    <div class="grid-item | decklist">
         <div>Deck List</div>
-        <div id="decklist-body">
-        </div>
+        <div id="decklist-body"></div>
     </div>
 
     <div class="deckstats-footer">
@@ -217,29 +216,29 @@
 
   Object.entries(deck).forEach(([key, card]) => {
     // check if there is a div for this type
-    let div = document.getElementById(`decklist-type-${card.cardtype}`);
+    let sectionID = `decklist-section-${card.cardtype}`;
+    let listID = `decklist-ul-${card.cardtype}`;
+    let section = document.getElementById(sectionID);
 
-    if (div === null) {
-        // container
-        div = document.createElement('div');
-        div.id = `decklist-type-${card.cardtype}`;
-        div.className = 'decklist-type-container';
-        dbody.append(div);
+    let ul = document.getElementById(listID);
 
-        // headline
-        let head = document.createElement('p');
-        head.className = 'decklist-type-header';
-        head.innerHTML = `== ${card.cardtype} ==`;
-        div.appendChild(head);
+    if (section === null) {
+        section = document.createElement('section');
+        section.id = sectionID;
+        dbody.appendChild(section)
 
-        let p = document.createElement('p');
-        p.id = `decklist-cards-${card.cardtype}`;
-        div.appendChild(p);
+        let head = document.createElement('h3');
+        head.innerHTML = card.cardtype;
+        section.append(head);
+
+        ul = document.createElement('ul');
+        ul.id = listID;
+        section.append(ul);
     }
 
-    let cardP = document.getElementById(`decklist-cards-${card.cardtype}`);
-    cardP.innerText += card.name;
-    cardP.appendChild(document.createElement('br'));
+    let li = document.createElement('li');
+    li.innerHTML = card.name;
+    ul.appendChild(li);
   });
 </script>
 
