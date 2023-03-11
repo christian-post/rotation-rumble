@@ -163,9 +163,18 @@ app.get('/gallery', (req, res) => {
   } 
 });
 
-
-// deck builder
 app.get('/deckbuilder', (req, res) => {
+  if (!db) {
+    // database connection not established
+    res.render('pages/error');
+  } else {
+    res.render('pages/deckbuilder');
+  }
+});
+
+
+// deck editor
+app.get('/deck-editor', (req, res) => {
   if (!db) {
     // database connection not established
     res.render('pages/error');
@@ -200,7 +209,7 @@ app.get('/deckbuilder', (req, res) => {
       cards.push(card);
     })
     .then(()=> {
-        res.render(`pages/deck-builder`, {
+        res.render(`pages/deck-editor`, {
           header: 'All Cards',
           query: { as: 'table' },
           cards: cards,
@@ -214,7 +223,13 @@ app.get('/deckbuilder', (req, res) => {
 
 // visualized deck stats
 app.get('/visual-deckstats', (req, res) => {
-  res.render(`pages/visual-deckstats`);
+  if (!db) {
+    // database connection not established
+    res.render('pages/error');
+  } else {
+    res.render(`pages/visual-deckstats`);
+  }
+
 });
 
 

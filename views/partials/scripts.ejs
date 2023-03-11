@@ -307,31 +307,55 @@
   }
 
 
-  const getDeck = function() {
+  const getDeck = function(deckID) {
+
+    if (deckID === undefined) { deckID = 'currentDeck'; }
+
+    let blueprint = {
+      cards: {},
+      name: null,
+      id: null,
+      leader: null
+    };
+
     // retrieves the current user created deck from local storage
-    if (!localStorage.getItem('currentDeck')) {
+    if (!localStorage.getItem(deckID)) {
       // if there is no currentDeck, set it as an empty array
-      localStorage.setItem('currentDeck', JSON.stringify({}));
+      localStorage.setItem(deckID, JSON.stringify(blueprint));
     }
     // parse string from storage and return an object
-    return JSON.parse(localStorage.getItem('currentDeck'));
+    let deck = JSON.parse(localStorage.getItem(deckID));
+
+    // test if deck object matches the blueprint
+    // necessary if the users have an older version in the cache
+    for (const key in blueprint) {
+      if (!Object.keys(deck).includes(key)) {
+        alert('Warning: The deck in your cache seems to be an older version. Deck deleted.')
+        deck = JSON.parse(JSON.stringify(blueprint));
+        break;
+      }
+    }
+
+    return deck;
   }
 
 
   const isInDeck = function(id) {
-    return (id in getDeck());
+    return (id in getDeck().cards);
   }
 
 
-  const saveDeck = function(deck) {
+  const saveDeck = function(deck, deckID) {
+    if (deckID === undefined) { deckID = 'currentDeck'; }
     // puts the deck object back into local storage
-    localStorage.setItem('currentDeck', JSON.stringify(deck));
+    localStorage.setItem(deckID, JSON.stringify(deck));
   }
 
 
-  const deleteDeck = function() {
+  const deleteDeck = function(deckID) {
+    if (deckID === undefined) { deckID = 'currentDeck'; }
     // clears the decklist from local storage
-    localStorage.removeItem('currentDeck');
+    localStorage.removeItem(deckID);
   }
 
   
@@ -340,7 +364,6 @@
 
     if (cardData === undefined) {
       // fetch the card data once (into RAM)
-      // TODO combine card data when saving to local storage?
       cardData = await getAllCards();
     }
 
@@ -349,7 +372,7 @@
 
     // check if this card is in the deck
     let id = idFromCardname(card.name);
-    if (id in deck) {
+    if (id in deck.cards) {
       // alert("This card is already in your deck!");
       return;
     }
@@ -357,7 +380,10 @@
     // combine with card data from database
     card.data = cardData[id];
 
-    deck[id] = card;
+    if (card.leader) {
+      deck.leader = card;
+    }
+    deck.cards[id] = card;
 
     // put deck array back into storage
     saveDeck(deck);
@@ -371,10 +397,10 @@
     let deck = getDeck();
 
     // check if this card is in the deck
-    if (!(id in deck)) {
+    if (!(id in deck.cards)) {
       return;
     }
-    delete deck[id];
+    delete deck.cards[id];
 
     // put deck array back into storage
     saveDeck(deck);
@@ -440,7 +466,7 @@
     let leaderTBody = document.getElementById('leader-container-table')
           .getElementsByTagName('tbody')[0];
 
-    Object.entries(deck).forEach(([key, card]) => {
+    Object.entries(deck.cards).forEach(([key, card]) => {
       let row = document.querySelector(`.card-gallery-row-${key}`);
       if (!card.leader) {
         deckTBody.appendChild(row);
@@ -466,7 +492,7 @@
 
 
   const getAllCards = async function() {
-    // get all cards
+    // get all cards from Database
     let response = await fetch("/api/all-cards");
     let data = await response.json();
 
@@ -498,6 +524,7 @@
     let errorMsg = [];
 
     // get leader name
+    // TODO: leader has to be in the deck object
     const leader = getInnerText(document.getElementById('leader-container-table').getElementsByTagName('td')[0]);
     if (!leader) {
       valid = false;
@@ -505,12 +532,10 @@
     }
     txt += `//Leader\n${leader}\n\n//Deck\n`;
 
-    Object.entries(deck).forEach(([key, card]) => {
-      console.log(card.name === leader);
-      if(card.name !== leader) {
+    Object.entries(deck.cards).forEach(([key, card]) => {
+      if(!card.leader) {
         txt += `1 ${card.name}\n`;
       }
-      
     });
 
     // add money from number input
@@ -518,7 +543,7 @@
     txt += `${money} Money`;
 
     // deck legality check (rows.length starting at one and the leader cancel out)
-    let decklen = Object.entries(deck).length + parseInt(money);
+    let decklen = Object.entries(deck.cards).length + parseInt(money);
     if (decklen < 45) {
       valid = false;
       errorMsg.push(`- Your deck doesn\'t have enough cards (${decklen}/45)`);
@@ -538,7 +563,7 @@
     const money = parseInt(document.getElementById('num-money').value);
 
     let deck = getDeck();
-    const cardsTotal = Object.keys(deck).length + money;
+    const cardsTotal = Object.keys(deck.cards).length + money;
 
     let typeCount = {
       Fighter: 0,
@@ -550,7 +575,7 @@
     let totalHire = 0;
     let totalFire = 0;
 
-    Object.entries(deck).forEach(([key, card]) => {
+    Object.entries(deck.cards).forEach(([key, card]) => {
       typeCount[card.cardtype]++;
 
       let hire = parseInt(card.data.hire);
@@ -586,28 +611,6 @@
 
     document.getElementById('deck-stats').appendChild(p1);
     document.getElementById('deck-stats').appendChild(p2);
-
-
-    // let statsTxts = [
-    //   `Cards total: ${cardsTotal}`,
-    //   `Fighters: ${typeCount.Fighter}`,
-    //   `Items: ${typeCount.Item}`,
-    //   `Landscapes: ${typeCount.Landscape}`,
-    //   `Challenges: ${typeCount.Challenge}`,
-    //   `Money: ${money}`,
-    //   `Average Hire costs: ${avgHire}`,
-    //   `Total Fire costs: ${totalFire}`
-    // ];
-
-    
-
-    // for (text of statsTxts) {
-    //   let p = document.createElement('p');
-    //   p.textContent = text;
-    //   document.getElementById('deck-stats').appendChild(p);
-    // }
-
-
   }
 
 

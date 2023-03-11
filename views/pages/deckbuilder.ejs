@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head'); %>
+</head>
+<body>
+
+<header>
+  <%- include('../partials/header'); %>
+</header>
+
+<main>
+  <div class="grid-container">
+    <div class="grid-item | deckbuilder-cta">
+      <a href="/deck-editor"><button class="standard-button" onclick="deleteDeck()">New Deck</button></a>
+      <a href="/deck-editor"><button class="standard-button">Edit Deck</button></a>
+    </div>
+  </div>
+ 
+</main>
+
+<footer>
+  <%- include('../partials/footer'); %>
+</footer>
+
+</body>
+
+<%- include('../partials/postprocessing'); %>
+</html>

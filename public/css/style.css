@@ -824,7 +824,21 @@ footer {
 
 
 /* ------------------------------------------------------------------------------------------------------------------ */
-/* ---------------------------------------------- DECK BUILDER -------------------------------------------------------*/
+/* -------------------------------------- DECK BUILDER LANDING PAGE --------------------------------------------------*/
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+
+.deckbuilder-cta {
+  display: flex;
+  justify-content: top;
+  flex-direction: column;
+  text-align: center;
+  gap: 3rem;
+}
+
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* ---------------------------------------------- DECK EDITOR --------------------------------------------------------*/
 /* ------------------------------------------------------------------------------------------------------------------ */
 
 #deck-builder {
@@ -858,6 +872,7 @@ footer {
   border-radius: 4px;
   padding: 0.25rem;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
 }
 
 
@@ -1091,27 +1106,64 @@ footer {
 /* ---------------------------------------------- VISUAL DECKSTATS ----------------------------------------------------*/
 /* ------------------------------------------------------------------------------------------------------------------ */
 
+.visual-deckstats-body {
+  width: 80%;
+  background-color: var(--bg-color-bright);
+}
+
+
 .deckstats-header {
-  grid-column: 1 / span 3;
-  padding-left: 4rem;  /* TODO: temporary fix  */
+  text-align: right;  /* TODO: temporary fix  */
+  padding: 0.5rem;
+  padding-right: 12%;
 }
 
 .deckstats-footer {
-  grid-column: 1 / span 3;
   padding: 1rem;
-}
-
-.decklist {
+  text-align: right;
   grid-column: 1 / span 3;
 }
 
-.deckstats-footer p {
-  text-align: right;
+/* Tabs */
+.tab {
+  overflow: hidden;
+  background-color: var(--color-highlight);
+  padding-left: 60px;
 }
 
-#visual-deckstats-grid {
-  grid-template-columns: 33% 33% 33%;
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  animation: fadeEffect 1s;
 }
+
+.tablinks {
+  border: 1px solid black;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  width: 10rem;
+  text-align: left;
+}
+
+.active {
+  background-color: var(--bg-color-bright);
+}
+
+
+@keyframes fadeEffect {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+#stats-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+}
+
+.stats-element {
+  padding: 0.5rem;
+}
+
 
 section {
   background-color: var(--color-highlight);
@@ -1122,6 +1174,15 @@ section > ul {
   margin-block: 0;
   list-style: none;
   padding-left: 1rem;
+}
+
+.decklist {
+  display: grid;
+  grid-template-columns: 75% auto;
+}
+
+#decklist-header {
+  grid-column: 1 / span 2;
 }
 
 #decklist-body {
