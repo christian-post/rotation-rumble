@@ -12,8 +12,21 @@
 <main>
   <div class="grid-container">
     <div class="grid-item | deckbuilder-cta">
-      <a href="/deck-editor"><button class="standard-button" onclick="deleteDeck()">New Deck</button></a>
-      <a href="/deck-editor"><button class="standard-button">Edit Deck</button></a>
+      <!-- TODO: assign new ID -->
+      <button class="standard-button" onclick="newDeck()">New Deck</button>
+
+      <div class="form-container">
+        <form class="select-deck-form" id="select-deck-form" action="/deck-editor">  
+          <label for="deck-selector">Decks in Storage</label>
+          <select name="deck" id="deck-selector" size="5">
+          </select>
+          <!-- <input class="standard-button" type="submit" value="Edit Deck" /> -->
+        </form>
+        <div class="button-container-h">
+          <button class="standard-button" onclick="editSelectedDeck()">Edit Deck</button>
+          <button class="standard-button" onclick="deleteSelectedDeck()">Delete Deck</button>
+        </div>
+      </div>
     </div>
   </div>
  
@@ -24,6 +37,67 @@
 </footer>
 
 </body>
+
+<script>
+  const editSelectedDeck = function() {
+    let value = document.querySelector('#deck-selector').value;
+    if (value.length === 0) return;
+    window.location.href = '/deck-editor?deck=' + value;
+  }
+
+
+  const deleteSelectedDeck = function() {
+    let value = document.querySelector('#deck-selector').value;
+    if (value.length === 0) return;
+
+    let deck = getDeck(value);
+    let msg = `Do you want to delete "${deck.name}"?`;
+    if (confirm(msg)) {
+      deleteDeck(value);
+      makeSelector();
+    }
+  }
+
+
+  const newDeck = function() {
+    // check which deck IDs are currently used
+    let ids = Object.keys(localStorage).sort();
+    let newID;
+    if (ids.length) {
+      let lastID = ids[ids.length-1].split('-')[1];
+      newID = parseInt(lastID) + 1;
+    } else {
+      newID = 0;
+    }
+    window.location.href = '/deck-editor?deck=deck-' + newID;
+  }
+
+
+  const makeSelector = function() {
+    // get deck decks from local storage and put in select form
+    if (Object.keys(localStorage).length === 0) {
+      document.querySelector('.select-deck-form').style.display = 'none';
+      document.querySelector('.button-container-h').innerHTML = '';
+    }
+
+    document.querySelector('#deck-selector').innerHTML = '';
+
+    for(let deckID of Object.keys(localStorage))  {
+      let deck = getDeck(deckID)
+
+      console.log(deckID, deck)
+
+      let option = document.createElement('option');
+      option.value = deckID;
+      option.textContent = truncateDeckName(deck.name) || 'Untitled Deck'; 
+      document.querySelector('#deck-selector').appendChild(option);
+    }
+  }
+
+  // on page load
+  makeSelector();
+ 
+</script>
 
 <%- include('../partials/postprocessing'); %>
 </html>

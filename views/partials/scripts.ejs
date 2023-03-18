@@ -178,7 +178,7 @@
     galleryTBody.insertBefore(row, galleryTBody.firstChild);
 
     // remove from deck in local storage
-    let id = idFromCardname(getInnerText(row.firstElementChild));
+    let id = row.dataset.cardid;
     removeCardFromDeck(id);
     console.log('removed', id);
 
@@ -299,13 +299,6 @@
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
-  
-  const idFromCardname = function(name) {
-    // converts a card name to its id
-    // e.g. "Bugs Bunny" => "bugs_bunny"
-    return name.replace(new RegExp('[\\s-]', 'gi'), '_').toLowerCase();
-  }
-
 
   const getDeck = function(deckID) {
 
@@ -313,8 +306,7 @@
 
     let blueprint = {
       cards: {},
-      name: null,
-      id: null,
+      name: "Untitled Deck",
       leader: null
     };
 
@@ -347,7 +339,7 @@
 
   const saveDeck = function(deck, deckID) {
     if (deckID === undefined) { deckID = 'currentDeck'; }
-    // puts the deck object back into local storage
+    // puts the deck object back into local storage as string
     localStorage.setItem(deckID, JSON.stringify(deck));
   }
 
@@ -368,10 +360,10 @@
     }
 
     // retrieve the deck object
-    let deck = getDeck();
+    let deck = getDeck(currentDeckID);
 
     // check if this card is in the deck
-    let id = idFromCardname(card.name);
+    let id = card.id;
     if (id in deck.cards) {
       // alert("This card is already in your deck!");
       return;
@@ -386,7 +378,7 @@
     deck.cards[id] = card;
 
     // put deck array back into storage
-    saveDeck(deck);
+    saveDeck(deck, currentDeckID);
   }
 
 
@@ -394,7 +386,7 @@
     // removes a card from the deck in local storage
 
     // retrieve the deck object
-    let deck = getDeck();
+    let deck = getDeck(currentDeckID);
 
     // check if this card is in the deck
     if (!(id in deck.cards)) {
@@ -403,7 +395,7 @@
     delete deck.cards[id];
 
     // put deck array back into storage
-    saveDeck(deck);
+    saveDeck(deck, currentDeckID);
   }
 
 
@@ -411,6 +403,9 @@
     // Wrapper for addCardToDeck(), to be called from singlecard.ejs
 
     // get name of Card from singlecard.ejs
+
+    // TODO: put card ID into the html data attribute
+
     let card = {
       name: document.querySelector('.card-title')?.innerHTML,
       cardtype: document.querySelector('.card-type-text')?.getAttribute('data-cardtype'),
@@ -432,6 +427,7 @@
     
     let card = {
       name: getInnerText(row.querySelector('.table-cell-cardname')),
+      id: row.dataset.cardid,
       cardtype: getInnerText(row.querySelector('.table-cell-cardtype')),
       info: '💬',
       leader: false
@@ -448,6 +444,7 @@
     
     let card = {
       name: getInnerText(row.querySelector('.table-cell-cardname')),
+      id: row.dataset.cardid,
       cardtype: getInnerText(row.querySelector('.table-cell-cardtype')),
       info: '💬',
       leader: true
@@ -458,7 +455,7 @@
 
   const createDeckFromStorage = function() {
     // loads the deck from localstorage into the deck builder
-    let deck = getDeck();
+    let deck = getDeck(currentDeckID);
 
     let galleryTBody = document.getElementById('card-gallery-table')
           .getElementsByTagName('tbody')[0];
@@ -488,6 +485,10 @@
         addColumnsToCard(row);
       }
     });
+
+    // change Title
+    let title = document.querySelector('#deck-title');
+    title.textContent = truncateDeckName(deck.name) || 'Untitled Deck';
   }
 
 
@@ -518,7 +519,7 @@
 
 
   const exportDeckTxtNew = function() {
-    const deck = getDeck();
+    const deck = getDeck(currentDeckID);
     let txt = '';
     let valid = true;  // if the deck is valid for export
     let errorMsg = [];
@@ -562,7 +563,7 @@
     // Update visualized deck statistics in the deck builder
     const money = parseInt(document.getElementById('num-money').value);
 
-    let deck = getDeck();
+    let deck = getDeck(currentDeckID);
     const cardsTotal = Object.keys(deck.cards).length + money;
 
     let typeCount = {
@@ -611,6 +612,17 @@
 
     document.getElementById('deck-stats').appendChild(p1);
     document.getElementById('deck-stats').appendChild(p2);
+  }
+
+
+  const truncateDeckName = function(rawName) {
+    // truncates the deck name string for display
+    if (rawName === null || rawName.length === 0) return "Untitled Deck";
+
+    let maxSize = 30;
+    if (rawName.length <= maxSize) return rawName;
+
+    return rawName.slice(0, maxSize) + '[...]';
   }
 
 

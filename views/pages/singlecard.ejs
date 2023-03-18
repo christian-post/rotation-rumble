@@ -51,9 +51,14 @@
 
 <script>
   //  remove the "add to deck" dialog if this card is in the deck
-  if (isInDeck("<%= locals.card?.id %>")) {
-    document.getElementById('add-to-deck-container').style.display = "none";
-  }
+  document.getElementById('add-to-deck-container').style.display = "none";
+
+  // TODO: fix the cardid issue first (card ID has to be put into the data attribute
+  // on the single card page)
+
+  // if (isInDeck("<%= locals.card?.id %>")) {
+  //   document.getElementById('add-to-deck-container').style.display = "none";
+  // }
 </script>
 
 <%- include('../partials/postprocessing'); %>

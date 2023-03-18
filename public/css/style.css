@@ -832,8 +832,19 @@ footer {
   display: flex;
   justify-content: top;
   flex-direction: column;
-  text-align: center;
+  align-items: center;
   gap: 3rem;
+}
+
+.select-deck-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+}
+
+.button-container-h {
+  margin-top: .5rem;
 }
 
 
@@ -901,7 +912,15 @@ footer {
   cursor: pointer;
 }
 
+.deck-title-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding-bottom: .5rem;
+}
+
 /* expanding DIV with toggle button */
+/* TODO: removed! */
 .toggle-control {
   display: none;
 }

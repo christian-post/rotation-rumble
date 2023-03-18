@@ -2,6 +2,12 @@
 <html lang="en">
 <head>
   <%- include('../partials/head'); %>
+
+  <script>
+    // get the deck ID which was passed to the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    var currentDeckID = urlParams.get('deck');
+  </script>
 </head>
 <body>
 
@@ -12,9 +18,7 @@
 <main>
   <div class="visual-deckstats-body">
     <div class="deckstats-header">
-      <a href="/deck-editor">
-        <button class="standard-button">🖊 Edit Deck</button>
-      </a>
+      <button class="standard-button" onclick="changeToDeckEditor()">🖊 Edit Deck</button>
     </div>
 
     <div class="tab">
@@ -122,7 +126,7 @@
   };
 
   // get data from deck in local storage
-  const deck = getDeck();
+  const deck = getDeck(currentDeckID);
 
   Object.entries(deck.cards).forEach(([key, card]) => {
     let cost = parseInt(card.data.hire);
@@ -254,6 +258,8 @@
     }
     console.log(cardData)
 
+    const deck = getDeck(currentDeckID);
+
     // leader image
     let container = document.querySelector('#decklist-leader-container');
 
@@ -264,9 +270,9 @@
     let image = document.createElement('img');
     image.id = 'leader-image';
 
-    let imageSrc = cardData[deck.leader.data.id]?.image_url;
+    let imageSrc = cardData[deck.leader?.data.id]?.image_url;
 
-    console.log(deck.leader.data.id)
+    console.log(deck.leader?.data.id)
 
     image.src = imageSrc || 'images/notfound.png';
     image.width = '300';
@@ -302,14 +308,14 @@
         ul.id = listID;
         section.append(ul);
     }
-
     let li = document.createElement('li');
     li.innerHTML = card.name;
     ul.appendChild(li);
   }
 
-  
-
+  const changeToDeckEditor = function() {
+    window.location.href = `/deck-editor?deck=${currentDeckID}`;
+  }
 </script>
 
 </html>

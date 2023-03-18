@@ -2,6 +2,11 @@
 <html lang="en">
 <head>
   <%- include('../partials/head'); %>
+  <script>
+    // get the deck ID which was passed to the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    var currentDeckID = urlParams.get('deck');
+  </script>
 </head>
 <body>
 
@@ -100,15 +105,16 @@
     </div>
 
     <div class="grid-item">
-      <h2 style="text-align: center;">My Deck</h2>
+      <div class="deck-title-container">
+        <h2 id="deck-title">My Deck</h2>
+        <button class="standard-button" onclick="changeDeckName()">🖊</button>
+      </div>
 
       <div class="toggle-header">
         <h2 style="text-align: left;">Deck stats</h2>
         <!-- <label class="toggle-button" for="toggle1">Expand</label> -->
 
-          <a href="/visual-deckstats">
-            <button class="standard-button">💾 Save Changes</button>
-          </a>
+        <button class="standard-button" onclick="changeToDeckstats()">💾 Save Changes</button>
       </div>
       <div>
         <input type="checkbox" class="toggle-control" id="toggle1" />
@@ -182,6 +188,24 @@
 <script>
   createDeckFromStorage();
   updateStats();
+
+  const changeDeckName = function() {
+    let deck = getDeck(currentDeckID);
+
+    let title = document.querySelector('#deck-title');
+    let newName = prompt('Enter a new Name for the deck', deck.name);
+    newName = newName.trim();
+    title.textContent = truncateDeckName(newName);  
+
+    
+    deck.name = newName;
+    saveDeck(deck, currentDeckID);
+  }
+
+  const changeToDeckstats = function() {
+    window.location.href = `/visual-deckstats?deck=${currentDeckID}`;
+  }
+ 
 </script>
 
 <%- include('../partials/postprocessing'); %>

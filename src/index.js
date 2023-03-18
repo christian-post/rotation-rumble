@@ -180,6 +180,8 @@ app.get('/deck-editor', (req, res) => {
     res.render('pages/error');
   }
 
+  let deckID = req.query.deck;
+
   let cards = [];
 
   // data fields
@@ -215,7 +217,8 @@ app.get('/deck-editor', (req, res) => {
           cards: cards,
           head: head,
           fields: fields,
-          orderSymbols: orderSymbols
+          orderSymbols: orderSymbols,
+          deckID: deckID
         });
     });
 });
