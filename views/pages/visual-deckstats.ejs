@@ -28,7 +28,9 @@
 
     <div id="tab-overview" class="tabcontent">
       <div class="decklist">
-        <div id="decklist-header">Deck List</div>
+        <div id="decklist-header">
+          <p>Deck List:</p>
+        </div>
         <div id="decklist-body"></div>
         <div id="decklist-leader-container"></div>
     </div>
@@ -127,6 +129,8 @@
 
   // get data from deck in local storage
   const deck = getDeck(currentDeckID);
+
+  document.querySelector('#decklist-header').innerHTML += deck.name;
 
   Object.entries(deck.cards).forEach(([key, card]) => {
     let cost = parseInt(card.data.hire);
@@ -256,7 +260,6 @@
       // fetch the card data once (into RAM)
       cardData = await getAllCards();
     }
-    console.log(cardData)
 
     const deck = getDeck(currentDeckID);
 
@@ -264,15 +267,13 @@
     let container = document.querySelector('#decklist-leader-container');
 
     let leaderTitle = document.createElement('h3');
-    leaderTitle.innerHTML = `Leader: ${deck.leader?.name}`;
+    leaderTitle.innerHTML = `Leader: ${deck.leader?.data.name}`;
     container.appendChild(leaderTitle);
 
     let image = document.createElement('img');
     image.id = 'leader-image';
 
     let imageSrc = cardData[deck.leader?.data.id]?.image_url;
-
-    console.log(deck.leader?.data.id)
 
     image.src = imageSrc || 'images/notfound.png';
     image.width = '300';
@@ -289,8 +290,8 @@
     if (card.leader) continue;
 
     // check if there is a div for this type
-    let sectionID = `decklist-section-${card.cardtype}`;
-    let listID = `decklist-ul-${card.cardtype}`;
+    let sectionID = `decklist-section-${card.data.cardtype}`;
+    let listID = `decklist-ul-${card.data.cardtype}`;
     let section = document.getElementById(sectionID);
 
     let ul = document.getElementById(listID);
@@ -301,7 +302,7 @@
         dbody.appendChild(section)
 
         let head = document.createElement('h3');
-        head.innerHTML = `${card.cardtype}s (${cardtypes[card.cardtype]})`;
+        head.innerHTML = `${card.data.cardtype}s (${cardtypes[card.data.cardtype]})`;
         section.append(head);
 
         ul = document.createElement('ul');
@@ -309,7 +310,7 @@
         section.append(ul);
     }
     let li = document.createElement('li');
-    li.innerHTML = card.name;
+    li.innerHTML = card.data.name;
     ul.appendChild(li);
   }
 

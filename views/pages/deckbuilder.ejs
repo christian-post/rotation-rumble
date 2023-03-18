@@ -12,8 +12,11 @@
 <main>
   <div class="grid-container">
     <div class="grid-item | deckbuilder-cta">
-      <!-- TODO: assign new ID -->
       <button class="standard-button" onclick="newDeck()">New Deck</button>
+      <div class="button-container-h">
+        <input type="file" id="deck-upload" name="deck-upload" accept="text/*,.txt"/>
+        <button class="standard-button" onclick="importDeck()">Import Deck</button>
+      </div>
 
       <div class="form-container">
         <form class="select-deck-form" id="select-deck-form" action="/deck-editor">  
@@ -22,7 +25,7 @@
           </select>
           <!-- <input class="standard-button" type="submit" value="Edit Deck" /> -->
         </form>
-        <div class="button-container-h">
+        <div class="button-container-h" id="bottom-buttons">
           <button class="standard-button" onclick="editSelectedDeck()">Edit Deck</button>
           <button class="standard-button" onclick="deleteSelectedDeck()">Delete Deck</button>
         </div>
@@ -59,17 +62,35 @@
   }
 
 
-  const newDeck = function() {
-    // check which deck IDs are currently used
+  const getIDnumber = function() {
+    // gets a new unique deck id number
     let ids = Object.keys(localStorage).sort();
-    let newID;
     if (ids.length) {
       let lastID = ids[ids.length-1].split('-')[1];
-      newID = parseInt(lastID) + 1;
+      return  parseInt(lastID) + 1;
     } else {
-      newID = 0;
+      return 0;
     }
-    window.location.href = '/deck-editor?deck=deck-' + newID;
+  }
+
+
+  const newDeck = function() {
+    // check which deck IDs are currently used
+    window.location.href = '/deck-editor?deck=deck-' + getIDnumber();
+  }
+
+
+  const importDeck = async function() {
+    let files = document.querySelector('#deck-upload').files;
+    if (files.length > 0) {
+      currentDeckID = 'deck-' + getIDnumber();
+
+      // parse deck file
+      let filecontent = await files[0].text();
+      let cards = await parseDeckString(filecontent, files[0].name.split('.txt')[0]);
+    }
+    // update page
+    makeSelector();
   }
 
 
@@ -77,19 +98,19 @@
     // get deck decks from local storage and put in select form
     if (Object.keys(localStorage).length === 0) {
       document.querySelector('.select-deck-form').style.display = 'none';
-      document.querySelector('.button-container-h').innerHTML = '';
+      document.querySelector('#bottom-buttons').style.display = 'none';
+    } else {
+      document.querySelector('.select-deck-form').style.display = 'flex';
+      document.querySelector('#bottom-buttons').style.display = 'flex';
     }
 
     document.querySelector('#deck-selector').innerHTML = '';
 
-    for(let deckID of Object.keys(localStorage))  {
-      let deck = getDeck(deckID)
-
-      console.log(deckID, deck)
-
+    for (let deckID of Object.keys(localStorage))  {
+      let deck = getDeck(deckID);
       let option = document.createElement('option');
       option.value = deckID;
-      option.textContent = truncateDeckName(deck.name) || 'Untitled Deck'; 
+      option.textContent = truncateDeckName(deck.name, 50) || 'Untitled Deck'; 
       document.querySelector('#deck-selector').appendChild(option);
     }
   }

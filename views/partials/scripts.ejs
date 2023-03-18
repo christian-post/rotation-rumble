@@ -469,7 +469,7 @@
         deckTBody.appendChild(row);
         addColumnsToCard(row);
       } else {
-        // TODO: duplicate code, make function!
+        // TODO: duplicate code, make it a function!
         // read image url from img tag
         let imageSrc = row.querySelector('.card-image-tooltip')?.src;
 
@@ -499,7 +499,6 @@
 
     cards = {};
     // reformat with id as keys
-    // TODO faster method?
     data.forEach(card => {
       cards[card.id] = card;
     });
@@ -559,6 +558,55 @@
   }
 
 
+  const parseDeckString = async function(deckString, name="") {
+    // split leader
+    let parts = deckString.split('\n//');
+    let matches = Array.from(parts[0].matchAll(/\/\/Leader\n(.*)\n/gm));
+    let leader;
+    if (matches.length > 0 && parts.length === 2) {
+      leader = matches[0][1];
+    } else {
+      alert("Invalid Deck.");
+      return [];
+    }
+
+    // put cards into list (number + card)
+    let rawCards = parts[1].split('\n');
+    rawCards = rawCards.slice(1, rawCards.length);
+    // TODO: handle Money amount
+
+    if (cardData === undefined) {
+      // fetch the card data once (into RAM)
+      cardData = await getAllCards();
+    }
+    let deck = getDeck(currentDeckID);
+
+    deck.name = `Imported Deck (${name})`;
+
+    let cards = rawCards.map(elem => elem.split(/[0-9]+\s/)[1]);
+    cards.push(leader);
+    
+    cards.forEach(cardname => {
+      // guess id from cardname
+      let idGuess = cardname.toLowerCase().replace(/[.\s]+/g, "_");
+
+      if (idGuess === 'money') {
+        deck.money = deckString.match(/([0-9]+)\sMoney/)[1];
+      } else {
+        let card = {
+          id: idGuess,
+          leader: cardname === leader ? true : false
+        };
+        card.data = cardData[idGuess];
+        deck.cards[idGuess] = card;
+
+        if (card.leader) { deck.leader = card }
+      }
+    });
+    saveDeck(deck, currentDeckID);
+  }
+
+
   const updateStats = function() {
     // Update visualized deck statistics in the deck builder
     const money = parseInt(document.getElementById('num-money').value);
@@ -615,11 +663,10 @@
   }
 
 
-  const truncateDeckName = function(rawName) {
+  const truncateDeckName = function(rawName, maxSize=30) {
     // truncates the deck name string for display
     if (rawName === null || rawName.length === 0) return "Untitled Deck";
 
-    let maxSize = 30;
     if (rawName.length <= maxSize) return rawName;
 
     return rawName.slice(0, maxSize) + '[...]';

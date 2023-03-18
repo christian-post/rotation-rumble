@@ -186,10 +186,10 @@ app.get('/deck-editor', (req, res) => {
 
   // data fields
   // rudimentary so it fits the screen
-  let fields = ['name', 'cardtype', 'info'];
+  let fields = ['name', 'cardtype', 'hire', 'info'];
 
   // table column names
-  let head = ['Name', 'Card Type', 'Info'];
+  let head = ['Name', 'Card Type', 'Cost', 'Info'];
 
   // arrows that indicate the sorting order (used in the HTML table)
   arrow = {

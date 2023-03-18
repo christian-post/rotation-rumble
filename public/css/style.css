@@ -845,6 +845,9 @@ footer {
 
 .button-container-h {
   margin-top: .5rem;
+  display: flex;
+  flex-direction: row;
+  gap: .5rem;
 }
 
 
@@ -1202,6 +1205,8 @@ section > ul {
 
 #decklist-header {
   grid-column: 1 / span 2;
+  display: flex;
+  gap: .25rem;
 }
 
 #decklist-body {
