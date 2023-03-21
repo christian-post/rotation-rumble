@@ -554,7 +554,9 @@
       return;
     }
 
-    download(txt, 'my-deck.txt', 'text/csv;charset=utf-8;');
+    let filename = `${deck.name.replace(/[.\s]+/g, "_").toLowerCase()}.txt`;
+
+    download(txt, filename, 'text/csv;charset=utf-8;');
   }
 
 

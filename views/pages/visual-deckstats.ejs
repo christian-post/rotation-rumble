@@ -22,18 +22,23 @@
     </div>
 
     <div class="tab">
-      <button class="tablinks" onclick="openTab(event, 'tab-overview')" id="defaultOpen">Overview</button>
-      <button class="tablinks" onclick="openTab(event, 'tab-stats')">Details</button>
+      <button class="tablinks" onclick="openTab(event, 'tab-overview')" id="defaultOpen">🧾 Table View</button>
+      <button class="tablinks" onclick="openTab(event, 'tab-visual')">&#128064 Card View</button>
+      <button class="tablinks" onclick="openTab(event, 'tab-stats')">📊 Details</button>
+      <button class="tablinks" onclick="openTab(event, 'tab-share')">↪ Share</button>
     </div>
 
     <div id="tab-overview" class="tabcontent">
       <div class="decklist">
         <div id="decklist-header">
-          <p>Deck List:</p>
         </div>
         <div id="decklist-body"></div>
         <div id="decklist-leader-container"></div>
+      </div>
     </div>
+
+    <div id="tab-visual" class="tabcontent">
+     
     </div>
 
     <div id="tab-stats" class="tabcontent">
@@ -66,6 +71,10 @@
         </div>
       </div>
     </div>
+
+    <div id="tab-share" class="tabcontent">
+     
+    </div>
   </div>
 </main>
 
@@ -82,7 +91,6 @@
   const openTab = function(event, elemID) {
     let i, tabcontent, tablinks;
 
-    // TODO: for in/of?
     document.querySelectorAll(".tabcontent")
       .forEach(item => {
         item.style.display = "none";
@@ -93,8 +101,14 @@
         item.className = item.className.replace(" active", "");
       });
 
-    document.getElementById(elemID).style.display = "block";
-    event.currentTarget.className += " active";
+    let tab = document.getElementById(elemID);
+    if (tab) {
+      tab.style.display = "block";
+      event.currentTarget.className += " active";
+    } else {
+      console.log(`Tab ${elemID} does not exist.`);
+    }
+    
   }
 
   // Get the element with id="defaultOpen" and click on it
@@ -130,7 +144,7 @@
   // get data from deck in local storage
   const deck = getDeck(currentDeckID);
 
-  document.querySelector('#decklist-header').innerHTML += deck.name;
+  document.querySelector('#decklist-header').innerHTML = deck.name;
 
   Object.entries(deck.cards).forEach(([key, card]) => {
     let cost = parseInt(card.data.hire);
