@@ -1208,6 +1208,13 @@ section > ul {
   padding-left: 1rem;
 }
 
+.visual-tab-card-container {
+  padding: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .decklist {
   display: grid;
   grid-template-columns: 75% auto;
@@ -1225,7 +1232,54 @@ section > ul {
   column-count: 4;
 }
 
-#decklistString {
+.decklistString-container {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
   padding: .25rem;
   margin: 1rem;
+  gap: .5rem;
+}
+
+/* #decklistString {
+  
+} */
+
+.copyClipboard-container {
+  position: relative;
+  display: inline-block;
+}
+
+.copyClipboard-container .tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  /* bottom: 150%; */
+  top: 0%;
+  left: 50%;
+  margin-left: 50px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.copyClipboard-container .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 40%;
+  left: 0%;
+  margin-left: -9px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent #555 transparent transparent;
+}
+
+.copyClipboard-container:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
 }

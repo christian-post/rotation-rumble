@@ -38,7 +38,7 @@
     </div>
 
     <div id="tab-visual" class="tabcontent">
-     
+      <div class="visual-tab-card-container"></div>
     </div>
 
     <div id="tab-stats" class="tabcontent">
@@ -73,8 +73,16 @@
     </div>
 
     <div id="tab-share" class="tabcontent">
-     <textarea id="decklistString" rows="20"></textarea>
-     <button class="standard-button" onclick="copyDeckString()">Copy to Clipboard</button>
+      <div class="decklistString-container">
+        <textarea id="decklistString" rows="12"></textarea>
+        <div class="copyClipboard-container">
+          <button id="copyClipboardButton"class="standard-button" 
+           onclick="copyDeckString()" onmouseout="changeTooltipText()">
+            <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+            Copy Deck
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </main>
@@ -154,6 +162,8 @@
     cardtypes[card.data.cardtype] += 1
     colorStats[card.data.color] += 1
   });
+
+  cardtypes.Money = parseInt(deck.money);
   
 
   const colormap = [
@@ -333,6 +343,18 @@
     window.location.href = `/deck-editor?deck=${currentDeckID}`;
   }
 
+  // ------------------ Card View Tab ------------------------------------------
+
+  let visualTab = document.querySelector('.visual-tab-card-container');
+
+  for (const card of Object.values(deck.cards)) {
+    let cardImage = document.createElement('img');
+    cardImage.src = card.data?.image_url;
+    cardImage.className = 'card-image-medium';
+    visualTab.appendChild(cardImage);
+    // TODO: highlight Leader image
+  }
+
 
   // ---------------- Share deck Tab -------------------------------------------
 
@@ -342,7 +364,13 @@
   const copyDeckString = function() {
     let str = document.querySelector('#decklistString').value;
     navigator.clipboard.writeText(str);
-    alert('Deck copied to clipboard.')
+    let tooltip = document.querySelector('.tooltiptext');
+    tooltip.innerHTML = "Deck copied to clipboard!";
+  }
+
+  const changeTooltipText = function() {
+    let tooltip = document.querySelector('.tooltiptext');
+    tooltip.innerHTML = "Copy to clipboard";
   }
 </script>
 

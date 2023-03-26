@@ -590,7 +590,7 @@
     let cards = rawCards.map(elem => elem.split(/[0-9]+\s/)[1]);
     cards.push(leader);
     
-    for (cardname of cards) {
+    for (const cardname of cards) {
       if (cardname === undefined) {
         errors.push('- Unidentified card name.');
         continue;
@@ -614,6 +614,7 @@
     }
 
     if (errors.length > 0) {
+      // TODO make alert optional
       alert('Invalid or corrupted file:\n' + errors.join('\n'));
       return;
     }

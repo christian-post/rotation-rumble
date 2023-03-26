@@ -69,7 +69,7 @@ app.get('/gallery', (req, res) => {
   let displayAs = req.query.as;
   let groupBy = req.query.group;
 
-  if (displayAs === undefined) {
+  if (displayAs === undefined) {  // TODO: is this even used?
     // default is images
     displayAs = 'images';
   }
