@@ -44,7 +44,7 @@
     <div id="tab-stats" class="tabcontent">
       <div id="stats-container">
         <div class="stats-element">
-          <div>Hire Costs - X.X avg.</div>
+          <span id="hire-costs-title">Hire Costs - X.X avg.</span>
           <div>
             <canvas id="casting-costs"></canvas>
           </div>
@@ -82,6 +82,7 @@
             Copy Deck
           </button>
         </div>
+        <button class="standard-button" onclick="downloadDeckString()">Export Deck</button>
       </div>
     </div>
   </div>
@@ -164,7 +165,17 @@
   });
 
   cardtypes.Money = parseInt(deck.money);
+
+  // calculate average mana cost
+  let cardsArray = Array.from(Object.values(deck.cards));
+
+  let hireSum = 0;
+  cardsArray.forEach(card => {
+    hireSum += parseInt(card.data.hire);
+  });
+  let avg = hireSum / cardsArray.length;
   
+  document.querySelector('#hire-costs-title').innerHTML = `Hire Costs - ${avg.toFixed(1)} avg.`;
 
   const colormap = [
     'rgb(165, 0, 38)',
@@ -311,7 +322,7 @@
   // Deck list table
   dbody = document.getElementById('decklist-body');
 
-  for (const card of Object.values(deck.cards)) {
+  for (const card of cardsArray) {
     if (card.leader) continue;
 
     // check if there is a div for this type
@@ -324,7 +335,7 @@
     if (section === null) {
         section = document.createElement('section');
         section.id = sectionID;
-        dbody.appendChild(section)
+        dbody.appendChild(section);
 
         let head = document.createElement('h3');
         head.innerHTML = `${card.data.cardtype}s (${cardtypes[card.data.cardtype]})`;
@@ -339,6 +350,13 @@
     ul.appendChild(li);
   }
 
+  // Money amount
+  let moneySection = document.createElement('section');
+  let head = document.createElement('h3');
+  head.innerHTML = `Money (${deck.money})`;
+  moneySection.append(head);
+  dbody.appendChild(moneySection);
+
   const changeToDeckEditor = function() {
     window.location.href = `/deck-editor?deck=${currentDeckID}`;
   }
@@ -347,12 +365,26 @@
 
   let visualTab = document.querySelector('.visual-tab-card-container');
 
-  for (const card of Object.values(deck.cards)) {
+  for (const card of cardsArray) {
     let cardImage = document.createElement('img');
     cardImage.src = card.data?.image_url;
     cardImage.className = 'card-image-medium';
     visualTab.appendChild(cardImage);
+    
     // TODO: highlight Leader image
+    // if (card.leader) {
+    //   cardImage.style['border'] = '5px solid var(--color-orange)';
+    //   cardImage.style['border-radius'] = '20px';
+    //   let leaderS = document.createElement('span');
+    //   leaderS.textContent = 'Leader';
+    //   // TODO: style this in the CSS file
+    //   leaderS.style['background-color'] = 'var(--color-orange)';
+    //   leaderS.style['color'] = 'white';
+    //   leaderS.style['padding'] = '.25rem';
+    //   leaderS.style['border-radius'] = '.5rem';
+    //   leaderS.style['position'] = 'absolute';
+    //   visualTab.appendChild(leaderS)
+    // }
   }
 
 

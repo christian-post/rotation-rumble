@@ -301,13 +301,13 @@
 
 
   const getDeck = function(deckID) {
-
     if (deckID === undefined) { deckID = 'currentDeck'; }
 
     let blueprint = {
       cards: {},
       name: "Untitled Deck",
-      leader: null
+      leader: null,
+      money: 0
     };
 
     // retrieves the current user created deck from local storage
@@ -327,7 +327,6 @@
         break;
       }
     }
-
     return deck;
   }
 
@@ -338,14 +337,21 @@
 
 
   const saveDeck = function(deck, deckID) {
-    if (deckID === undefined) { deckID = 'currentDeck'; }
+    if (deckID === undefined) { deckID = currentDeckID || 'currentDeck'; }
     // puts the deck object back into local storage as string
     localStorage.setItem(deckID, JSON.stringify(deck));
   }
 
 
   const deleteDeck = function(deckID) {
-    if (deckID === undefined) { deckID = 'currentDeck'; }
+    if (deckID === undefined) { 
+      console.log('Cannot delete deck with undefined ID');
+      return;
+    }
+    if (!localStorage.hasOwnProperty(deckID)) {
+      console.log(`"${deckID}" does not exist in storage`);
+      return;
+    }
     // clears the decklist from local storage
     localStorage.removeItem(deckID);
   }
@@ -404,14 +410,16 @@
 
     // get name of Card from singlecard.ejs
 
-    // TODO: put card ID into the html data attribute
+    // TODO: put card ID into the html data attribute?
 
     let card = {
       name: document.querySelector('.card-title')?.innerHTML,
       cardtype: document.querySelector('.card-type-text')?.getAttribute('data-cardtype'),
       info: '💬',
-      leader: false
+      leader: false,
+      data: null
     };
+
     addCardtoDeck(card);
     // hide the div that holds the "add to deck" function
     // TODO: animate instead
@@ -430,8 +438,10 @@
       id: row.dataset.cardid,
       cardtype: getInnerText(row.querySelector('.table-cell-cardtype')),
       info: '💬',
-      leader: false
+      leader: false,
+      data: null
     };
+
     addCardtoDeck(card);
   }
 
@@ -447,8 +457,10 @@
       id: row.dataset.cardid,
       cardtype: getInnerText(row.querySelector('.table-cell-cardtype')),
       info: '💬',
-      leader: true
+      leader: true,
+      data: null
     };
+
     addCardtoDeck(card);
   }
 
@@ -537,7 +549,6 @@
       }
     });
 
-    // add money from number input
     const money = deck.money;
     txt += `${money} Money`;
 
@@ -625,6 +636,7 @@
   const updateStats = function() {
     // Update visualized deck statistics in the deck builder
     const money = parseInt(document.getElementById('num-money').value);
+    console.log(money)
 
     let deck = getDeck(currentDeckID);
     const cardsTotal = Object.keys(deck.cards).length + money;
@@ -675,6 +687,10 @@
 
     document.getElementById('deck-stats').appendChild(p1);
     document.getElementById('deck-stats').appendChild(p2);
+
+    // add money info to deck in storage
+    deck.money = money;
+    saveDeck(deck, currentDeckID);
   }
 
 
