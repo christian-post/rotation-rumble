@@ -73,7 +73,8 @@
     </div>
 
     <div id="tab-share" class="tabcontent">
-     
+     <textarea id="decklistString" rows="20"></textarea>
+     <button class="standard-button" onclick="copyDeckString()">Copy to Clipboard</button>
     </div>
   </div>
 </main>
@@ -330,6 +331,18 @@
 
   const changeToDeckEditor = function() {
     window.location.href = `/deck-editor?deck=${currentDeckID}`;
+  }
+
+
+  // ---------------- Share deck Tab -------------------------------------------
+
+  let deckString = exportDeckTxtNew(deck);
+  document.querySelector('#decklistString').value = deckString;
+
+  const copyDeckString = function() {
+    let str = document.querySelector('#decklistString').value;
+    navigator.clipboard.writeText(str);
+    alert('Deck copied to clipboard.')
   }
 </script>
 

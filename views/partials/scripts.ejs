@@ -517,15 +517,14 @@
   }
 
 
-  const exportDeckTxtNew = function() {
-    const deck = getDeck(currentDeckID);
-    let txt = '';
+  const exportDeckTxtNew = function(deck) {
     let valid = true;  // if the deck is valid for export
     let errorMsg = [];
 
+    let txt = `[deck="${deck.name}"]\n`;
+    
     // get leader name
-    // TODO: leader has to be in the deck object
-    const leader = getInnerText(document.getElementById('leader-container-table').getElementsByTagName('td')[0]);
+    const leader = deck.leader?.data.name;
     if (!leader) {
       valid = false;
       errorMsg.push('- Your deck has to have a Leader!');
@@ -534,12 +533,12 @@
 
     Object.entries(deck.cards).forEach(([key, card]) => {
       if(!card.leader) {
-        txt += `1 ${card.name}\n`;
+        txt += `1 ${card.data.name}\n`;
       }
     });
 
     // add money from number input
-    const money = document.getElementById('num-money').value;
+    const money = deck.money;
     txt += `${money} Money`;
 
     // deck legality check (rows.length starting at one and the leader cancel out)
@@ -551,46 +550,53 @@
 
     if (!valid) {
       alert('Your deck is invalid for these reasons:\n' + errorMsg.join('\n'));
-      return;
+      return '';
     }
+    return txt;
+  }
 
+
+  const downloadDeckString = function() {
+    const deck = getDeck(currentDeckID);
+    let deckString = exportDeckTxtNew(deck);
     let filename = `${deck.name.replace(/[.\s]+/g, "_").toLowerCase()}.txt`;
-
-    download(txt, filename, 'text/csv;charset=utf-8;');
+    download(deckString, filename, 'text/csv;charset=utf-8;');
   }
 
 
   const parseDeckString = async function(deckString, name="") {
-    // split leader
-    let parts = deckString.split('\n//');
-    let matches = Array.from(parts[0].matchAll(/\/\/Leader\n(.*)\n/gm));
-    let leader;
-    if (matches.length > 0 && parts.length === 2) {
-      leader = matches[0][1];
-    } else {
-      alert("Invalid Deck.");
-      return [];
+    let errors = [];
+    // check if string has deck name information
+    let deckNameMatch = deckString.match(/\[deck\=\"(.+)\"/);
+    if (deckNameMatch) {
+      name = deckNameMatch[1];
     }
 
-    // put cards into list (number + card)
-    let rawCards = parts[1].split('\n');
+    let leader = deckString.match(/\/\/Leader\s*(.+)\s/)?.[1];
+    if (leader === undefined) {
+      errors.push('- List ist missing a Leader.');
+    }
+
+    let rawCards = deckString.match(/\/\/Deck\s*(.+)/s)?.[1].split('\r\n');
     rawCards = rawCards.slice(1, rawCards.length);
-    // TODO: handle Money amount
 
     if (cardData === undefined) {
       // fetch the card data once (into RAM)
       cardData = await getAllCards();
     }
+
     let deck = getDeck(currentDeckID);
-
     deck.name = `Imported Deck (${name})`;
-
     let cards = rawCards.map(elem => elem.split(/[0-9]+\s/)[1]);
     cards.push(leader);
     
-    cards.forEach(cardname => {
+    for (cardname of cards) {
+      if (cardname === undefined) {
+        errors.push('- Unidentified card name.');
+        continue;
+      }
       // guess id from cardname
-      let idGuess = cardname.toLowerCase().replace(/[.\s]+/g, "_");
+      let idGuess = cardname.toLowerCase().replace(/[.\s]+/g, '_');
 
       if (idGuess === 'money') {
         deck.money = deckString.match(/([0-9]+)\sMoney/)[1];
@@ -600,11 +606,17 @@
           leader: cardname === leader ? true : false
         };
         card.data = cardData[idGuess];
+        card.name = card.data.name;
         deck.cards[idGuess] = card;
 
         if (card.leader) { deck.leader = card }
       }
-    });
+    }
+
+    if (errors.length > 0) {
+      alert('Invalid or corrupted file:\n' + errors.join('\n'));
+      return;
+    }
     saveDeck(deck, currentDeckID);
   }
 

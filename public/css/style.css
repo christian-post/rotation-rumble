@@ -889,6 +889,16 @@ footer {
   cursor: pointer;
 }
 
+.standard-button:hover {
+  border: 1px solid var(--color-orange);
+  box-shadow: 2px 2px 2px var(--color-orange-semitrans);
+} 
+
+.standard-button:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
 
 .leader-container {
   margin: 10px;
@@ -1213,4 +1223,9 @@ section > ul {
   column-gap: 1rem;
   padding: 0.5rem 1rem;
   column-count: 4;
+}
+
+#decklistString {
+  padding: .25rem;
+  margin: 1rem;
 }
