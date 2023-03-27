@@ -588,7 +588,7 @@
       errors.push('- List ist missing a Leader.');
     }
 
-    let rawCards = deckString.match(/\/\/Deck\s*(.+)/s)?.[1].split('\r\n');
+    let rawCards = deckString.match(/\/\/Deck\s*(.+)/s)?.[1].split(/\r?\n/);
     rawCards = rawCards.slice(1, rawCards.length);
 
     if (cardData === undefined) {
@@ -636,7 +636,6 @@
   const updateStats = function() {
     // Update visualized deck statistics in the deck builder
     const money = parseInt(document.getElementById('num-money').value);
-    console.log(money)
 
     let deck = getDeck(currentDeckID);
     const cardsTotal = Object.keys(deck.cards).length + money;

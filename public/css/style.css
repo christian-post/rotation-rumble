@@ -836,6 +836,11 @@ footer {
   gap: 3rem;
 }
 
+#deck-selector {
+  width: 40vw;
+  max-width: 400px;
+}
+
 .select-deck-form {
   display: flex;
   flex-direction: column;

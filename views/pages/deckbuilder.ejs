@@ -26,6 +26,7 @@
           <!-- <input class="standard-button" type="submit" value="Edit Deck" /> -->
         </form>
         <div class="button-container-h" id="bottom-buttons">
+          <button class="standard-button" onclick="viewSelectedDeck()">View Deck</button>
           <button class="standard-button" onclick="editSelectedDeck()">Edit Deck</button>
           <button class="standard-button" onclick="deleteSelectedDeck()">Delete Deck</button>
         </div>
@@ -42,6 +43,13 @@
 </body>
 
 <script>
+
+  const viewSelectedDeck = function() {
+    let value = document.querySelector('#deck-selector').value;
+    if (value.length === 0) return;
+    window.location.href = '/visual-deckstats?deck=' + value;
+  }
+
   const editSelectedDeck = function() {
     let value = document.querySelector('#deck-selector').value;
     if (value.length === 0) return;
