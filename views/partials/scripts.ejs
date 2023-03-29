@@ -575,7 +575,9 @@
   }
 
 
-  const parseDeckString = async function(deckString, name="") {
+  const parseDeckString = async function(deckString, name="", id) {
+    if (id === undefined) { id = currentDeckID };
+
     let errors = [];
     // check if string has deck name information
     let deckNameMatch = deckString.match(/\[deck\=\"(.+)\"/);
@@ -596,8 +598,9 @@
       cardData = await getAllCards();
     }
 
-    let deck = getDeck(currentDeckID);
-    deck.name = `Imported Deck (${name})`;
+    let deck = getDeck(id);
+    deck.name = name;
+    // deck.name = `Imported Deck (${name})`;
     let cards = rawCards.map(elem => elem.split(/[0-9]+\s/)[1]);
     cards.push(leader);
     
@@ -606,8 +609,15 @@
         errors.push('- Unidentified card name.');
         continue;
       }
+
       // guess id from cardname
-      let idGuess = cardname.toLowerCase().replace(/[.\s]+/g, '_');
+      let idGuess = cardname.toLowerCase()
+        .replace('.', '')
+        .replace(/[.\s-]+/g, '_')
+        // replace umlauts
+        .replace('ä', 'ae')
+        .replace('ö', 'oe')
+        .replace('ü', 'ue');
 
       if (idGuess === 'money') {
         deck.money = deckString.match(/([0-9]+)\sMoney/)[1];
@@ -629,7 +639,7 @@
       alert('Invalid or corrupted file:\n' + errors.join('\n'));
       return;
     }
-    saveDeck(deck, currentDeckID);
+    saveDeck(deck, id);
   }
 
 
@@ -700,6 +710,21 @@
     if (rawName.length <= maxSize) return rawName;
 
     return rawName.slice(0, maxSize) + '[...]';
+  }
+
+  const load = async function(url) {
+    try {
+      const response = await fetch(url);
+      const text = await response.text();
+      return text;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const loadPreconFile = async function(url, id) {
+    text = await load(url);
+    parseDeckString(text, null, id);
   }
 
 

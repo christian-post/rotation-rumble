@@ -1,20 +1,20 @@
 <script>
   // Code that runs after the page has loaded
-
-  // Replace {tags} with inline symbols 
-  let replacements = {
-      bb: 'bomb',
-      bn: 'bones',
-      by: 'bury',
-      c: 'coil',
-      d: 'dice',
-      e: 'energy',
-      hs: 'haste',
-      ht: 'heart',
-      m: 'money',
-      s: 'star',
-      t: 'treefolk',
-      u: 'unblockable'
+  window.addEventListener("load", (event) => {
+    // Replace {tags} with inline symbols 
+    let replacements = {
+        bb: 'bomb',
+        bn: 'bones',
+        by: 'bury',
+        c: 'coil',
+        d: 'dice',
+        e: 'energy',
+        hs: 'haste',
+        ht: 'heart',
+        m: 'money',
+        s: 'star',
+        t: 'treefolk',
+        u: 'unblockable'
     };
 
     Object.entries(replacements).forEach(([key, value]) => {
@@ -24,4 +24,5 @@
         `<abbr class="inline-symbol | ${value}" title="${capitalize(value)}">{${value}}</abbr>`
       );
     });
+  });
 </script>

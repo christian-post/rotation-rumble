@@ -1,0 +1,36 @@
+[deck="Donner's Charging Knights (Preconstructed)"]
+//Leader
+Donner
+
+//Deck
+1 Duke Nox
+1 Arnold
+1 Rondur
+1 Sir John
+1 Sir Myrkur
+1 Löwenherz
+1 Genta
+1 Threnos
+1 Vectron
+1 Lance-a-Lot
+1 Lord Rox
+1 Mercenary
+1 Recruit
+1 Frontliner
+1 Gold Orb
+1 Louis XVIII
+1 Iron Helm
+1 Imperion
+1 Dr. Mira
+1 Machinist
+1 Prof Z.
+1 The Bulb
+1 Bad Particle
+1 Steam Engine
+1 Lab Coat
+1 Jellyfish
+1 Anatomy Lab
+1 Servo
+1 Battery
+1 Boneshaker
+15 Money
