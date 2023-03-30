@@ -1,4 +1,0 @@
-???
-- Terminologie: "advanced search" geändert zu "search"
-- Suchergebnisse: Bild wird angezeigt bei ergebnisloser Suche
-- Suchergebnisse: Inhalt der Suche wird mit angezeigt.
