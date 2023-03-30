@@ -716,8 +716,9 @@ footer {
   display: flex;
   justify-content: flex-start;
   gap: 1rem;
-  padding: 0.5rem;
+  padding-top: 0.5rem;
   padding-left: 3rem;
+  padding-right: 160px;
 }
 
 #display-as {
@@ -803,6 +804,19 @@ footer {
   margin-top: 1rem;
   padding: 1rem;
 }
+
+.notFound-image-container {
+  display: flex;
+  justify-content: center;
+}
+
+.notFound-image {
+  /* TODO: das Bild soll exakt den restlichen verfügbaren Platz ausfüllen,
+  ohne eine Scrollbar zu triggern */
+  height: 60dvh;  
+}
+
+
 
 /* ------------------------ CARD GALLERY MOBILE VIEW ------------------------ */
 

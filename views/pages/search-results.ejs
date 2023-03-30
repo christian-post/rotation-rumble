@@ -16,6 +16,11 @@
     </div>
     <div class="grid-item" style="grid-column: 1 / span 2">
       <%- include('../partials/card-gallery-' + locals.query.as); %>
+      <% if (locals.cards.length === 0) { %>
+        <div class="notFound-image-container">
+          <img class="notFound-image" src="/images/rotation-rumble-no-card-found.jpg">
+        </div>
+       <% } %>
     </div>
   </div>
 </main>

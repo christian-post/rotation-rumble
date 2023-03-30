@@ -352,8 +352,60 @@ function allCombinations (items) {
   
 
 app.post('/advanced-search/', (req, res) => {
-  
   let colors = "";
+
+  // Suche lesbar machen
+  let searchExplain = [];
+  let attrs = [
+    'name', 'cardtype', 'color', 'dmg', 'def', 'dice', 'type', 
+    'effectOrStep'
+  ];
+
+  let aliases = {
+    '$eq': 'equal to',
+    '$gt': 'greater than',
+    '$lt': 'less than',
+    '$gte': 'greater than or equal to',
+    '$lte': 'less than or equal to',
+    'exact': 'is exactly these colors',
+    'least-one': 'is at least one of these colors',
+    'include-all': 'includes all of these colors',
+    'most': 'is at most these colors'
+  };
+
+  for (let i = 0; i < attrs.length; i++) {
+    if (req.body[attrs[i]]) {
+      switch(attrs[i]) {
+        case 'color':
+          let colorStr = req.body[attrs[i]].toString().replaceAll(',', ', ');
+          searchExplain.push(`"${attrs[i]}" ${aliases[req.body.color_compare]}: ${colorStr}`);
+          break;
+        case 'dice':
+          if (req.body['dice'] === 'Yes') {
+            searchExplain.push('the card requires die rolls');
+          } else if (req.body['dice'] === 'No') {
+            searchExplain.push('the card doesn\'t require die rolls');
+          }
+          break;
+        case 'dmg':
+          if (req.body.dmg === 'any') break;
+          searchExplain.push(`"${attrs[i]}" is ${aliases[req.body.dmg_compare_method]} ${req.body[attrs[i]]}`);
+          break;
+        case 'def':
+          if (req.body.def === 'any') break;
+          searchExplain.push(`"${attrs[i]}" is ${aliases[req.body.def_compare_method]} ${req.body[attrs[i]]}`);
+          break;
+        case 'effectOrStep':
+          searchExplain.push(`the Effects or Steps contain ${req.body[attrs[i]]}`);
+          break;
+        default:
+          searchExplain.push(`"${attrs[i]}" is "${req.body[attrs[i]]}"`);
+      }
+    }
+  }
+
+  // Suche nach Farben
+
   if (req.body.color) {
     // color ist entweder ein String oder ein Array
     if (typeof req.body.color === 'string') {
@@ -389,7 +441,6 @@ app.post('/advanced-search/', (req, res) => {
   }
 
   // dmg und def any value
-  // TODO: geht das nicht eleganter?
   if (req.body.dmg === 'any') {
     req.body.dmg = /(?:)/i;
     req.body.dmg_compare_method = '$regex';
@@ -406,11 +457,12 @@ app.post('/advanced-search/', (req, res) => {
     req.body.def = RegExp(req.body.def, 'i');
   }
 
-  // Dice
+  // Würfel
   if (req.body.dice === 'Irrelevant') {
     req.body.dice = /(?:)/i;
   }
 
+  // Regex escapen
   const search = {
     name: RegExp(escapeRegex(req.body.name), 'i'),
     cardtype: RegExp(escapeRegex(req.body.cardtype), 'i'),
@@ -445,19 +497,30 @@ app.post('/advanced-search/', (req, res) => {
 
   console.log(search)
 
+  var header;
+
   found = [];
   db.collection('all-cards')
-  .find(search)
-  .forEach(card => {
-    found.push(card);
-  })
-  .then(()=> {
-    res.render(`pages/search-results`, {
-      header: `${(found.length ? `These ${found.length}` : "No")} cards matched your search.`,
-      cards: found,
-      query: {
-        as: 'images'
+    .find(search)
+    .forEach(card => {
+      found.push(card);
+    })
+    .then(()=> {
+      // header string
+      if (found.length > 0) {
+        header = `These ${found.length} cards matched your search where `;
+      } else {
+        header = 'No cards matched your search where ';
       }
+
+      header += searchExplain.join(', and where ') + '.'
+
+      res.render('pages/search-results', {
+        header: header,
+        cards: found,
+        query: {
+          as: 'images'
+        }
+      });
     });
-  });
 }); 
