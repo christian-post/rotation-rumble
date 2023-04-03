@@ -500,9 +500,14 @@ app.post('/advanced-search/', (req, res) => {
 
   // Effects or Steps
   let effectsSearchStr = utils.sanitize(req.body.effectOrStep).trim();
-  let effectSearch = effectsSearchStr;
+  let effectSearch;
+  if (req.body.effectOrStep_exact) {
+    effectSearch = `\"${effectsSearchStr}\"`;
+  } else {
+    effectSearch = effectsSearchStr;
+  }
   // let effectSearch = `\"${effectsSearchStr}\"`;  // TODO: abhängig von "exact" parameter
-  console.log('effects:', effectSearch)
+  console.log(`effects: "${effectSearch}"`)
 
 
   // Set
