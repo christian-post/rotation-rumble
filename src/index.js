@@ -503,6 +503,8 @@ app.post('/advanced-search/', (req, res) => {
   let effectSearch;
   if (req.body.effectOrStep_exact) {
     effectSearch = `\"${effectsSearchStr}\"`;
+  } else if (req.body.effectOrStep_matchall) {
+    effectSearch = `\"${effectsSearchStr.replaceAll(' ', '\" \"')}\"`;
   } else {
     effectSearch = effectsSearchStr;
   }
