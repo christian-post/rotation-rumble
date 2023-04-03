@@ -561,11 +561,21 @@ footer {
   margin-right: 1rem;
 }
 
-.color-select, .dice-select {
+.color-select, .dice-select, .token-select {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+.token-select div {
+  display: flex;
+  flex-direction: row;
+}
+
+.advanced-search-token {
+  width: 2rem;
+  margin-left: .5rem;
 }
 
 #cardname, 

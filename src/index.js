@@ -1,5 +1,6 @@
 const express = require('express');
 const { connectToDb, getDb } = require('./db');
+const utils = require('./utils');
 const { body, validationResult } = require('express-validator');
 const path = require('path');
 require("dotenv").config();
@@ -295,22 +296,9 @@ app.get('/api/all-cards', (req, res) => {
 
 // POST requests
 
-const sanitize = function(text) {
-  // TOTO Do I need this?
-  return text.replace(/'[.\\+*?\\[^\]$(){}=!<>|:\\#'"]/g, '\\$0');
-}
-
-
-const escapeRegex = function(text) {
-  // helper function
-  // https://stackoverflow.com/questions/38421664/fuzzy-searching-with-mongodb
-  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-};
-
-
 app.post('/simple-search/', (req, res) => {
   if (req.body.search_field) {
-    const regex = new RegExp(escapeRegex(req.body.search_field), 'i');
+    const regex = new RegExp(utils.escapeRegex(req.body.search_field), 'i');
 
     found = [];
     db.collection('all-cards')
@@ -331,34 +319,14 @@ app.post('/simple-search/', (req, res) => {
     res.render('pages/index');
   }
 });
-
-
-function allCombinations (items) {
-  // https://code-boxx.com/javascript-permutations-combinations/
-   
-  let results = [];
-  for (let slots = items.length; slots > 0; slots--) {
-    for (let loop = 0; loop < items.length - slots + 1; loop++) {
-      let key = results.length;
-      results[key] = [];
-      for (let i = loop; i < loop + slots; i++) {
-        results[key].push(items[i]);
-      }
-    }
-  }
-  return results;
-}
-  
   
 
 app.post('/advanced-search/', (req, res) => {
-  let colors = "";
-
   // Suche lesbar machen
   let searchExplain = [];
   let attrs = [
-    'name', 'cardtype', 'color', 'dmg', 'def', 'dice', 'type', 
-    'effectOrStep'
+    'name', 'cardtype', 'color', 'dmg', 'def', 'dice', 'token', 'type', 
+    'effectOrStep', 'set'
   ];
 
   let aliases = {
@@ -370,7 +338,20 @@ app.post('/advanced-search/', (req, res) => {
     'exact': 'is exactly these colors',
     'least-one': 'is at least one of these colors',
     'include-all': 'includes all of these colors',
-    'most': 'is at most these colors'
+    'most': 'is at most these colors',
+    '{t}': 'Treefolk',
+    '{bb}': 'Bomb',
+    '{bn}': 'Bones',
+    '{by}': 'bury',
+    '{c}': 'Coil',
+    '{d}': 'Dice',
+    '{e}': 'Energy',
+    '{hs}': 'Haste',
+    '{ht}': 'Heart',
+    '{m}': 'Money',
+    '{s}': 'Star',
+    '{t}': 'Treefolk',
+    '{u}': 'unblockable'
   };
 
   for (let i = 0; i < attrs.length; i++) {
@@ -378,7 +359,7 @@ app.post('/advanced-search/', (req, res) => {
       switch(attrs[i]) {
         case 'color':
           let colorStr = req.body[attrs[i]].toString().replaceAll(',', ', ');
-          searchExplain.push(`"${attrs[i]}" ${aliases[req.body.color_compare]}: ${colorStr}`);
+          searchExplain.push(`the Color ${aliases[req.body.color_compare]}: ${colorStr}`);
           break;
         case 'dice':
           if (req.body['dice'] === 'Yes') {
@@ -389,30 +370,52 @@ app.post('/advanced-search/', (req, res) => {
           break;
         case 'dmg':
           if (req.body.dmg === 'any') break;
-          searchExplain.push(`"${attrs[i]}" is ${aliases[req.body.dmg_compare_method]} ${req.body[attrs[i]]}`);
+          searchExplain.push(
+            `DMG is ${aliases[req.body.dmg_compare_method]} ${req.body[attrs[i]]}`
+            );
           break;
         case 'def':
           if (req.body.def === 'any') break;
-          searchExplain.push(`"${attrs[i]}" is ${aliases[req.body.def_compare_method]} ${req.body[attrs[i]]}`);
+          searchExplain.push(
+            `DEF is ${aliases[req.body.def_compare_method]} ${req.body[attrs[i]]}`
+            );
+          break;
+        case 'token':
+          let tokenText;
+          if (typeof req.body.token === 'object') {
+            // TODO: logical OR, AND unterscheiden
+            tokenText = req.body.token.map(x => aliases[x]).join(', ');
+          } else {
+            tokenText = aliases[req.body.token];
+          }
+          searchExplain.push(
+            `the card interacts with ${tokenText} tokens`
+          );
           break;
         case 'effectOrStep':
-          searchExplain.push(`the Effects or Steps contain ${req.body[attrs[i]]}`);
+          searchExplain.push(`the Effects or Steps contain "${req.body[attrs[i]]}"`);
           break;
+        case 'set':
+          if (typeof req.body.set === 'object') {
+            searchExplain.push(`the Set is "${req.body.set.join('" or "')}"`);
+            break;
+          }
+
         default:
-          searchExplain.push(`"${attrs[i]}" is "${req.body[attrs[i]]}"`);
+          searchExplain.push(`the ${utils.capitalize(attrs[i])} is "${req.body[attrs[i]]}"`);
       }
     }
   }
 
   // Suche nach Farben
-
+  let colors = '';
   if (req.body.color) {
     // color ist entweder ein String oder ein Array
     if (typeof req.body.color === 'string') {
       if (req.body.color_compare === 'exact' || req.body.color_compare === 'most') {
         colors = RegExp(`^${req.body.color}$`, 'i');
       } else if (req.body.color_compare === 'least-one' || req.body.color_compare === 'include-all') {
-        colors = RegExp(escapeRegex(req.body.color), 'i');
+        colors = RegExp(utils.escapeRegex(req.body.color), 'i');
       }
     } else {
       if (req.body.color_compare === 'exact') {
@@ -429,7 +432,7 @@ app.post('/advanced-search/', (req, res) => {
         // "most"
         let searchStr = '^(';
 
-        let combo = allCombinations(req.body.color);
+        let combo = utils.allCombinations(req.body.color);
         combo.forEach(comb => {
           searchStr += comb.join('\/') + '|';
         });
@@ -438,6 +441,39 @@ app.post('/advanced-search/', (req, res) => {
         colors = RegExp(searchStr, 'i');
       }
     }
+  }
+
+  // Suche nach Token
+  let tokens = '';
+  if (req.body.token) {
+    // color ist entweder ein String oder ein Array
+    if (typeof req.body.token === 'string') {
+
+      if (req.body.token_compare === 'exact') {
+        //  TODO: das ergibt noch keinen Sinn
+        tokens = RegExp(req.body.token, 'i');
+      } else if (
+          req.body.token_compare === 'least-one' ||
+          req.body.token_compare === 'include-all'
+        ) {
+        tokens = RegExp(utils.escapeRegex(req.body.token), 'i');
+      }
+
+    } else {
+      if (req.body.token_compare === 'exact') {
+        tokens = RegExp(`^${req.body.token.join('/')}$`, 'i');
+      } else if (req.body.token_compare === 'least-one') {
+        // logical OR
+        tokens = RegExp(req.body.token.join('|'), 'i');
+      } else if (req.body.token_compare === 'include-all') {
+        // logical AND
+        let searchStr = '';
+        req.body.token.forEach(token => searchStr += `(?=.*${token})`);
+        tokens = RegExp(searchStr, 'i');
+      }
+    }
+  } else {
+    tokens = /(?:)/i;
   }
 
   // dmg und def any value
@@ -462,40 +498,63 @@ app.post('/advanced-search/', (req, res) => {
     req.body.dice = /(?:)/i;
   }
 
-  // Regex escapen
+  // Effects or Steps
+  let effectsSearchStr = utils.sanitize(req.body.effectOrStep).trim();
+  let effectSearch = effectsSearchStr;
+  // let effectSearch = `\"${effectsSearchStr}\"`;  // TODO: abhängig von "exact" parameter
+  console.log('effects:', effectSearch)
+
+
+  // Set
+  let setSearchStr;
+  let sets;
+  if (typeof req.body.set === 'string') {
+    setSearchStr = req.body.set;
+  } else {
+    // Array
+    setSearchStr = `${req.body.set.join('|')}`;
+  }
+  sets = RegExp(setSearchStr, 'i');
+
+  // Regex and query formatting
   const search = {
-    name: RegExp(escapeRegex(req.body.name), 'i'),
-    cardtype: RegExp(escapeRegex(req.body.cardtype), 'i'),
+    name: RegExp(utils.escapeRegex(req.body.name), 'i'),
+    cardtype: RegExp(utils.escapeRegex(req.body.cardtype), 'i'),
     color: colors || /(?:)/i,
 
     dmg: { [req.body.dmg_compare_method]:  req.body.dmg },
     def: { [req.body.def_compare_method]:  req.body.def },
     
     dice: req.body.dice || /(?:)/i,
+    set: sets,
 
     $and: [
-        { 
-      $or: [
-          { type1: RegExp(escapeRegex(req.body.type), 'i') },
-          { type2: RegExp(escapeRegex(req.body.type), 'i') }
-      ]
+      { 
+        $or: [
+            { type1: RegExp(utils.escapeRegex(req.body.type), 'i') },
+            { type2: RegExp(utils.escapeRegex(req.body.type), 'i') }
+        ]
       },
-        { 
-      $or: [
-          { effect1: RegExp(escapeRegex(req.body.effectOrStep), 'i') },
-          { effect2: RegExp(escapeRegex(req.body.effectOrStep), 'i') },
-          { effect3: RegExp(escapeRegex(req.body.effectOrStep), 'i') },
-          { effect4: RegExp(escapeRegex(req.body.effectOrStep), 'i') },
-          { step1: RegExp(escapeRegex(req.body.effectOrStep), 'i') },
-          { step2: RegExp(escapeRegex(req.body.effectOrStep), 'i') },
-          { step3: RegExp(escapeRegex(req.body.effectOrStep), 'i') },
-          { step4: RegExp(escapeRegex(req.body.effectOrStep), 'i') }
-          ]
+      {
+        $or: [
+          { effect1: tokens },
+          { effect2: tokens },
+          { effect3: tokens },
+          { effect4: tokens },
+          { step1: tokens },
+          { step2: tokens },
+          { step3: tokens },
+          { step4: tokens }
+        ]
       }
     ]
   }; 
 
-  console.log(search)
+  if (effectSearch) {
+    search['$text'] = { $search: effectSearch };
+  }
+
+  console.log(search);
 
   var header;
 
@@ -507,14 +566,19 @@ app.post('/advanced-search/', (req, res) => {
     })
     .then(()=> {
       // header string
-      if (found.length > 0) {
-        header = `These ${found.length} cards matched your search where `;
+      if (found.length === 1) {
+        header = `This card matched your search`;
+      } else if (found.length > 1) {
+        header = `These ${found.length} cards matched your search`;
       } else {
-        header = 'No cards matched your search where ';
+        header = 'No cards matched your search';
       }
 
-      header += searchExplain.join(', and where ') + '.'
-
+      if (searchExplain.length > 0) {
+        header += ' where ' + searchExplain.join(', and where ');
+      }
+      header += '.';
+      
       res.render('pages/search-results', {
         header: header,
         cards: found,

@@ -137,10 +137,60 @@
             <label for="inlineRadio3">Irrelevant</label>
           </div>
         </div>
+
+        <div class="advanced-search-item | token-select">
+          <label for="inlineCheckbox1" class="span-bold">Token?</label>
+          <div>
+            <input type="checkbox" class="checkbox" name="token" id="inlineCheckbox5" value="{bn}">
+            <label for="inlineCheckbox5">
+              <img class="advanced-search-token" src="/images/bones.png" alt="Bones">
+            </label>
+          </div>
+
+          <div>
+            <input type="checkbox" class="checkbox" name="token" id="inlineCheckbox6" value="{c}">
+            <label for="inlineCheckbox6">
+              <img class="advanced-search-token" src="/images/coil.png" alt="Coil">
+            </label>
+          </div>
+
+          <div>
+            <input type="checkbox" class="checkbox" name="token" id="inlineCheckbox7" value="{t}">
+            <label for="inlineCheckbox7">
+              <img class="advanced-search-token" src="/images/treefolk.png" alt="Treefolk">
+            </label>
+          </div>
+
+          <div>
+            <input type="checkbox" class="checkbox" name="token" id="inlineCheckbox8" value="{bb}">
+            <label for="inlineCheckbox8">
+              <img class="advanced-search-token" src="/images/bomb.png" alt="Bomb">
+            </label>
+          </div>
+
+          <div>
+            <select name="token_compare" id="token_compare">
+              <option value="exact">Exactly these tokens</option>
+              <option value="least-one">At least one of these tokens</option>
+              <option value="include-all">Including all of these tokens</option>
+            </select>
+          </div>
+        </div>
   
         <div class="advanced-search-item">
           <label for="effectOrStep" class="span-bold">Effects or Steps</label>
           <input id="effectOrStep" name="effectOrStep" type="text" placeholder='Any words in the text, e.g., "Destroy".'>
+        </div>
+  
+        <div class="advanced-search-item">
+          <label for="set" class="span-bold">Set(s)</label>
+          <select id="set" name="set" multiple>
+            <option value="" selected="selected">All</option>
+            <!-- TODO populate dynamically -->
+            <option value="Core Set">Core Set</option>
+            <option value="Evil Science">Evil Science</option>
+            <option value="Twisted Tides">Twisted Tides</option>
+          </select>
         </div>
   
         <input type="submit" value="Search with these values.">
