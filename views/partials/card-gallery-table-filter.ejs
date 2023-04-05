@@ -1,6 +1,5 @@
-<div class="gallery-header grid-item" id="display-as">
+<div class="gallery-header grid-item">
   <h2><%= locals.header %></h2>
-  <label for="display-as">display as </label>
 
   <script>
     const changeGalleryLayout = function(select) {
@@ -20,6 +19,7 @@
     }
   </script>
 
+  <label for="display-as" class="header-selector">display as </label>
   <select name="display-as" id="display-as", onchange="changeGalleryLayout(this)">
     <option value=""></option>
     <option value="images" id="images">Images</option>
@@ -27,7 +27,7 @@
     <option value="text" id="text">Text only</option>
   </select>
 
-  <label for="group-by">group by </label>
+  <label for="group-by" class="header-selector">group by </label>
   <select name="group-by" id="group-by", onchange="galleryGroupBy(this)">
     <option value=""></option>
     <option value="none">None</option>

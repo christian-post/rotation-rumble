@@ -400,6 +400,7 @@ footer {
   background-color: var(--bg-color-dark);
   margin-top: auto;
   flex-shrink: 0;
+  z-index: 1;
 }
 
 .footer-nav {
@@ -607,16 +608,21 @@ footer {
 }
 
 .add-to-deck-container {
-  border-radius: 10px;
+  border-radius: 10px 10px 0 0;
   background-color: var(--color-orange-semitrans);
   padding: 1rem;
   position: fixed;
   min-width: 200px;
-  top: 85vh;
-  left: 70vw;
+  height: 140px;
+  top: calc(100dvh - 140px);
+  left: 15dvw;
 
   display: flex;
   justify-content: center;
+}
+
+.add-to-deck-container input {
+  align-self: start; 
 }
 
 /* ----------- cardinfo.ejs --------------------------------------------------*/
@@ -729,10 +735,11 @@ footer {
   padding-top: 0.5rem;
   padding-left: 3rem;
   padding-right: 160px;
+  grid-column: 1 / span 2; 
 }
 
-#display-as {
-  grid-column: 1 / span 2; max-height: 3rem;
+.header-selector {
+  margin: auto 0;
 }
 
 .card-gallery-table {

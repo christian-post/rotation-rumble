@@ -1,7 +1,7 @@
 <script>
   var cardData;
   var colors;  // needed later
-
+  const urlParams = new URLSearchParams(window.location.search);
 
   const getInnerText = function(node) {
     // helper function for the table sorting algorithm
@@ -301,7 +301,7 @@
 
 
   const getDeck = function(deckID) {
-    if (deckID === undefined) { deckID = 'currentDeck'; }
+    if (deckID === undefined) { deckID = currentDeckID; }
 
     let blueprint = {
       cards: {},
@@ -411,9 +411,11 @@
     // get name of Card from singlecard.ejs
 
     // TODO: put card ID into the html data attribute?
+    let path = window.location.pathname.split('/')
 
     let card = {
       name: document.querySelector('.card-title')?.innerHTML,
+      id: path[path.length - 1],
       cardtype: document.querySelector('.card-type-text')?.getAttribute('data-cardtype'),
       info: '💬',
       leader: false,

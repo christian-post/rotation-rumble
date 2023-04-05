@@ -508,7 +508,6 @@ app.post('/advanced-search/', (req, res) => {
   } else {
     effectSearch = effectsSearchStr;
   }
-  // let effectSearch = `\"${effectsSearchStr}\"`;  // TODO: abhängig von "exact" parameter
   console.log(`effects: "${effectSearch}"`)
 
 
