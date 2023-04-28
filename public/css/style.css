@@ -774,7 +774,8 @@ footer {
   cursor: pointer;
 }
 
-.sortable-table-col-head {
+.sortable-table-col-head,
+.card-gallery-header {
   cursor: pointer;
 }
 

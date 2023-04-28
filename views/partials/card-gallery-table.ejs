@@ -3,9 +3,9 @@
     <thead>
       <tr>
         <% for (let i = 0; i < locals.head.length; i++) { %>
-          <th>
+          <th class="card-gallery-header" onclick="onColumnHeaderClicked(event)">
             <%= locals.head[i] %>
-            <span class="sortby" onclick="sortTable(<%= i %>, 'card-gallery-table')" id="<%= i %>">
+            <span class="sortby" id="<%= i %>">
               <%- locals.orderSymbols[i] %>
             </span>
           </th>
@@ -15,7 +15,12 @@
     <tbody>
       <% for (let i = 0; i < locals.cards.length; i++) { %>
         <!-- add drag functionality for deck builder -->
-        <tr id=<%=`drag${i}` %> draggable="true" ondragstart="drag(event)" class="card-gallery-row">
+        <tr 
+          id=<%=`drag${i}` %> 
+          draggable="true" 
+          ondragstart="drag(event)" 
+          class="card-gallery-row"
+        >
           <% 
             locals.fields.forEach(function(field) {
           %>
