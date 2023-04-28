@@ -393,6 +393,14 @@ h1 {
   font-weight: bold;
 }
 
+.ui-bar-horizontal {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: .25rem;
+  gap: .5rem;
+}
+
 
 /* ------------------- FOOTER ----------------------------------------------- */
 

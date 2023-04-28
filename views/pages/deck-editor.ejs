@@ -19,23 +19,29 @@
       <div class="all-cards-title">
         <h2>All Cards</h2>
       </div>
+
+      <div class="ui-bar-horizontal">
+        <label for="card-filter">Filter</label>
+        <input type="text" id="card-filter" name="card-filter" onkeyup="filterTable()">
+        <!-- <button class="standard-button">Apply</button> -->
+      </div>
       
       <table class="card-gallery-table" id="card-gallery-table">
         <thead>
           <tr>
-            <th class="sortable-table-col-head">
+            <th class="sortable-table-col-head", onclick="onColumnHeaderClicked(event)">
               Name
               <span class="sortby" id="0">
                 &#x25BC;
               </span>
             </th>
-            <th class="sortable-table-col-head">
+            <th class="sortable-table-col-head", onclick="onColumnHeaderClicked(event)">
               Card Type
               <span class="sortby" id="1">
                 &#x25BC;
               </span>
             </th>
-            <th class="sortable-table-col-head">
+            <th class="sortable-table-col-head", onclick="onColumnHeaderClicked(event)">
               Cost
               <span class="sortby" id="2">
                 &#x25BC;
@@ -170,13 +176,6 @@
   updateStats();
 
 
-  // add sorting functionality
-  let theads = Array.from(document.querySelectorAll('.sortable-table-col-head'));
-  theads.forEach(th => {
-    th.setAttribute('onclick', "onColumnHeaderClicked(event)");
-  });
-
-
   const changeDeckName = function() {
     let deck = getDeck(currentDeckID);
 
@@ -190,11 +189,34 @@
     saveDeck(deck, currentDeckID);
   }
 
+
   const changeToDeckstats = function() {
     updateStats();
     window.location.href = `/visual-deckstats?deck=${currentDeckID}`;
   }
+
+
+  const filterTable = function() {
+    // https://www.w3schools.com/howto/howto_js_filter_table.asp
+    let input = document.querySelector('#card-filter');
+    let filter = input.value.toLowerCase();
+    let table =  document.querySelector('#card-gallery-table');
+    let trows = Array.from(table.getElementsByTagName("tr"));
+
+    trows.forEach(row => {
+      td = row.getElementsByTagName("td")[0];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+      if (txtValue.toLowerCase().indexOf(filter) > -1) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+      }
+    });
+  }
  
+
 </script>
 
 <%- include('../partials/postprocessing'); %>
