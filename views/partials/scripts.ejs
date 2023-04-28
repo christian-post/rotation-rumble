@@ -5,7 +5,7 @@
 
   const getInnerText = function(node) {
     // helper function for the table sorting algorithm
-    // TODO: import from exportCSV.js instead?
+    // TODO: SLOW!!!!!!!
 
     if (node === undefined) return;
 
@@ -83,56 +83,19 @@
       // check for the parent div
       let tBody = ev.target.parentNode.getElementsByTagName('tbody')[0];
 
-      if (ev.target.parentNode.className === 'leader-container') {
-        // element gets dragged into the container for the deck's leader
+      // check if element is in table and at which index
+      let index = checkInTable(document.getElementById(data), tBody);
 
-        // check if the dragged card is a Fighter
-        if (newRow.children.item(1).innerText !== 'Fighter') {
-          alert('Your Leader has to be a Fighter!');
-          return;
-        }
-
-        // check if something is already in there
-        if (tBody.children.length === 1) {
-          alert('You already selected a Leader!');
-          return;
-        }
-
-        // show the leader image
-
-        // check if there is already an image
-        if (document.getElementById('leader-image')) {
-          document.getElementById('leader-image').remove();
-        }
-
-        // read image url from img tag
-        let imageSrc = newRow.querySelector('.card-image-tooltip')?.src;
-
-        let leaderImg = document.createElement('img');
-        leaderImg.id = 'leader-image';
-        leaderImg.src = imageSrc || 'images/notfound.png';
-        leaderImg.width = '300';
-        ev.target.parentNode.appendChild(leaderImg);
-
+      if (index === -1) {
+        // put row in table
         tBody.appendChild(newRow);
         dropped = true;
-
-        addCardAsLeader(newRow);
-
-      } else if (ev.target.parentNode.className === 'deck-container') {
-        // check if element is in table and at which index
-        let index = checkInTable(document.getElementById(data), tBody);
-
-        if (index === -1) {
-          // put row in table
-          tBody.appendChild(newRow);
-          dropped = true;
-        }
       }
     }
     // column with an X lets you remove the element
     if (dropped) {
       addColumnsToCard(newRow);
+      updateStats()
     }
   }
 
@@ -161,7 +124,8 @@
         document.getElementById('leader-image').remove();
       }
 
-    // remove the X column
+    // remove the X and the Leader column
+    row.removeChild(row.lastElementChild);
     row.removeChild(row.lastElementChild);
 
     // add the "add to deck" column
@@ -186,11 +150,50 @@
   }
 
 
-  const addColumnsToCard = function(row) {
+  const handleLeaderCheckbox = function(event) {
+    let deck = getDeck(currentDeckID);
+
+    // uncheck all boxes, then check the selected box
+    let boxes = document.querySelectorAll('.leader-checkbox');
+    boxes.forEach(box => {
+      box.checked = false;
+      // change the leader status in the card object
+      deck.cards[box.dataset.id].leader = false;
+    });
+    
+    event.target.checked = true;
+
+    // set leader in the deck object
+    let leaderID = event.target.dataset.id;
+
+    deck.leader = deck.cards[leaderID];
+    deck.cards[leaderID].leader = true;
+    saveDeck(deck, currentDeckID);
+  }
+
+
+  const addColumnsToCard = function(row, setAsLeader=false) {
     // this has to be called when a card is added to the Deck table
 
     // remove the "add to deck" column
     row.removeChild(row.lastElementChild);
+
+    // Add the "Leader?" checkbox
+    let leaderCheckCell = document.createElement('td');
+    let leaderCheckbox = document.createElement('input');
+    leaderCheckbox.type = 'checkbox';
+    leaderCheckbox.className = 'leader-checkbox';
+    leaderCheckbox.id = `leader-checkbox-${row.dataset.cardid}`;
+    leaderCheckbox.setAttribute('onChange', 'handleLeaderCheckbox(event)');
+    // data attribute
+    leaderCheckbox.dataset.id = row.dataset.cardid;
+
+    if (setAsLeader) {
+      leaderCheckbox.checked = true;
+    }
+
+    leaderCheckCell.appendChild(leaderCheckbox);
+    row.appendChild(leaderCheckCell);
 
     // add the "X" column that will remove this row from the deck
     let xCell = document.createElement('td');
@@ -203,88 +206,46 @@
   }
 
 
-  const deleteDeckFromDeckbuilder = function() {
-    if (!confirm('Do you want to delete this deck?')) return;
-
-    // delete leader
-    const leader = Array.from(document.getElementById('leader-container-table').rows)[0];
-    leader?.querySelector('.remove-x')?.click();
-    document.getElementById('leader-image')?.remove();
-
-    // delete deck list
-    const rows = Array.from(document.getElementById('my-deck-table').rows);
-    // trigger onclick event of remove button
-    rows.forEach(row => row.querySelector('.remove-x')?.click());
-    // remove the deck from local storage
-    deleteDeck();
-  }
-
-  
-
   /* 
       ------- TABLE SORTING ---------
   */
-  const sortTable = function(index, id) {
-    // https://www.w3schools.com/howto/howto_js_sort_table.asp
+  // https://stackoverflow.com/questions/59282842/how-to-make-sorting-html-tables-faster
+  function sortTableRowsByColumn(table, columnIndex, ascending) {
 
-    let table = document.getElementById(id);
-    
-    //Set the sorting direction to ascending:
-    let dir = 'asc';
+  const rows = Array.from( table.querySelectorAll( ':scope > tbody > tr' ) );
 
-    /*Make a loop that will continue until
-    no switching has been done:*/
+  rows.sort( ( x, y ) => {
+      const xValue = x.cells[columnIndex].textContent;
+      const yValue = y.cells[columnIndex].textContent;
 
-    let rows, i, x, y, shouldSwitch;
-    let switchcount = 0;
-    let switching = true;
+      return ascending ? ( xValue > yValue ) : ( yValue > xValue ); // <-- Neat comparison trick.
+  } );
 
-    while (switching) {
-      //start by saying: no switching is done:
-      switching = false;
-      rows = table.rows;
-      /*Loop through all table rows (except the
-      first, which contains table headers):*/
-      for (i = 1; i < (rows.length - 1); i++) {
-        //start by saying there should be no switching:
-        shouldSwitch = false;
-        /*Get the two elements you want to compare,
-        one from current row and one from the next:*/
-        x = rows[i].getElementsByTagName('TD')[index];
-        y = rows[i + 1].getElementsByTagName('TD')[index];
-        /*check if the two rows should switch place,
-        based on the direction, asc or desc:*/
-        if (dir == 'asc') {
-          if (getInnerText(x).toLowerCase() > getInnerText(y).toLowerCase()) {
-            //if so, mark as a switch and break the loop:
-            shouldSwitch= true;
-            break;
-          }
-        } else if (dir == 'desc') {
-          if (getInnerText(x).toLowerCase() < getInnerText(y).toLowerCase()) {
-            //if so, mark as a switch and break the loop:
-            shouldSwitch = true;
-            break;
-          }
-        }
-      }
-      if (shouldSwitch) {
-        /*If a switch has been marked, make the switch
-        and mark that a switch has been done:*/
-        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-        switching = true;
-        //Each time a switch is done, increase this count by 1:
-        switchcount ++;      
-      } else {
-        /*If no switching has been done AND the direction is 'asc',
-        set the direction to 'desc' and run the while loop again.*/
-        if (switchcount == 0 && dir == 'asc') {
-          dir = 'desc';
-          switching = true;
-        }
-      }
-    }
+  // There is no need to remove the rows prior to adding them in-order because `.appendChild` will relocate existing nodes.
+  for( let row of rows ) {
+      table.tBodies[0].appendChild( row );
   }
+  }
+
+  function onColumnHeaderClicked(ev) {
+    const th = ev.currentTarget;
+    const table = th.closest( 'table' );
+    
+    const thIndex = Array.from( th.parentElement.children ).indexOf( th );
+
+
+    const ascending = th.dataset.sort != 'asc';
+
+    sortTableRowsByColumn( table, thIndex, ascending );
+
+    const allTh = table.querySelectorAll( ':scope > thead > tr > th' );
+    for( let th2 of allTh ) {
+      delete th2.dataset['sort'];
+    }
+
+    th.dataset['sort'] = ascending ? 'asc' : 'desc';
+  }
+
 
   // --- MISC -----
 
@@ -318,11 +279,13 @@
     // parse string from storage and return an object
     let deck = JSON.parse(localStorage.getItem(deckID));
 
+
     // test if deck object matches the blueprint
     // necessary if the users have an older version in the cache
     for (const key in blueprint) {
       if (!Object.keys(deck).includes(key)) {
         alert('Warning: The deck in your cache seems to be an older version. Deck deleted.')
+        console.log(deck);
         deck = JSON.parse(JSON.stringify(blueprint));
         break;
       }
@@ -474,31 +437,18 @@
     let galleryTBody = document.getElementById('card-gallery-table')
           .getElementsByTagName('tbody')[0];
     let deckTBody = document.getElementById('my-deck-table').getElementsByTagName('tbody')[0];
-    let leaderTBody = document.getElementById('leader-container-table')
-          .getElementsByTagName('tbody')[0];
 
     Object.entries(deck.cards).forEach(([key, card]) => {
       let row = document.querySelector(`.card-gallery-row-${key}`);
-      if (!card.leader) {
-        deckTBody.appendChild(row);
-        addColumnsToCard(row);
-      } else {
-        // TODO: duplicate code, make it a function!
-        // read image url from img tag
-        let imageSrc = row.querySelector('.card-image-tooltip')?.src;
-
-        let leaderImg = document.createElement('img');
-        leaderImg.id = 'leader-image';
-        leaderImg.src = imageSrc || 'images/notfound.png';
-        leaderImg.width = '300';
-
-        let dropZone = document.getElementById('leader-container');
-        dropZone.appendChild(leaderImg);
-
-        leaderTBody.appendChild(row);
-        addColumnsToCard(row);
-      }
+      deckTBody.appendChild(row);
+      addColumnsToCard(row, card.leader);
     });
+
+    // Money
+    let moneySelect = document.getElementById('num-money');
+    moneySelect.value = deck.money;
+
+    console.log('deck creation done')
 
     // change Title
     let title = document.querySelector('#deck-title');
@@ -650,6 +600,7 @@
     const money = parseInt(document.getElementById('num-money').value);
 
     let deck = getDeck(currentDeckID);
+    console.log(deck)
     const cardsTotal = Object.keys(deck.cards).length + money;
 
     let typeCount = {

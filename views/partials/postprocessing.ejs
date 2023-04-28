@@ -17,12 +17,17 @@
         u: 'unblockable'
     };
 
-    Object.entries(replacements).forEach(([key, value]) => {
-      let body = document.querySelector('body');
-      body.innerHTML = body.innerHTML.replaceAll(
-        `{${key}}`, 
-        `<abbr class="inline-symbol | ${value}" title="${capitalize(value)}">{${value}}</abbr>`
-      );
-    });
+    let body = document.querySelector('body');
+
+    // TODO: this is bugged and removes all the checks from the leader checkboxes
+
+    // Object.entries(replacements).forEach(([key, value]) => {
+    //   body.innerHTML = body.innerHTML.replaceAll(
+    //     `{${key}}`, 
+    //     `<abbr class="inline-symbol | ${value}" title="${capitalize(value)}">{${value}}</abbr>`
+    //   );
+    // });
+
+    console.log('postprocessing done')
   });
 </script>

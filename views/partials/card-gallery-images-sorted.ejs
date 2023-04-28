@@ -1,7 +1,13 @@
 <div>
   <% let i = 0; %>
   <% locals.aggregated.forEach((agg) => { %>
-    <div class="card-gallery-divider"><%= agg._id %></div>
+    <div class="card-gallery-divider">
+      <% 
+        let setID = agg._id.toLowerCase().replaceAll(' ', '-');
+        let img_url = `/images/rotation-rumble-${setID}-banner.jpg`; 
+      %>
+      <img src="<%= img_url %>" alt="<%= agg._id %>">
+    </div>
     <div class="card-gallery">
       <% let cards = locals.cards.slice(i, i + agg.count); %>
       <% cards.forEach(function(card) { %>

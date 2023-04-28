@@ -774,6 +774,10 @@ footer {
   cursor: pointer;
 }
 
+.sortable-table-col-head {
+  cursor: pointer;
+}
+
 .card-image-gallery {
   width: 250px;
 }
@@ -813,13 +817,14 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
-
   font-size: var(--font-size-medium);
-
-  border-bottom: 2px solid var(--color-orange);
-  border-top: 2px solid var(--color-orange);
   margin-top: 1rem;
-  padding: 1rem;
+  box-shadow: 0 8px 6px rgba(50, 50, 50, .3);
+
+  /* TODO: just a hack, remove default padding from grid items? */
+  width: calc(100% + 4rem);
+  position: relative;
+  left: -2rem;
 }
 
 .notFound-image-container {
@@ -1081,6 +1086,7 @@ footer {
   display: flex;
   position: absolute;
   z-index: 999;
+  /* TODO: position the tooltip always inside the screen */
 
   background-color: var(--bg-color-bright);
   border: 1px solid var(--color-accent-blue);

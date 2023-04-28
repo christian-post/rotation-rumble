@@ -14,6 +14,7 @@
 
 <main>
   <div class="grid-container" id="deck-builder">
+    <!-- LEFT SIDE -->
     <div class="grid-item">
       <div class="all-cards-title">
         <h2>All Cards</h2>
@@ -22,21 +23,21 @@
       <table class="card-gallery-table" id="card-gallery-table">
         <thead>
           <tr>
-            <th>
+            <th class="sortable-table-col-head">
               Name
-              <span class="sortby" onclick="sortTable(0, 'card-gallery-table')" id="0">
+              <span class="sortby" id="0">
                 &#x25BC;
               </span>
             </th>
-            <th>
+            <th class="sortable-table-col-head">
               Card Type
-              <span class="sortby" onclick="sortTable(1, 'card-gallery-table')" id="1">
+              <span class="sortby" id="1">
                 &#x25BC;
               </span>
             </th>
-            <th>
+            <th class="sortable-table-col-head">
               Cost
-              <span class="sortby" onclick="sortTable(2, 'card-gallery-table')" id="2">
+              <span class="sortby" id="2">
                 &#x25BC;
               </span>
             </th>
@@ -59,38 +60,17 @@
             >
               <td class="table-cell-cardname">
                 <div>
-                  <a 
-                    href="<%= '/card/' + locals.cards[i].id %>" 
-                    draggable="true" 
-                    ondragstart="drag(event)" 
-                    class="card-gallery-link"
-                  >
-                    <%= locals.cards[i].name %>
-                  </a>
+                  <%= locals.cards[i].name %>
                 </div>
               </td>
               <td class="table-cell-cardtype">
                 <div>
-                  <a 
-                    href="<%= '/card/' + locals.cards[i].id %>" 
-                    draggable="true" 
-                    ondragstart="drag(event)" 
-                    class="card-gallery-link"
-                  >
-                    <%= locals.cards[i].cardtype %>
-                  </a>
+                  <%= locals.cards[i].cardtype %>
                 </div>
               </td>
               <td class="table-cell-cost">
                 <div>
-                  <a 
-                    href="<%= '/card/' + locals.cards[i].id %>" 
-                    draggable="true" 
-                    ondragstart="drag(event)" 
-                    class="card-gallery-link"
-                  >
-                    <%= locals.cards[i].hire %>
-                  </a>
+                  <%= locals.cards[i].hire %>
                 </div>
               </td>
               <td class="table-cell-cardinfo">
@@ -117,8 +97,9 @@
           <% } %>
         </tbody>
       </table>
-
     </div>
+
+    <!-- RIGHT SIDE -->
 
     <div class="grid-item">
       <div class="deck-title-container">
@@ -128,8 +109,6 @@
 
       <div class="toggle-header">
         <h2 style="text-align: left;">Deck stats</h2>
-        <!-- <label class="toggle-button" for="toggle1">Expand</label> -->
-
         <button class="standard-button" onclick="changeToDeckstats()">💾 Save Changes</button>
       </div>
       <div>
@@ -137,21 +116,6 @@
         <div id="deck-stats">
           <!-- filled by the updateStats function -->
         </div>
-      </div>
-
-      <h2 style="text-align: left;">Leader</h2>
-      <div 
-        class="leader-container" 
-        id="leader-container" 
-        ondrop="drop(event)" 
-        ondragover="allowDrop(event)"
-      >
-        <div class="drag-zone">
-          &#10133
-        </div>
-        <table class="card-gallery-table", id="leader-container-table">
-          <tbody></tbody>
-        </table>
       </div>
 
       <h2 style="text-align: left;">Deck</h2>
@@ -165,11 +129,13 @@
               <% for (let i = 0; i < locals.head.length; i++) { %>
                 <th>
                   <%= locals.head[i] %>
-                  <span class="sortby" onclick="sortTable(<%= i %>, 'card-gallery-table')" id="<%= i %>">
+                  <!-- TODO: fix sorting for the right table! -->
+                  <!-- <span class="sortby" onclick="sortTable(<%= i %>, 'card-gallery-table')" id="<%= i %>">
                     <%- locals.orderSymbols[i] %>
-                  </span>
+                  </span> -->
                 </th>
               <% } %>
+              <th>Leader?</th>
               <th>Remove</th>
             </tr>
           </thead>
@@ -202,6 +168,14 @@
 <script>
   createDeckFromStorage();
   updateStats();
+
+
+  // add sorting functionality
+  let theads = Array.from(document.querySelectorAll('.sortable-table-col-head'));
+  theads.forEach(th => {
+    th.setAttribute('onclick', "onColumnHeaderClicked(event)");
+  });
+
 
   const changeDeckName = function() {
     let deck = getDeck(currentDeckID);
