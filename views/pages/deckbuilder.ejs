@@ -2,9 +2,6 @@
 <html lang="en">
 <head>
   <%- include('../partials/head'); %>
-  <script>
-    var currentDeckID = urlParams.get('deck');
-  </script>
 </head>
 
 <body>
@@ -27,7 +24,6 @@
           <label for="deck-selector">Decks in Storage</label>
           <select name="deck" id="deck-selector" size="5">
           </select>
-          <!-- <input class="standard-button" type="submit" value="Edit Deck" /> -->
         </form>
         <div class="button-container-h" id="bottom-buttons">
           <button class="standard-button" onclick="viewSelectedDeck()">View Deck</button>
@@ -50,13 +46,19 @@
 
   const viewSelectedDeck = function() {
     let value = document.querySelector('#deck-selector').value;
+    console.log(value)
     if (value.length === 0) return;
+
+    localStorage.setItem('currentDeckID', value);
     window.location.href = '/visual-deckstats?deck=' + value;
   }
+
 
   const editSelectedDeck = function() {
     let value = document.querySelector('#deck-selector').value;
     if (value.length === 0) return;
+
+    localStorage.setItem('currentDeckID', value);
     window.location.href = '/deck-editor?deck=' + value;
   }
 
@@ -74,18 +76,6 @@
   }
 
 
-  const getIDnumber = function() {
-    // gets a new unique deck id number
-    let ids = Object.keys(localStorage).sort();
-    if (ids.length) {
-      let lastID = ids[ids.length-1].split('-')[1];
-      return  parseInt(lastID) + 1;
-    } else {
-      return 0;
-    }
-  }
-
-
   const newDeck = function() {
     // check which deck IDs are currently used
     window.location.href = '/deck-editor?deck=deck-' + getIDnumber();
@@ -95,11 +85,18 @@
   const importDeck = async function() {
     let files = document.querySelector('#deck-upload').files;
     if (files.length > 0) {
-      currentDeckID = 'deck-' + getIDnumber();
+      let deckID = 'deck-' + getIDnumber();
 
-      // parse deck file
+      // store deckID in local storage
+      localStorage.setItem('currentDeckID', deckID);
+
+      // parse deck file and put into local storage
       let filecontent = await files[0].text();
-      let cards = await parseDeckString(filecontent, files[0].name.split('.txt')[0]);
+      await loadDeckFromFile(
+        filecontent, 
+        files[0].name.split('.txt')[0],
+        deckID
+      );
     }
     // update page
     makeSelector();
@@ -107,8 +104,16 @@
 
 
   const makeSelector = function() {
+    let decksInStorage = []
+    let deckIDs = Object.keys(localStorage).filter(elem => elem !== 'currentDeckID');
+
+    for (let id of deckIDs) {
+      let deck = getDeck(id); 
+      decksInStorage.push(deck);
+    }
+
     // get deck decks from local storage and put in select form
-    if (Object.keys(localStorage).length === 0) {
+    if (decksInStorage.length === 0) {
       document.querySelector('.select-deck-form').style.display = 'none';
       document.querySelector('#bottom-buttons').style.display = 'none';
     } else {
@@ -118,10 +123,9 @@
 
     document.querySelector('#deck-selector').innerHTML = '';
 
-    for (let deckID of Object.keys(localStorage))  {
-      let deck = getDeck(deckID);
+    for (let deck of decksInStorage) {
       let option = document.createElement('option');
-      option.value = deckID;
+      option.value = deck.id;
       option.textContent = truncateDeckName(deck.name, 50) || 'Untitled Deck'; 
       document.querySelector('#deck-selector').appendChild(option);
     }

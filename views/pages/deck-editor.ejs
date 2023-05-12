@@ -2,9 +2,6 @@
 <html lang="en">
 <head>
   <%- include('../partials/head'); %>
-  <script>
-    var currentDeckID = urlParams.get('deck');
-  </script>
 </head>
 <body>
 
@@ -141,7 +138,7 @@
                   </span> -->
                 </th>
               <% } %>
-              <th>Leader?</th>
+              <th>Captain?</th>
               <th>Remove</th>
             </tr>
           </thead>
@@ -153,7 +150,15 @@
       <div class="deck-container-footer">
         <div>
           <label for="num-money">Add Money:</label>
-          <input type="number" id="num-money" name="num-money" min="0" max="45" value="15">
+          <input 
+            type="number" 
+            id="num-money" 
+            name="num-money" 
+            min="0" 
+            max="45" 
+            value="15"
+            onchange="updateStats()"
+          >
         </div>
       </div>
     </div>
@@ -177,6 +182,7 @@
 
 
   const changeDeckName = function() {
+    let currentDeckID = localStorage.getItem('currentDeckID');
     let deck = getDeck(currentDeckID);
 
     let title = document.querySelector('#deck-title');
@@ -192,12 +198,16 @@
 
   const changeToDeckstats = function() {
     updateStats();
+    
+    let currentDeckID = localStorage.getItem('currentDeckID');
     window.location.href = `/visual-deckstats?deck=${currentDeckID}`;
   }
 
 
   const filterTable = function() {
     // https://www.w3schools.com/howto/howto_js_filter_table.asp
+    // TODO: make generic and put in scripts.ejs
+    
     let input = document.querySelector('#card-filter');
     let filter = input.value.toLowerCase();
     let table =  document.querySelector('#card-gallery-table');

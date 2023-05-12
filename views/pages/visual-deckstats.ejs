@@ -2,9 +2,6 @@
 <html lang="en">
 <head>
   <%- include('../partials/head'); %>
-  <script>
-    var currentDeckID = urlParams.get('deck');
-  </script>
 </head>
 <body>
 
@@ -149,6 +146,7 @@
   };
 
   // get data from deck in local storage
+  let currentDeckID = localStorage.getItem('currentDeckID');
   const deck = getDeck(currentDeckID);
 
   document.querySelector('#decklist-header').innerHTML = deck.name;
@@ -294,13 +292,13 @@
       cardData = await getAllCards();
     }
 
-    const deck = getDeck(currentDeckID);
+    const deck = getDeck(localStorage.getItem('currentDeckID'));
 
     // leader image
     let container = document.querySelector('#decklist-leader-container');
 
     let leaderTitle = document.createElement('h3');
-    leaderTitle.innerHTML = `Leader: ${deck.leader?.data.name}`;
+    leaderTitle.innerHTML = `Captain: ${deck.leader?.data.name}`;
     container.appendChild(leaderTitle);
 
     let image = document.createElement('img');
@@ -354,9 +352,12 @@
   moneySection.append(head);
   dbody.appendChild(moneySection);
 
+
   const changeToDeckEditor = function() {
+    let currentDeckID = localStorage.getItem('currentDeckID');
     window.location.href = `/deck-editor?deck=${currentDeckID}`;
   }
+
 
   // ------------------ Card View Tab ------------------------------------------
 

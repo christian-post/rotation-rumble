@@ -1,5 +1,5 @@
 [deck="Donner's Charging Knights (Preconstructed)"]
-//Leader
+//Captain
 Donner
 
 //Deck

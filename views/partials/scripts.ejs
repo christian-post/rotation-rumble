@@ -107,7 +107,7 @@
   }
 
 
-  const addToDeckTable = function(event) {
+  const addToDeckTable = async function(event) {
     // adds the row of card data to the Deck table
     // the row is retrieved from the drag event's parent
     let newRow = event.target.parentNode;
@@ -116,8 +116,9 @@
     tBody.appendChild(newRow);
 
     // add the card also to local storage
-    addCardFromDeckbuilder(newRow);
+    await addCardFromDeckbuilder(newRow);
 
+    // update the Stats element of the page
     updateStats();
   }
 
@@ -158,6 +159,7 @@
 
 
   const handleLeaderCheckbox = function(event) {
+    let currentDeckID = localStorage.getItem('currentDeckID');
     let deck = getDeck(currentDeckID);
 
     // uncheck all boxes, then check the selected box
@@ -185,7 +187,7 @@
     // remove the "add to deck" column
     row.removeChild(row.lastElementChild);
 
-    // Add the "Leader?" checkbox
+    // Add the "Captain?" checkbox
     let leaderCheckCell = document.createElement('td');
     let leaderCheckbox = document.createElement('input');
     leaderCheckbox.type = 'checkbox';
@@ -276,9 +278,12 @@
 
 
   const getDeck = function(deckID) {
-    if (deckID === undefined) { deckID = currentDeckID; }
+    if (deckID === undefined) { 
+      deckID = localStorage.getItem('currentDeckID'); 
+    }
 
     let blueprint = {
+      id: deckID,
       cards: {},
       name: "Untitled Deck",
       leader: null,
@@ -314,7 +319,9 @@
 
 
   const saveDeck = function(deck, deckID) {
-    if (deckID === undefined) { deckID = currentDeckID || 'currentDeck'; }
+    if (deckID === undefined) { 
+      deckID = 'deck-' + getIDnumber();
+    }
     // puts the deck object back into local storage as string
     localStorage.setItem(deckID, JSON.stringify(deck));
   }
@@ -343,6 +350,7 @@
     }
 
     // retrieve the deck object
+    let currentDeckID = localStorage.getItem('currentDeckID');
     let deck = getDeck(currentDeckID);
 
     // check if this card is in the deck
@@ -369,6 +377,7 @@
     // removes a card from the deck in local storage
 
     // retrieve the deck object
+    let currentDeckID = localStorage.getItem('currentDeckID');
     let deck = getDeck(currentDeckID);
 
     // check if this card is in the deck
@@ -406,7 +415,7 @@
   }
 
 
-  const addCardFromDeckbuilder = function(row) {
+  const addCardFromDeckbuilder = async function(row) {
     // Wrapper for addCardToDeck(), to be called from deck-builder.ejs
 
     // add the card from the deck builder
@@ -421,12 +430,14 @@
       data: null
     };
 
-    addCardtoDeck(card);
+    await addCardtoDeck(card);
   }
 
 
   const addCardAsLeader = function(row) {
     // Wrapper for addCardToDeck(), to be called from deck-builder.ejs
+
+    // TODO: obsolete?
 
     // add the card from the deck builder
     let name = getInnerText(row.firstElementChild);
@@ -446,6 +457,7 @@
 
   const createDeckFromStorage = function() {
     // loads the deck from localstorage into the deck builder
+    let currentDeckID = localStorage.getItem('currentDeckID');
     let deck = getDeck(currentDeckID);
 
     let galleryTBody = document.getElementById('card-gallery-table')
@@ -505,9 +517,9 @@
     const leader = deck.leader?.data.name;
     if (!leader) {
       valid = false;
-      errorMsg.push('- Your deck has to have a Leader!');
+      errorMsg.push('- Your deck has to have a Captain!');
     }
-    txt += `//Leader\n${leader}\n\n//Deck\n`;
+    txt += `//Captain\n${leader}\n\n//Deck\n`;
 
     Object.entries(deck.cards).forEach(([key, card]) => {
       if(!card.leader) {
@@ -541,8 +553,24 @@
   }
 
 
-  const parseDeckString = async function(deckString, name="", id) {
-    if (id === undefined) { id = currentDeckID };
+  const getIDnumber = function() {
+    // creates a new unique deck id number
+    let ids = Object.keys(localStorage).sort();
+    ids = ids.filter(elem => elem !== 'currentDeckID');
+    if (ids.length === 0) {
+      console.log('Nothing in local storage')
+      return 0;
+    }
+    let lastID = ids[ids.length-1].split('-')[1];
+    return  parseInt(lastID) + 1;
+
+  }
+
+
+  const loadDeckFromFile = async function(deckString, name="", id) {
+    if (id === undefined) { 
+      id = 'deck-' + getIDnumber();
+    };
 
     let errors = [];
     // check if string has deck name information
@@ -551,9 +579,9 @@
       name = deckNameMatch[1];
     }
 
-    let leader = deckString.match(/\/\/Leader\s*(.+)\s/)?.[1];
+    let leader = deckString.match(/\/\/Captain\s*(.+)\s/)?.[1];
     if (leader === undefined) {
-      errors.push('- List ist missing a Leader.');
+      errors.push('- List ist missing a Captain.');
     }
 
     let rawCards = deckString.match(/\/\/Deck\s*(.+)/s)?.[1].split(/\r?\n/);
@@ -566,7 +594,6 @@
 
     let deck = getDeck(id);
     deck.name = name;
-    // deck.name = `Imported Deck (${name})`;
     let cards = rawCards.map(elem => elem.split(/[0-9]+\s/)[1]);
     cards.push(leader);
     
@@ -610,11 +637,12 @@
 
 
   const updateStats = function() {
+    console.log('deck stats updated')
     // Update visualized deck statistics in the deck builder
     const money = parseInt(document.getElementById('num-money').value);
 
+    let currentDeckID = localStorage.getItem('currentDeckID');
     let deck = getDeck(currentDeckID);
-    console.log(deck)
     const cardsTotal = Object.keys(deck.cards).length + money;
 
     let typeCount = {
@@ -691,7 +719,7 @@
 
   const loadPreconFile = async function(url, id) {
     text = await load(url);
-    parseDeckString(text, null, id);
+    loadDeckFromFile(text, null, id);
   }
 
 
