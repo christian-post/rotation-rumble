@@ -177,9 +177,14 @@
 </body>
 
 <script>
+  console.log(urlParams.get('deck'))
+  localStorage.setItem('currentDeckID', urlParams.get('deck'));
+
   createDeckFromStorage();
   updateStats();
 
+
+  console.log(localStorage.getItem('currentDeckID'))
 
   const changeDeckName = function() {
     let currentDeckID = localStorage.getItem('currentDeckID');

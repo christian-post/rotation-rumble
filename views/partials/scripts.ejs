@@ -1,7 +1,7 @@
 <script>
   var cardData;
   var colors;  // needed later
-  const urlParams = new URLSearchParams(window.location.search);
+  const urlParams = new URLSearchParams(window.location.search);  // TODO: global
 
   const getInnerText = function(node) {
     // helper function for the table sorting algorithm
@@ -562,7 +562,7 @@
       return 0;
     }
     let lastID = ids[ids.length-1].split('-')[1];
-    return  parseInt(lastID) + 1;
+    return parseInt(lastID) + 1;
 
   }
 
@@ -720,6 +720,7 @@
   const loadPreconFile = async function(url, id) {
     text = await load(url);
     loadDeckFromFile(text, null, id);
+    localStorage.setItem('currentDeckID', id);
   }
 
 
