@@ -86,6 +86,7 @@
     let files = document.querySelector('#deck-upload').files;
     if (files.length > 0) {
       let deckID = 'deck-' + getIDnumber();
+      console.log(deckID);
 
       // store deckID in local storage
       localStorage.setItem('currentDeckID', deckID);

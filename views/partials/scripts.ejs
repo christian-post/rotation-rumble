@@ -555,15 +555,16 @@
 
   const getIDnumber = function() {
     // creates a new unique deck id number
-    let ids = Object.keys(localStorage).sort();
+    let ids = Object.keys(localStorage);
     ids = ids.filter(elem => elem !== 'currentDeckID');
+    ids = ids.map(elem => elem.split('-')[1]).sort();
+
     if (ids.length === 0) {
       console.log('Nothing in local storage')
       return 0;
     }
-    let lastID = ids[ids.length-1].split('-')[1];
-    return parseInt(lastID) + 1;
 
+    return parseInt(ids[ids.length-1]) + 1;
   }
 
 
