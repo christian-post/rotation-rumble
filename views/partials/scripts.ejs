@@ -304,6 +304,8 @@
       if (!Object.keys(deck).includes(key)) {
         alert(`Warning: A deck in your cache seems to be an older version. Deck "${deck.name}" deleted.`)
         console.log(deck);
+        localStorage.removeItem(deckID);
+
         deck = JSON.parse(JSON.stringify(blueprint));
         break;
       }
