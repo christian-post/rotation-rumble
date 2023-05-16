@@ -298,12 +298,11 @@
     // parse string from storage and return an object
     let deck = JSON.parse(localStorage.getItem(deckID));
 
-
     // test if deck object matches the blueprint
     // necessary if the users have an older version in the cache
     for (const key in blueprint) {
       if (!Object.keys(deck).includes(key)) {
-        alert('Warning: The deck in your cache seems to be an older version. Deck deleted.')
+        alert(`Warning: A deck in your cache seems to be an older version. Deck "${deck.name}" deleted.`)
         console.log(deck);
         deck = JSON.parse(JSON.stringify(blueprint));
         break;
