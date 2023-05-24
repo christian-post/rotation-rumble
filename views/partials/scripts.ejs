@@ -178,6 +178,7 @@
     deck.leader = deck.cards[leaderID];
     deck.cards[leaderID].leader = true;
     saveDeck(deck, currentDeckID);
+    updateStats();
   }
 
 
@@ -188,21 +189,28 @@
     row.removeChild(row.lastElementChild);
 
     // Add the "Captain?" checkbox
-    let leaderCheckCell = document.createElement('td');
-    let leaderCheckbox = document.createElement('input');
-    leaderCheckbox.type = 'checkbox';
-    leaderCheckbox.className = 'leader-checkbox';
-    leaderCheckbox.id = `leader-checkbox-${row.dataset.cardid}`;
-    leaderCheckbox.setAttribute('onChange', 'handleLeaderCheckbox(event)');
-    // data attribute
-    leaderCheckbox.dataset.id = row.dataset.cardid;
+    let cardtype = row.querySelector('.table-cell-cardtype').textContent.trim();
 
-    if (setAsLeader) {
-      leaderCheckbox.checked = true;
+    if (cardtype === 'Fighter') {
+      let leaderCheckCell = document.createElement('td');
+      let leaderCheckbox = document.createElement('input');
+      leaderCheckbox.type = 'checkbox';
+      leaderCheckbox.className = 'leader-checkbox';
+      leaderCheckbox.id = `leader-checkbox-${row.dataset.cardid}`;
+      leaderCheckbox.setAttribute('onChange', 'handleLeaderCheckbox(event)');
+      // data attribute
+      leaderCheckbox.dataset.id = row.dataset.cardid;
+
+      if (setAsLeader) {
+        leaderCheckbox.checked = true;
+      }
+
+      leaderCheckCell.appendChild(leaderCheckbox);
+      row.appendChild(leaderCheckCell);
+    } else {
+      // empty if not a Fighter
+      row.appendChild(document.createElement('td'));
     }
-
-    leaderCheckCell.appendChild(leaderCheckbox);
-    row.appendChild(leaderCheckCell);
 
     // add the "X" column that will remove this row from the deck
     let xCell = document.createElement('td');
@@ -387,6 +395,11 @@
     }
     delete deck.cards[id];
 
+    // delete as leader
+    if (deck.leader.id === id) {
+      deck.leader = null;
+    }
+
     // put deck array back into storage
     saveDeck(deck, currentDeckID);
   }
@@ -508,18 +521,11 @@
   }
 
 
-  const exportDeckTxtNew = function(deck) {
-    let valid = true;  // if the deck is valid for export
-    let errorMsg = [];
-
+  const exportDeckTxt = function(deck) {
     let txt = `[deck="${deck.name}"]\n`;
     
     // get leader name
     const leader = deck.leader?.data.name;
-    if (!leader) {
-      valid = false;
-      errorMsg.push('- Your deck has to have a Captain!');
-    }
     txt += `//Captain\n${leader}\n\n//Deck\n`;
 
     Object.entries(deck.cards).forEach(([key, card]) => {
@@ -532,23 +538,43 @@
     txt += `${money} Money`;
 
     // deck legality check (rows.length starting at one and the leader cancel out)
-    let decklen = Object.entries(deck.cards).length + parseInt(money);
-    if (decklen < 45) {
-      valid = false;
-      errorMsg.push(`- Your deck doesn\'t have enough cards (${decklen}/45)`);
-    }
 
-    if (!valid) {
-      alert('Your deck is invalid for these reasons:\n' + errorMsg.join('\n'));
+    let validity = checkDeckValidity(deck);
+    if (!validity.valid) {
+      console.log(validity.errorMsg)
       return '';
     }
     return txt;
   }
 
 
+  const checkDeckValidity = function(deck) {
+    let errorMsg = [];
+    let output = {
+      valid: true,
+      errorMsg: ''
+    };
+
+    const leader = deck.leader?.data.name;
+    if (!leader) {
+      output.valid = false;
+      errorMsg.push('- Your deck does not have a Captain');
+    }
+
+    let decklen = Object.entries(deck.cards).length + parseInt(deck.money);
+    if (decklen < 45) {
+      output.valid = false;
+      errorMsg.push(`- Your deck doesn\'t have enough cards (at least 45 including money)`);
+    }
+
+    output.errorMsg = 'Your deck is invalid for these reasons:<br>' + errorMsg.join('<br>');
+    return output;
+  }
+
+
   const downloadDeckString = function() {
     const deck = getDeck(currentDeckID);
-    let deckString = exportDeckTxtNew(deck);
+    let deckString = exportDeckTxt(deck);
     let filename = `${deck.name.replace(/[.\s]+/g, "_").toLowerCase()}.txt`;
     download(deckString, filename, 'text/csv;charset=utf-8;');
   }
@@ -639,7 +665,6 @@
 
 
   const updateStats = function() {
-    console.log('deck stats updated')
     // Update visualized deck statistics in the deck builder
     const money = parseInt(document.getElementById('num-money').value);
 
@@ -697,10 +722,18 @@
     // add money info to deck in storage
     deck.money = money;
     saveDeck(deck, currentDeckID);
+
+    // check deck legality and display it
+    let validity = checkDeckValidity(deck)
+    if (!validity.valid) {
+      document.querySelector('#deck-validity-check').innerHTML = validity.errorMsg;
+    } else {
+      document.querySelector('#deck-validity-check').innerHTML = '';
+    }
   }
 
 
-  const truncateDeckName = function(rawName, maxSize=30) {
+  const truncateDeckName = function(rawName, maxSize=35) {
     // truncates the deck name string for display
     if (rawName === null || rawName.length === 0) return "Untitled Deck";
 

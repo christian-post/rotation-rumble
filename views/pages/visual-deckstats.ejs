@@ -32,6 +32,7 @@
     </div>
 
     <div id="tab-visual" class="tabcontent">
+      <div class="visual-tab-leader-container"></div>
       <div class="visual-tab-card-container"></div>
     </div>
 
@@ -149,7 +150,19 @@
   let currentDeckID = localStorage.getItem('currentDeckID');
   const deck = getDeck(currentDeckID);
 
-  document.querySelector('#decklist-header').innerHTML = deck.name;
+  let decklistHeader = document.querySelector('#decklist-header');
+  let deckTitle = document.createElement('p');
+  deckTitle.innerHTML = deck.name;
+  decklistHeader.appendChild(deckTitle);
+
+  let deckValidityCheck = document.createElement('p');
+  deckValidityCheck.id = 'deck-validity-check';
+  decklistHeader.appendChild(deckValidityCheck);
+
+  let validity = checkDeckValidity(deck);
+  if (!validity.valid) {
+    deckValidityCheck.innerHTML = validity.errorMsg;
+  }
 
   Object.entries(deck.cards).forEach(([key, card]) => {
     let cost = parseInt(card.data.hire);
@@ -284,6 +297,7 @@
     }
   );
 
+
   const fillLeaderContainer = async function() {
     // TODO: this is getting really messy
 
@@ -298,7 +312,7 @@
     let container = document.querySelector('#decklist-leader-container');
 
     let leaderTitle = document.createElement('h3');
-    leaderTitle.innerHTML = `Captain: ${deck.leader?.data.name}`;
+    leaderTitle.innerHTML = `Captain: ${deck.leader?.data.name || 'None'}`;
     container.appendChild(leaderTitle);
 
     let image = document.createElement('img');
@@ -306,13 +320,15 @@
 
     let imageSrc = cardData[deck.leader?.data.id]?.image_url;
 
-    image.src = imageSrc || 'images/notfound.png';
-    image.width = '300';
-    container.appendChild(image);
+    if (imageSrc) {
+      image.src = imageSrc;
+      image.width = '300';
+      container.appendChild(image);
+    }
   }
 
-  fillLeaderContainer()
-  
+
+  fillLeaderContainer();
 
   // Deck list table
   dbody = document.getElementById('decklist-body');
@@ -360,35 +376,27 @@
 
 
   // ------------------ Card View Tab ------------------------------------------
-
+  if (deck.leader) {
+    let leaderImage = document.createElement('img');
+    leaderImage.src = deck.leader.data.image_url;
+    leaderImage.className = 'card-image-medium';
+    document.querySelector('.visual-tab-leader-container').appendChild(leaderImage);
+  }
+  
   let visualTab = document.querySelector('.visual-tab-card-container');
-
   for (const card of cardsArray) {
+    if (card.leader) continue;
+
     let cardImage = document.createElement('img');
     cardImage.src = card.data?.image_url;
     cardImage.className = 'card-image-medium';
     visualTab.appendChild(cardImage);
-    
-    // TODO: highlight Leader image
-    // if (card.leader) {
-    //   cardImage.style['border'] = '5px solid var(--color-orange)';
-    //   cardImage.style['border-radius'] = '20px';
-    //   let leaderS = document.createElement('span');
-    //   leaderS.textContent = 'Leader';
-    //   // TODO: style this in the CSS file
-    //   leaderS.style['background-color'] = 'var(--color-orange)';
-    //   leaderS.style['color'] = 'white';
-    //   leaderS.style['padding'] = '.25rem';
-    //   leaderS.style['border-radius'] = '.5rem';
-    //   leaderS.style['position'] = 'absolute';
-    //   visualTab.appendChild(leaderS)
-    // }
   }
 
 
   // ---------------- Share deck Tab -------------------------------------------
 
-  let deckString = exportDeckTxtNew(deck);
+  let deckString = exportDeckTxt(deck);
   document.querySelector('#decklistString').value = deckString;
 
   const copyDeckString = function() {

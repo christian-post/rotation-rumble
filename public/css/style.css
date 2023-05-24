@@ -906,7 +906,7 @@ footer {
 /* ------------------------------------------------------------------------------------------------------------------ */
 
 #deck-builder {
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 45% 55%;
 }
 
 #deck-builder-hidden {
@@ -1048,6 +1048,10 @@ footer {
   border-radius: 10px;
   display: flex;
   gap: 4rem;
+}
+
+#deck-validity-check {
+  color: red;
 }
 
 
@@ -1260,11 +1264,19 @@ section > ul {
 }
 
 .visual-tab-card-container {
-  padding: 2rem;
+  padding: 0 2rem 2rem 2rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
+
+.visual-tab-leader-container {
+  padding: 2rem 2rem 0 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 
 .decklist {
   display: grid;

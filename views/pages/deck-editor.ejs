@@ -54,6 +54,7 @@
         </thead>
         <tbody>
           <% for (let i = 0; i < locals.cards.length; i++) { %>
+            <% if (locals.cards[i].type2 === 'Token') continue; %>
             <tr 
               id=<%- `drag${i}` %> 
               draggable="true" 
@@ -111,17 +112,17 @@
       </div>
 
       <div class="toggle-header">
-        <h2 style="text-align: left;">Deck stats</h2>
+        <h2 style="text-align: left;">Deck Stats</h2>
         <button class="standard-button" onclick="changeToDeckstats()">💾 Save Changes</button>
       </div>
       <div>
-        <input type="checkbox" class="toggle-control" id="toggle1" />
         <div id="deck-stats">
           <!-- filled by the updateStats function -->
         </div>
+        <div id="deck-validity-check"></div>
       </div>
 
-      <h2 style="text-align: left;">Deck</h2>
+      <h2 style="text-align: left;">Deck List</h2>
       <div class="deck-container" ondrop="drop(event)" ondragover="allowDrop(event)">
         <div class="drag-zone">
           &#10133
