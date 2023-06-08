@@ -623,7 +623,7 @@ footer {
   min-width: 200px;
   height: 140px;
   top: calc(100dvh - 140px);
-  left: 15dvw;
+  right: 12dvw;
 
   display: flex;
   justify-content: center;

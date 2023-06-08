@@ -1,0 +1,35 @@
+[deck="Hyades - Fire them! (Preconstructed)"]
+//Captain
+Hyades
+
+//Deck
+1 Like Glass
+1 Tactics
+1 Murielle
+1 Mystic Key
+1 Finalizer
+1 Aethon
+1 Foresight
+1 Draw-Bot
+1 George XII
+1 Scorne
+1 Ahlai
+1 Azrael
+1 Brenter
+1 Chicken Rob
+1 Hansi
+1 Firebolt
+1 Kaltessa
+1 Norman
+1 Wanderer
+1 Monk
+1 Alette
+1 Faceless
+1 Mercenary
+1 Sangoma
+1 Aridam
+1 Sparkles
+1 Set Fire
+1 Rondur
+1 Supernova
+16 Money

@@ -50,6 +50,33 @@
 </body>
 
 <script>
+   const addCardfromSinglecard = function() {
+    // Wrapper for addCardToDeck()
+
+    // get name of Card from singlecard.ejs
+
+    // TODO: put card ID into the html data attribute?
+    let path = window.location.pathname.split('/')
+
+    let card = {
+      name: document.querySelector('.card-title')?.innerHTML,
+      id: path[path.length - 1],
+      cardtype: document.querySelector('.card-type-text')?.getAttribute('data-cardtype'),
+      info: '💬',
+      leader: false,
+      data: null
+    };
+
+    let currentDeckID = localStorage.getItem('currentDeckID');
+    let deck = getDeck(currentDeckID);
+    addCardtoDeck(deck, card, true);
+    
+    // hide the div that holds the "add to deck" function
+    // TODO: animate instead
+    document.getElementById('add-to-deck-container').style.display = "none";
+  }
+
+
   //  remove the "add to deck" dialog if this card is in the deck, or if it's a token
   if (isInDeck('<%= locals.card?.id %>') || '<%= locals.card?.type2 %>' === 'Token' ) {
     document.getElementById('add-to-deck-container').style.display = "none";

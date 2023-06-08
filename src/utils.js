@@ -1,5 +1,5 @@
-const sanitize = function(text) {
-  return text.replace(/[\W_]+/g, ' ');
+const sanitize = function(text, replacement=' ') {
+  return text.replace(/[\W_]+/g, replacement);
 }
 
 

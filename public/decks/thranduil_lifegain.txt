@@ -1,0 +1,35 @@
+[deck="Thranduil Lifegain (Preconstructed)"]
+//Captain
+Thranduil
+
+//Deck
+1 Lifecycle
+1 Life-Bot
+1 Alette
+1 Healing
+1 Lady Fiona
+1 Hot Spring
+1 Lab Bunny
+1 El Torro
+1 Sonoko
+1 Caligula
+1 Pacio
+1 Dr. Mira
+1 Alexej
+1 Jhartael
+1 Old Witch
+1 Mett
+1 Stonehead
+1 Anatomy Lab
+1 Supernova
+1 Elder Elf
+1 Flasks
+1 Trent
+1 Oxomoco
+1 Feline
+1 Foresight
+1 Kitsune
+1 Sparkles
+1 Minotaur
+1 Signet
+16 Money

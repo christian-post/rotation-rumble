@@ -1,0 +1,35 @@
+[deck="The Void - Discard (Preconstructed)"]
+//Captain
+The Void
+
+//Deck
+1 Faceless
+1 Scorne
+1 Beathoven
+1 Petra
+1 Murielle
+1 Igor
+1 Kalli
+1 Aridam
+1 Lady Xu
+1 Feline
+1 Hayabusa
+1 Kirana
+1 The Nun
+1 Bulsaram
+1 Doom
+1 Anksun
+1 Baphomet
+1 Dead King
+1 Genie
+1 Impossible
+1 Machinist
+1 Maniac
+1 Mothman
+1 Mutant Z
+1 Sir Myrkur
+1 Tactics
+1 Thranduil
+1 Wendigo
+1 Yuki-Onna
+16 Money

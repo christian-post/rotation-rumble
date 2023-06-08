@@ -118,6 +118,10 @@
       <div>
         <div id="deck-stats">
           <!-- filled by the updateStats function -->
+          <div class="loading-message">
+            <!-- only shows until the page is fully loaded -->
+            <p>Loading...</p>
+          </div>
         </div>
         <div id="deck-validity-check"></div>
       </div>
@@ -147,6 +151,10 @@
             <!-- empty table at first -->
           </tbody>
         </table>
+        <div class="loading-message">
+          <!-- only shows until the page is fully loaded -->
+          <p>Loading...</p>
+        </div>
       </div>
       <div class="deck-container-footer">
         <div>
@@ -178,14 +186,341 @@
 </body>
 
 <script>
-  console.log(urlParams.get('deck'))
-  localStorage.setItem('currentDeckID', urlParams.get('deck'));
+  // global Deck object for this page
+  var currentDeck;
 
-  createDeckFromStorage();
-  updateStats();
+  window.addEventListener("load", (event) =>{
+    // show loading element in Deck List only as long as the page isnt fully loaded
+    let loadingMsgs = document.querySelectorAll('.loading-message');
+    for (div of loadingMsgs) {
+      div.style.display = 'none';
+    }
+
+    // set deck from the url parameter as the current deck (for access outside of the deck editor)
+    const urlParams = new URLSearchParams(window.location.search); 
+    localStorage.setItem('currentDeckID', urlParams.get('deck'));
+
+    // put the cards from the current deck into the deck list table
+    createDeckFromStorage();
+    // update the Deck Stats div
+    updateStats();
+  });
 
 
-  console.log(localStorage.getItem('currentDeckID'))
+  const createDeckFromStorage = function() {
+    // loads the deck from localstorage into the deck builder
+    let currentDeckID = localStorage.getItem('currentDeckID');
+    let deck = getDeck(currentDeckID);
+
+    let galleryTBody = document.getElementById('card-gallery-table')
+          .getElementsByTagName('tbody')[0];
+    let deckTBody = document.getElementById('my-deck-table').getElementsByTagName('tbody')[0];
+
+    Object.entries(deck.cards).forEach(([key, card]) => {
+      let row = document.querySelector(`.card-gallery-row-${key}`);
+      deckTBody.appendChild(row);
+      addColumnsToCard(row, card.leader);
+    });
+
+    // Money
+    let moneySelect = document.getElementById('num-money');
+    moneySelect.value = deck.money;
+
+    // store deck object globally while on this page
+    currentDeck = deck;
+
+    console.log('deck creation done')
+
+    // change Title
+    let title = document.querySelector('#deck-title');
+    title.textContent = truncateDeckName(deck.name) || 'Untitled Deck';
+  }
+
+
+  // ---------- DRAG AND DROP FUNCTIONALITY ------------------------------------
+
+  // https://www.w3schools.com/HTML/html5_draganddrop.asp
+  // https://stackoverflow.com/questions/13007582/html5-drag-and-copy
+
+  const allowDrop = function(ev) {
+    ev.preventDefault();
+  }
+  
+
+  const drag = function(ev) {
+    if (ev.target.tagName === 'TR') {
+      // User drags the row
+      ev.dataTransfer.setData("text", ev.target.id);
+    } else if (ev.target.tagName === 'A') {
+      // user drags one of the hyperlink elements in the table
+      ev.dataTransfer.setData("text", ev.target.parentNode.parentNode.parentNode.id);
+    }
+  }
+
+
+  const checkInTable = function(data, tBody) {
+    // checks if an element is already in the table
+
+    let index = 0;
+
+    for (const row of tBody.children) {
+      // compare first row (unique identifier)
+      if (row.children.item(0).textContent === data.children.item(0).textContent) {
+        break;
+      }
+      index++;
+    }
+
+    if (index === tBody.children.length) index = -1;
+
+    return index;
+  }
+
+
+  const drop = function(ev) {
+    ev.preventDefault();
+
+    let data = ev.dataTransfer.getData("text");
+    let newRow = document.getElementById(data);
+
+    let dropped = false;
+
+
+    // check which zone the element is dragged onto
+    if (ev.target.className === 'drag-zone') {
+      // check for the parent div
+      let tBody = ev.target.parentNode.getElementsByTagName('tbody')[0];
+
+      // check if element is in table and at which index
+      let index = checkInTable(document.getElementById(data), tBody);
+
+      if (index === -1) {
+        // put row in table
+        tBody.appendChild(newRow);
+        dropped = true;
+      }
+    }
+    // column with an X lets you remove the element
+    if (dropped) {
+      addColumnsToCard(newRow);
+      updateStats();
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+
+
+  const updateStats = function(saveToStorage=false) {
+    // Update visualized deck statistics in the deck builder
+    const money = parseInt(document.getElementById('num-money').value);
+
+    // let currentDeckID = localStorage.getItem('currentDeckID');
+    // let deck = getDeck(currentDeckID);
+    const cardsTotal = Object.keys(currentDeck.cards).length + money;
+
+    let typeCount = {
+      Fighter: 0,
+      Item: 0,
+      Landscape: 0,
+      Challenge: 0
+    };
+
+    let totalHire = 0;
+    let totalFire = 0;
+
+    Object.entries(currentDeck.cards).forEach(([key, card]) => {
+      typeCount[card.cardtype]++;
+
+      let hire = parseInt(card.data.hire);
+      let fire = parseInt(card.data.fire);
+      totalHire += Number.isFinite(hire) ? hire : 0;
+      totalFire += Number.isFinite(fire) ? fire : 0;
+    });
+
+    let avgHire;
+    if (cardsTotal === 0) {
+      avgHire = "0"
+    } else {
+      avgHire = (totalHire / cardsTotal).toFixed(1);
+    }
+
+    let statsTxt1 = `Cards total: ${cardsTotal}<br>
+    Fighters: ${typeCount.Fighter}<br>
+    Items: ${typeCount.Item}<br>
+    Landscapes: ${typeCount.Landscape}`;
+
+    let statsTxt2 = `Challenges: ${typeCount.Challenge}<br>
+    Money: ${money}<br>
+    Average Hire costs: ${avgHire}<br>
+    Total Fire costs: ${totalFire}`;
+
+    document.getElementById('deck-stats').innerHTML = '';
+
+    let p1 = document.createElement('p');
+    let p2 = document.createElement('p');
+
+    p1.innerHTML = statsTxt1;
+    p2.innerHTML = statsTxt2;
+
+    document.getElementById('deck-stats').appendChild(p1);
+    document.getElementById('deck-stats').appendChild(p2);
+
+    // add money info to deck in storage
+    currentDeck.money = money;
+
+    // TODO: save deck only when clicking on the "save changes" button,
+    // or when used in the "add card to deck" dialogue
+    if (saveToStorage) {
+      let currentDeckID = localStorage.getItem('currentDeckID');
+      saveDeck(currentDeck, currentDeckID);
+    }
+
+    // check deck legality and display it
+    let validity = checkDeckValidity(currentDeck)
+    if (!validity.valid) {
+      document.querySelector('#deck-validity-check').innerHTML = validity.errorMsg;
+    } else {
+      document.querySelector('#deck-validity-check').innerHTML = '';
+    }
+  }
+
+
+  // --------- Deck list table functionality -----------------------------------
+
+  const handleLeaderCheckbox = function(event) {
+    // let currentDeckID = localStorage.getItem('currentDeckID');
+    // let deck = getDeck(currentDeckID);
+
+    // uncheck all boxes, then check the selected box
+    let boxes = document.querySelectorAll('.leader-checkbox');
+    boxes.forEach(box => {
+      box.checked = false;
+      // change the leader status in the card object
+      currentDeck.cards[box.dataset.id].leader = false;
+    });
+    
+    event.target.checked = true;
+
+    // set leader in the deck object
+    let leaderID = event.target.dataset.id;
+
+    currentDeck.leader = currentDeck.cards[leaderID];
+    currentDeck.cards[leaderID].leader = true;
+    // saveDeck(deck, currentDeckID);
+    updateStats();
+  }
+
+
+  const addColumnsToCard = function(row, setAsLeader=false) {
+    // this has to be called when a card is added to the Deck table
+
+    // remove the "add to deck" column
+    row.removeChild(row.lastElementChild);
+
+    // Add the "Captain?" checkbox
+    let cardtype = row.querySelector('.table-cell-cardtype').textContent.trim();
+
+    if (cardtype === 'Fighter') {
+      let leaderCheckCell = document.createElement('td');
+      let leaderCheckbox = document.createElement('input');
+      leaderCheckbox.type = 'checkbox';
+      leaderCheckbox.className = 'leader-checkbox';
+      leaderCheckbox.id = `leader-checkbox-${row.dataset.cardid}`;
+      leaderCheckbox.setAttribute('onChange', 'handleLeaderCheckbox(event)');
+      // data attribute
+      leaderCheckbox.dataset.id = row.dataset.cardid;
+
+      if (setAsLeader) {
+        leaderCheckbox.checked = true;
+      }
+
+      leaderCheckCell.appendChild(leaderCheckbox);
+      row.appendChild(leaderCheckCell);
+    } else {
+      // empty if not a Fighter
+      row.appendChild(document.createElement('td'));
+    }
+
+    // add the "X" column that will remove this row from the deck
+    let xCell = document.createElement('td');
+    xCell.className = 'remove-x';
+    xCell.textContent = String.fromCodePoint(10060);  // "X" Emoji
+
+    xCell.setAttribute('onclick', 'removeFromDeckTable(event)');
+
+    row.appendChild(xCell);
+  }
+
+
+  const addCardFromDeckbuilder = async function(row) {
+    // Wrapper for addCardToDeck(), to be called from deck-builder.ejs
+    // creates a new card object and puts it into the current deck object
+    let card = {
+      name: row.querySelector('.table-cell-cardname').innerText,
+      id: row.dataset.cardid,
+      cardtype: row.querySelector('.table-cell-cardtype').innerText,
+      info: '💬',
+      leader: false,
+      data: null
+    };
+
+    currentDeck = await addCardtoDeck(currentDeck, card, false);
+  }
+
+
+  const addToDeckTable = async function(event) {
+    // adds the row of card data to the Deck table
+    // the row is retrieved from the drag event's parent
+    let newRow = event.target.parentNode;
+    let tBody = document.getElementById('my-deck-table').getElementsByTagName('tbody')[0];
+    addColumnsToCard(newRow);
+    tBody.appendChild(newRow);
+
+    // add the card also to the current deck
+    await addCardFromDeckbuilder(newRow);
+
+    // update the Stats element of the page
+    updateStats();
+  }
+
+
+  const removeFromDeckTable = function(event) {
+    // add this row of card data back to the "All cards" table
+    let row = event.target.parentNode;
+
+    // if it was a leader and there is an image
+    if (row.parentNode.parentNode.id === 'leader-container-table') {
+        document.getElementById('leader-image').remove();
+      }
+
+    // remove the X and the Leader column
+    row.removeChild(row.lastElementChild);
+    row.removeChild(row.lastElementChild);
+
+    // add the "add to deck" column
+    let addCell = document.createElement('td');
+    addCell.className = 'add-deck';
+    addCell.textContent = String.fromCodePoint(10133);  // "+" Emoji
+    addCell.setAttribute('onclick', 'addToDeckTable(event)');
+    row.appendChild(addCell);
+
+    // move back to all cards list
+    let galleryTBody = document.getElementById('card-gallery-table')
+        .getElementsByTagName('tbody')[0];
+    
+    galleryTBody.insertBefore(row, galleryTBody.firstChild);
+
+    // remove from deck in local storage
+    let id = row.dataset.cardid;
+    removeCardFromDeck(id);
+    console.log('removed', id);
+
+    updateStats();
+  }
+
+
+  // --------- other deck editor elements --------------------------------------
+
 
   const changeDeckName = function() {
     let currentDeckID = localStorage.getItem('currentDeckID');
@@ -195,7 +530,6 @@
     let newName = prompt('Enter a new Name for the deck', deck.name);
     newName = newName.trim();
     title.textContent = truncateDeckName(newName);  
-
     
     deck.name = newName;
     saveDeck(deck, currentDeckID);
@@ -203,7 +537,7 @@
 
 
   const changeToDeckstats = function() {
-    updateStats();
+    updateStats(true);
     
     let currentDeckID = localStorage.getItem('currentDeckID');
     window.location.href = `/visual-deckstats?deck=${currentDeckID}`;
@@ -231,8 +565,6 @@
       }
     });
   }
- 
-
 </script>
 
 <%- include('../partials/postprocessing'); %>

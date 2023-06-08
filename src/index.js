@@ -4,6 +4,8 @@ const utils = require('./utils');
 const { body, validationResult } = require('express-validator');
 const path = require('path');
 require("dotenv").config();
+const fs = require('fs');
+const util = require('util');  // for logging purposes
 
 
 const app = express()
@@ -32,16 +34,25 @@ connectToDb(err => {
 });
 
 
+// info about files in the /decks/ directory
+let decks = fs.readdirSync('./public/decks/');
+
+// https://stackoverflow.com/a/62953551/12251941
+app.use((req, res, next) => {
+  res.locals.decks = decks;
+  next();
+});
+
+
 // -- routes --
 // TODO: create Router folder
 
-// GET requests
+// --------- GET requests ------------------------------------------------------
 
 // index Page (simple search)
 app.get('/', (req, res) => {
   res.render(`pages/index`);
 });
-
 
 
 // Advanced Search
@@ -53,7 +64,6 @@ app.get('/advanced', (req, res) => {
 
   res.render(`pages/advanced`);
 });
-
 
 
 // card gallery page
@@ -163,6 +173,7 @@ app.get('/gallery', (req, res) => {
     });
   } 
 });
+
 
 app.get('/deckbuilder', (req, res) => {
   if (!db) {
@@ -294,7 +305,7 @@ app.get('/api/all-cards', (req, res) => {
 });
 
 
-// POST requests
+// -------------- POST requests ------------------------------------------------
 
 app.post('/simple-search/', (req, res) => {
   if (req.body.search_field) {
@@ -354,6 +365,7 @@ app.post('/advanced-search/', (req, res) => {
     '{u}': 'unblockable'
   };
 
+  // Info Text for search results
   for (let i = 0; i < attrs.length; i++) {
     if (req.body[attrs[i]]) {
       switch(attrs[i]) {
@@ -493,10 +505,23 @@ app.post('/advanced-search/', (req, res) => {
     req.body.def = RegExp(req.body.def, 'i');
   }
 
+
   // Würfel
   if (req.body.dice === 'Irrelevant') {
     req.body.dice = /(?:)/i;
   }
+
+
+  // Types
+  let typeSearch = utils.sanitize(req.body.type, '');
+  let types = typeSearch.split('\ ');
+  if (types.length > 1) {
+    req.body.type = RegExp(types.join('|'), 'i');
+  } else {
+    req.body.type = RegExp(utils.escapeRegex(typeSearch));
+  }
+  console.log(`type: "${req.body.type}"`)
+
 
   // Effects or Steps
   let effectsSearchStr = utils.sanitize(req.body.effectOrStep).trim();
@@ -522,6 +547,7 @@ app.post('/advanced-search/', (req, res) => {
   }
   sets = RegExp(setSearchStr, 'i');
 
+
   // Regex and query formatting
   const search = {
     name: RegExp(utils.escapeRegex(req.body.name), 'i'),
@@ -536,9 +562,9 @@ app.post('/advanced-search/', (req, res) => {
 
     $and: [
       { 
-        $or: [
-            { type1: RegExp(utils.escapeRegex(req.body.type), 'i') },
-            { type2: RegExp(utils.escapeRegex(req.body.type), 'i') }
+        $and: [
+            { type1: req.body.type },
+            { type2: req.body.type }
         ]
       },
       {
@@ -560,10 +586,10 @@ app.post('/advanced-search/', (req, res) => {
     search['$text'] = { $search: effectSearch };
   }
 
-  console.log(search);
+  console.log(util.inspect(search, {showHidden: false, depth: null, colors: true}));
+
 
   var header;
-
   found = [];
   db.collection('all-cards')
     .find(search)

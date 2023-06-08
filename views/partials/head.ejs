@@ -8,17 +8,23 @@
 
 <%- include('../partials/scripts'); %>
 
-<script>
-  // Load precon decklist into local storage if it doesnt exist
-  // TODO: load the decklist text area in the DOM after this has finished
-  if (!localStorage.getItem('precon-0')) {
-    // TODO hard coded only temporary
-    loadPreconFile(
-      '/decks/donners_knight_charge.txt', 
-      'precon-0'
-    );
-  }
-</script>
+
+  
+<% for (var i = 0; i < locals.decks.length; i ++) { %>
+  <script>
+    // Load precon decklist into local storage if it doesnt exist
+    // TODO: load the decklist text area in the DOM after this has finished
+    if (!localStorage.getItem(`precon-<%- i %>`)) {
+      loadPreconFile(
+        `/decks/<%- locals.decks[i] %>`, 
+        `precon-<%- i %>`
+      );
+    }
+  </script>
+
+<% } %>
+
+  
 
 <title>Rotation Rumble</title>
 

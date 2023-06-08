@@ -334,8 +334,6 @@
   dbody = document.getElementById('decklist-body');
 
   for (const card of cardsArray) {
-    if (card.leader) continue;
-
     // check if there is a div for this type
     let sectionID = `decklist-section-${card.data.cardtype}`;
     let listID = `decklist-ul-${card.data.cardtype}`;
@@ -357,7 +355,11 @@
         section.append(ul);
     }
     let li = document.createElement('li');
-    li.innerHTML = card.data.name;
+    if (card.leader) {
+      li.innerHTML = card.data.name + ' (Captain)';
+    } else {
+      li.innerHTML = card.data.name;
+    }
     ul.appendChild(li);
   }
 

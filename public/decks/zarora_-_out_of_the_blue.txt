@@ -1,0 +1,35 @@
+[deck="Zarora - Out of the blue (Preconstructed)"]
+//Captain
+Zarora
+
+//Deck
+1 Kaltessa
+1 Sapphire
+1 Flasks
+1 Boneshaker
+1 Jangoo
+1 Machinist
+1 Murielle
+1 Recruit
+1 Nine-Tail
+1 Prof Z.
+1 Jellyfish
+1 Yuki-Onna
+1 Unicorn
+1 Dr. Morg
+1 Hydrology
+1 Xeerion
+1 Norman
+1 Hansi
+1 Foresight
+1 Tactics
+1 Igloo
+1 Agasa
+1 Ahlai
+1 Donner
+1 Dr. Mira
+1 Draw-Bot
+1 Lab Lenses
+1 Lab Coat
+1 Baldini
+16 Money

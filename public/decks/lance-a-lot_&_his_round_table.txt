@@ -1,0 +1,35 @@
+[deck="Lance-a-Lot & his round table (Preconstructed)"]
+//Captain
+Lance-a-Lot
+
+//Deck
+1 Löwenherz
+1 Recruit
+1 Sir John
+1 Sir Myrkur
+1 Genta
+1 Lord Rox
+1 Frontliner
+1 Vectron
+1 Rondur
+1 Kalli
+1 Carlos
+1 Duke Nox
+1 Donner
+1 Gold Orb
+1 Big Sword
+1 Louis XVIII
+1 Mercenary
+1 Medievalism
+1 Threnos
+1 Firebolt
+1 Tactics
+1 Foresight
+1 The Inn
+1 Lil Pike
+1 Holy Spear
+1 Arnold
+1 Flasks
+1 Sparkles
+1 Murielle
+16 Money
