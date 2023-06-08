@@ -73,13 +73,18 @@
     
     // hide the div that holds the "add to deck" function
     // TODO: animate instead
-    document.getElementById('add-to-deck-container').style.display = "none";
+    document.querySelector('#add-to-deck-container').style.display = 'none';
   }
+
+  let currentDeckID = localStorage.getItem('currentDeckID');
+  let deck = getDeck(currentDeckID);
+  document.querySelector('.add-to-deck-button')
+    .value = `Add to current deck: \n ${truncateDeckName(deck.name, 25)}`;
 
 
   //  remove the "add to deck" dialog if this card is in the deck, or if it's a token
   if (isInDeck('<%= locals.card?.id %>') || '<%= locals.card?.type2 %>' === 'Token' ) {
-    document.getElementById('add-to-deck-container').style.display = "none";
+    document.querySelector('#add-to-deck-container').style.display = 'none';
   }
 </script>
 

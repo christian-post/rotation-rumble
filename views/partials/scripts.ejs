@@ -45,25 +45,25 @@
   // -------------------- TABLE SORTING ----------------------------------------
 
   const sortTableRowsByColumn = function(table, columnIndex, ascending) {
-  // https://stackoverflow.com/questions/59282842/how-to-make-sorting-html-tables-faster
+    // https://stackoverflow.com/questions/59282842/how-to-make-sorting-html-tables-faster
 
-  const rows = Array.from(table.querySelectorAll(':scope > tbody > tr'));
-  rows.sort((x, y) => {
-    // try converting to a float
-    let xValue = x.cells[columnIndex].textContent;
-    let yValue = y.cells[columnIndex].textContent;
+    const rows = Array.from(table.querySelectorAll(':scope > tbody > tr'));
+    rows.sort((x, y) => {
+      // try converting to a float
+      let xValue = x.cells[columnIndex].textContent;
+      let yValue = y.cells[columnIndex].textContent;
 
-    if (isNumeric(xValue) && isNumeric(yValue)) {
-      xValue = parseFloat(xValue);
-      yValue = parseFloat(yValue);
+      if (isNumeric(xValue) && isNumeric(yValue)) {
+        xValue = parseFloat(xValue);
+        yValue = parseFloat(yValue);
+      }
+      return ascending ? ( xValue > yValue ) : ( yValue > xValue ); // <-- Neat comparison trick.
+    });
+
+    // There is no need to remove the rows prior to adding them in-order because `.appendChild` will relocate existing nodes.
+    for (let row of rows) {
+      table.tBodies[0].appendChild( row );
     }
-    return ascending ? ( xValue > yValue ) : ( yValue > xValue ); // <-- Neat comparison trick.
-  });
-
-  // There is no need to remove the rows prior to adding them in-order because `.appendChild` will relocate existing nodes.
-  for (let row of rows) {
-    table.tBodies[0].appendChild( row );
-  }
   }
 
 
@@ -87,7 +87,8 @@
 
   const getDeck = function(deckID) {
     if (deckID === undefined) { 
-      deckID = localStorage.getItem('currentDeckID'); 
+      // deckID = localStorage.getItem('currentDeckID'); 
+      deckID = getIDnumber();
     }
 
     let blueprint = {
@@ -123,7 +124,7 @@
 
 
   const isInDeck = function(id) {
-    return (id in getDeck().cards);
+    return (id in getDeck(localStorage.getItem('currentDeckID')).cards);
   }
 
 
@@ -158,10 +159,6 @@
       cardData = await getAllCards();
     }
 
-    // retrieve the deck object
-    // let currentDeckID = localStorage.getItem('currentDeckID');
-    // let deck = getDeck(currentDeckID);
-
     // check if this card is in the deck
     if (card.id in deck.cards) {
       // alert("This card is already in your deck!");
@@ -188,10 +185,6 @@
 
   const removeCardFromDeck = function(cardID, saveToStorage=false) {
     // removes a card from the deck in local storage
-
-    // retrieve the deck object
-    // let currentDeckID = localStorage.getItem('currentDeckID');
-    // let deck = getDeck(currentDeckID);
 
     // check if this card is in the deck
     if (!(cardID in currentDeck.cards)) {
@@ -292,8 +285,6 @@
     ids = ids.filter(elem => elem !== 'currentDeckID');
     ids = ids.map(elem => elem.split('-')[1]).sort((a, b) => parseInt(a) > parseInt(b));
 
-    console.log(ids)
-
     if (ids.length === 0) {
       console.log('Nothing in local storage')
       return 0;
@@ -383,7 +374,7 @@
   const loadPreconFile = async function(url, id) {
     text = await load(url);
     loadDeckFromFile(text, null, id);
-    localStorage.setItem('currentDeckID', id);
+    // localStorage.setItem('currentDeckID', id);
   }
 
   

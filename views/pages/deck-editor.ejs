@@ -313,9 +313,6 @@
   const updateStats = function(saveToStorage=false) {
     // Update visualized deck statistics in the deck builder
     const money = parseInt(document.getElementById('num-money').value);
-
-    // let currentDeckID = localStorage.getItem('currentDeckID');
-    // let deck = getDeck(currentDeckID);
     const cardsTotal = Object.keys(currentDeck.cards).length + money;
 
     let typeCount = {
@@ -388,9 +385,6 @@
   // --------- Deck list table functionality -----------------------------------
 
   const handleLeaderCheckbox = function(event) {
-    // let currentDeckID = localStorage.getItem('currentDeckID');
-    // let deck = getDeck(currentDeckID);
-
     // uncheck all boxes, then check the selected box
     let boxes = document.querySelectorAll('.leader-checkbox');
     boxes.forEach(box => {
@@ -557,11 +551,11 @@
       td = row.getElementsByTagName("td")[0];
       if (td) {
         txtValue = td.textContent || td.innerText;
-      if (txtValue.toLowerCase().indexOf(filter) > -1) {
-        row.style.display = "";
-      } else {
-        row.style.display = "none";
-      }
+        if (txtValue.toLowerCase().indexOf(filter) > -1) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
       }
     });
   }

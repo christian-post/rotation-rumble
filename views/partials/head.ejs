@@ -9,6 +9,14 @@
 <%- include('../partials/scripts'); %>
 
 
+<script>
+  // create a new deck if local storage is empty
+  if (localStorage.length === 0) {
+      // create an empty deck in storage
+      getDeck();
+  }
+</script>
+
   
 <% for (var i = 0; i < locals.decks.length; i ++) { %>
   <script>
