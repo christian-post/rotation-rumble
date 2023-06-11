@@ -1,0 +1,10 @@
+<div class="blurred-img" id="blurred-image-<%= card.id %>">
+  <img 
+    src=<%= card.image_url %> 
+    class="card-image-gallery" 
+    alt=<%= card.name %>
+    onerror="imageErrorHandler(this)"
+    loading="lazy"
+    >
+  </img>
+</div>

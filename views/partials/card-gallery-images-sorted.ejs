@@ -13,13 +13,7 @@
       <% cards.forEach(function(card) { %>
         <% i++; %>
         <a href=<%= '/card/' + card.id %>>
-          <img 
-            src=<%= card.image_url %> 
-            class="card-image-gallery" 
-            alt=<%= card.name %>
-            onerror="imageErrorHandler(this)"
-            >
-          </img>
+          <%- include('../partials/card-image', { card: card }); %>
         </a>
       <% }); %>
     </div>
