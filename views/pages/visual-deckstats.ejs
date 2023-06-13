@@ -300,6 +300,7 @@
 
   const fillLeaderContainer = async function() {
     // TODO: this is getting really messy
+    // leere DOM elemente schon im EJS erstellen
 
     if (cardData === undefined) {
       // fetch the card data once (into RAM)
@@ -311,10 +312,6 @@
     // leader image
     let container = document.querySelector('#decklist-leader-container');
 
-    let leaderTitle = document.createElement('h3');
-    leaderTitle.innerHTML = `Captain: ${deck.leader?.data.name || 'None'}`;
-    container.appendChild(leaderTitle);
-
     let image = document.createElement('img');
     image.id = 'leader-image';
 
@@ -325,6 +322,17 @@
       image.width = '300';
       container.appendChild(image);
     }
+
+    // ribbon image overlay
+    let ribbonImage = document.createElement('img');
+    ribbonImage.className = 'leader-ribbon-image';
+    ribbonImage.src = '/images/sxtEOEYA.png';
+    container.appendChild(ribbonImage);
+
+    // header
+    // let leaderTitle = document.createElement('h3');
+    // leaderTitle.innerHTML = `Captain: ${deck.leader?.data.name || 'None'}`;
+    // container.appendChild(leaderTitle);
   }
 
 
@@ -354,6 +362,7 @@
         ul.id = listID;
         section.append(ul);
     }
+
     let li = document.createElement('li');
     if (card.leader) {
       li.innerHTML = card.data.name + ' (Captain)';
@@ -379,20 +388,51 @@
 
   // ------------------ Card View Tab ------------------------------------------
   if (deck.leader) {
+    let container = document.querySelector('.visual-tab-leader-container');
+
     let leaderImage = document.createElement('img');
     leaderImage.src = deck.leader.data.image_url;
     leaderImage.className = 'card-image-medium';
-    document.querySelector('.visual-tab-leader-container').appendChild(leaderImage);
+    container.appendChild(leaderImage);
+
+    let ribbonImage = document.createElement('img');
+    ribbonImage.className = 'leader-ribbon-image';
+    // ribbonImage.style.width = '250px';
+    ribbonImage.src = '/images/sxtEOEYA.png';
+    container.appendChild(ribbonImage);
   }
   
   let visualTab = document.querySelector('.visual-tab-card-container');
   for (const card of cardsArray) {
     if (card.leader) continue;
 
+    bImgContainer = document.createElement('div');
+    bImgContainer.className = 'blurred-img';
+    visualTab.appendChild(bImgContainer);
+
     let cardImage = document.createElement('img');
     cardImage.src = card.data?.image_url;
     cardImage.className = 'card-image-medium';
-    visualTab.appendChild(cardImage);
+    cardImage.loading = 'lazy';
+    cardImage.onerror = imageErrorHandler;
+    bImgContainer.appendChild(cardImage);
+  }
+
+  // TODO: this is used elsewhere, make this a callable function(?)
+  const blurredImageDivs = document.querySelectorAll(".blurred-img");
+
+  function loaded(event) {
+    event.target.parentNode.classList.add("loaded");
+  }
+
+  for (bImgDiv of blurredImageDivs) {
+    const img = bImgDiv.querySelector("img");
+
+    if (img.complete) {
+      loaded();
+    } else {
+      img.addEventListener("load", loaded);
+    }
   }
 
 

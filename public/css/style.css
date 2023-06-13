@@ -106,7 +106,7 @@ body {
 }
 
 .blurred-img {
-  background-image: url("/images/load-img.png");
+  background-image: url("/images/Lazy-Load-MTG.jpg");
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -1312,10 +1312,22 @@ section > ul {
 }
 
 .visual-tab-leader-container {
-  padding: 2rem 2rem 0 2rem;
+  padding: 0 2rem 0 2rem;
+  margin-top: 2rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  position: relative;
+}
+
+#decklist-leader-container {
+  position: relative;
+}
+
+.leader-ribbon-image {
+  position: absolute;
+  top: 0;
+  width: 250px;
 }
 
 
