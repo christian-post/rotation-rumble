@@ -13,7 +13,8 @@
   // create a new deck if local storage is empty
   if (localStorage.length === 0) {
       // create an empty deck in storage
-      getDeck();
+      let deck = getDeck();
+      localStorage.setItem('currentDeckID', deck.id);
   }
 </script>
 
