@@ -447,7 +447,7 @@ h1 {
 
 footer {
   background-color: var(--bg-color-dark);
-  margin-top: auto;
+  /* margin-top: auto; */
   flex-shrink: 0;
   z-index: 1;
 }
@@ -478,10 +478,9 @@ footer {
   /* remove background when on mobile */
   main {
     background: none;
-    position: absolute;
     /* TODO: lazy fix; 
     when the header is fixed, the main content should start at its bottom */
-    top: 62px;
+    margin-top: 62px;
   }
 
   .grid-container {
@@ -506,8 +505,8 @@ footer {
   }
 
   footer {
+    margin: 0;
     width: 100%;
-    bottom: 0;
   }
 
   .footer-nav ul {
@@ -763,6 +762,11 @@ footer {
   .card-text {
     padding: 1rem;
   }
+
+  .add-to-deck-container {
+    /* TODO: temporally disabled */
+    display: none;  
+  }
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -905,6 +909,16 @@ footer {
 
   .cardinfo-small {
     flex-basis: 100%;
+  }
+
+  .gallery-header {
+    gap: .25rem;
+    padding: 1rem;
+    align-items: center;
+  }
+
+  .gallery-header label {
+    margin-left: 1rem;
   }
 }
 
