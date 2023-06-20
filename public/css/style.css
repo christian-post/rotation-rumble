@@ -587,6 +587,10 @@ footer {
   #landing-search-call {
     align-self: end;
   }
+
+  .info-paragraph {
+    font-size: var(--font-size-default);
+  }
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -784,6 +788,7 @@ footer {
 .gallery-header {
   display: flex;
   justify-content: flex-start;
+  align-items: center;
   gap: 1rem;
   padding-top: 0.5rem;
   padding-left: 3rem;
@@ -904,7 +909,7 @@ footer {
   }
 
   .card-image-gallery {
-    width: 180px;
+    width: 40dvw;
   }
 
   .cardinfo-small {
@@ -914,11 +919,12 @@ footer {
   .gallery-header {
     gap: .25rem;
     padding: 1rem;
-    align-items: center;
+    align-items: left;
+    flex-direction: column;
   }
 
   .gallery-header label {
-    margin-left: 1rem;
+    margin-left: .5rem;
   }
 }
 
