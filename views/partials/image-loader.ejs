@@ -1,0 +1,18 @@
+<script>
+  // manages the loading of gallery images
+  const blurredImageDivs = document.querySelectorAll(".blurred-img");
+
+  function loaded(event) {
+    event.target.parentNode.classList.add("loaded");
+  }
+
+  for (bImgDiv of blurredImageDivs) {
+    const img = bImgDiv.querySelector("img");
+
+    if (img.complete) {
+      loaded();
+    } else {
+      img.addEventListener("load", loaded);
+    }
+  }
+</script>

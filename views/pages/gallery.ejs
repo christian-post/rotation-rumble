@@ -25,29 +25,11 @@
   </div>
 </main>
 
-<script>
-  // TODO: this is used elsewhere, make this a callable function(?)
-  const blurredImageDivs = document.querySelectorAll(".blurred-img");
-
-  function loaded(event) {
-    event.target.parentNode.classList.add("loaded");
-  }
-
-  for (bImgDiv of blurredImageDivs) {
-    const img = bImgDiv.querySelector("img");
-
-    if (img.complete) {
-      loaded();
-    } else {
-      img.addEventListener("load", loaded);
-    }
-  }
-</script>
+<%- include('../partials/image-loader'); %>
 
 <footer>
   <%- include('../partials/footer'); %>
 </footer>
-
 </body>
-<%- include('../partials/postprocessing'); %>
+  <%- include('../partials/postprocessing'); %>
 </html>
