@@ -489,6 +489,7 @@ app.post('/advanced-search/', (req, res) => {
   }
 
   // dmg und def any value
+  // TODO: don't change the contents of req.body; make a new variable for each
   if (req.body.dmg === 'any') {
     req.body.dmg = /(?:)/i;
     req.body.dmg_compare_method = '$regex';
@@ -562,7 +563,7 @@ app.post('/advanced-search/', (req, res) => {
 
     $and: [
       { 
-        $and: [
+        $or: [
             { type1: req.body.type },
             { type2: req.body.type }
         ]
