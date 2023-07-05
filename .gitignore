@@ -2,5 +2,7 @@
 /node_modules
 /TODO.txt
 /release_notes.txt
-data/
+data/csv/
+data/json/
 *.log
+test.js

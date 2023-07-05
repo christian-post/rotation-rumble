@@ -1,6 +1,8 @@
 const express = require('express');
 const { connectToDb, getDb } = require('./db');
 const utils = require('./utils');
+const { spellCheck } = require('./spell-check');
+
 const { body, validationResult } = require('express-validator');
 const path = require('path');
 require("dotenv").config();
@@ -307,17 +309,30 @@ app.get('/api/all-cards', (req, res) => {
 
 // -------------- POST requests ------------------------------------------------
 
+app.post('/test/', (req, res) => {
+  console.log(req.body)
+
+  res.render('pages/index');
+});
+
+
 app.post('/simple-search/', (req, res) => {
+  console.log('simple search');
+  console.log(req.body);
+
   if (req.body.search_field) {
-    const regex = new RegExp(utils.escapeRegex(req.body.search_field), 'i');
+    const search = new RegExp(utils.escapeRegex(req.body.search_field), 'i');
 
     found = [];
     db.collection('all-cards')
-    .find({ "name": regex })
+    .find({ "name": search })
     .forEach(card => {
       found.push(card);
     })
     .then(()=> {
+
+      console.log('cards found: ', found)
+
       res.render('pages/search-results', {
         header: `Search results for "${req.body.search_field}":`,
         cards: found, 
@@ -490,11 +505,12 @@ app.post('/advanced-search/', (req, res) => {
 
   // dmg und def any value
   // TODO: don't change the contents of req.body; make a new variable for each
-  if (req.body.dmg === 'any') {
+
+  if (req.body.dmg === 'any' || req.body.dmg === undefined) {
     req.body.dmg = /(?:)/i;
     req.body.dmg_compare_method = '$regex';
   }
-  if (req.body.def === 'any') {
+  if (req.body.def === 'any' || req.body.def === undefined) {
     req.body.def = /(?:)/i;
     req.body.def_compare_method = '$regex';
   }
@@ -528,8 +544,11 @@ app.post('/advanced-search/', (req, res) => {
   let effectsSearchStr = utils.sanitize(req.body.effectOrStep).trim();
   let effectSearch;
   if (req.body.effectOrStep_exact) {
+    // Exact search
+    // TODO: können beide checkboxen angeklickt werden?
     effectSearch = `\"${effectsSearchStr}\"`;
   } else if (req.body.effectOrStep_matchall) {
+    // Match all words
     effectSearch = `\"${effectsSearchStr.replaceAll(' ', '\" \"')}\"`;
   } else {
     effectSearch = effectsSearchStr;
@@ -544,7 +563,11 @@ app.post('/advanced-search/', (req, res) => {
     setSearchStr = req.body.set;
   } else {
     // Array
-    setSearchStr = `${req.body.set.join('|')}`;
+    if (req.body.set === undefined) {
+      setSearchStr = '';
+    } else {
+      setSearchStr = `${req.body.set.join('|')}`;
+    }
   }
   sets = RegExp(setSearchStr, 'i');
 
@@ -598,6 +621,8 @@ app.post('/advanced-search/', (req, res) => {
       found.push(card);
     })
     .then(()=> {
+      let correction = null;
+
       // header string
       if (found.length === 1) {
         header = `This card matched your search`;
@@ -605,6 +630,11 @@ app.post('/advanced-search/', (req, res) => {
         header = `These ${found.length} cards matched your search`;
       } else {
         header = 'No cards matched your search';
+
+        // if no matches are found, offer an alternativ search word
+        // TODO: currently only works for effects
+        correction = spellCheck(effectSearch);
+        console.log(`\nCorrection: ${correction}`);
       }
 
       if (searchExplain.length > 0) {
@@ -615,6 +645,7 @@ app.post('/advanced-search/', (req, res) => {
       res.render('pages/search-results', {
         header: header,
         cards: found,
+        correction: correction,
         query: {
           as: 'images'
         }

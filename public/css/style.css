@@ -105,6 +105,12 @@ body {
   width: 500px;
 }
 
+.fake-link {
+  text-decoration-line: underline;
+  cursor: pointer;
+  color: var(--color-orange);
+}
+
 .blurred-img {
   background-image: url("/images/Lazy-Load-MTG.jpg");
   background-repeat: no-repeat;
@@ -787,9 +793,10 @@ footer {
 
 .gallery-header {
   display: flex;
+  flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
-  gap: 1rem;
+  align-items: left;
+  gap: 0.5rem;
   padding-top: 0.5rem;
   padding-left: 3rem;
   padding-right: 160px;

@@ -12,8 +12,6 @@ let cardDataString = fs.readFileSync(FPATH, { encoding: 'utf8', flag: 'r' });
 let cleanedDataString = cardDataString.replace(//gmi, " ")
   .replace(/[ ]{2,}/gmi, " ");
 
-// console.log(cleanedDataString)
-
 const cardData = Papa.parse(
   cleanedDataString, 
   { header: true, delimiter: ',', skipEmptyLines: 'greedy' }
