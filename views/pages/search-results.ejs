@@ -17,7 +17,10 @@
         <h3>
           Did you mean <span
             class="fake-link"
-            onclick="correctedSearch(<%= JSON.stringify(locals.correction) %>)"
+            onclick="correctedSearch(
+              <%= JSON.stringify(locals.correction) %>,
+              <%= JSON.stringify(locals.correctionType) %>
+              )"
             >
             "<%= locals.correction %>"</span>?
         </h3>
@@ -41,7 +44,7 @@
 </body>
 
 <script>
-  const correctedSearch = function(correction) {
+  const correctedSearch = function(correction, correctionType) {
     // send another POST request to the advanced search
     // with the corrected query
 
@@ -65,7 +68,7 @@
     form.setAttribute('action', '/advanced-search/');
     let input = document.createElement('input');
     input.type = 'text';
-    input.name = 'effectOrStep';
+    input.name = correctionType;
     input.value = correction || 'ERROR';
     form.appendChild(input);
 

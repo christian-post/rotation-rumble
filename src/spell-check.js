@@ -1,23 +1,33 @@
 const fs = require('fs');
 const utils = require('./utils');
 
-const FPATH = './data/rotation_rumble_common_words.txt';
-const commonWordsRaw = fs.readFileSync(FPATH, { encoding: 'utf8', flag: 'r' });
+const fpathEffects = './data/common_words_effects.txt';
+const fpathNames = './data/common_words_names.txt';
 
-let commonWords;
-if (commonWordsRaw.includes('\r')) {
-  commonWords = commonWordsRaw.split('\r\n');
+const commonWordsEffectsRaw = fs.readFileSync(fpathEffects, { encoding: 'utf8', flag: 'r' });
+const commonWordsNamesRaw = fs.readFileSync(fpathNames, { encoding: 'utf8', flag: 'r' });
+
+let commonWords = [];
+
+if (commonWordsEffectsRaw.includes('\r')) {
+  commonWords.effects = commonWordsEffectsRaw.split('\r\n');
 } else {
-  commonWords = commonWordsRaw.split('\n');
+  commonWords.effects = commonWordsEffectsRaw.split('\n');
+}
+
+if (commonWordsNamesRaw.includes('\r')) {
+  commonWords.names = commonWordsNamesRaw.split('\r\n');
+} else {
+  commonWords.names = commonWordsNamesRaw.split('\n');
 }
 
 
 
 module.exports = {
-  spellCheck: testWord => {
+  spellCheck: (testWord, type) => {
     let corrections = [];
     
-    for (let word of commonWords) {
+    for (let word of commonWords[type]) {
       let dist = utils.levensDist(testWord, word);
       corrections.push([word, dist]);
       if (dist === 0) break;

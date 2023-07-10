@@ -622,6 +622,7 @@ app.post('/advanced-search/', (req, res) => {
     })
     .then(()=> {
       let correction = null;
+      let correctionType = null;
 
       // header string
       if (found.length === 1) {
@@ -633,7 +634,15 @@ app.post('/advanced-search/', (req, res) => {
 
         // if no matches are found, offer an alternativ search word
         // TODO: currently only works for effects
-        correction = spellCheck(effectSearch);
+
+        if (effectSearch !== "") {
+          correction = spellCheck(effectSearch, 'effects');
+          correctionType = 'effectOrStep';
+        } else if (search.name !== /(?:)/i) {
+          correction = spellCheck(utils.sanitize(req.body.name), 'names');
+          correctionType = 'name';
+        }
+
         console.log(`\nCorrection: ${correction}`);
       }
 
@@ -646,6 +655,7 @@ app.post('/advanced-search/', (req, res) => {
         header: header,
         cards: found,
         correction: correction,
+        correctionType: correctionType,
         query: {
           as: 'images'
         }
