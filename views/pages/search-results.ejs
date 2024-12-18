@@ -17,10 +17,7 @@
         <h3>
           Did you mean <span
             class="fake-link"
-            onclick="correctedSearch(
-              <%= JSON.stringify(locals.correction) %>,
-              <%= JSON.stringify(locals.correctionType) %>
-              )"
+            onclick=<%= `correctedSearch(${locals.correction}, ${locals.correctionType})` %>
             >
             "<%= locals.correction %>"</span>?
         </h3>
